@@ -9,7 +9,11 @@
 var secureLogin = {
 
 	// Secure Logins preferences branch:
-	secureLoginPrefs: null,
+	get secureLoginPrefs () {
+		delete this.secureLoginPrefs;
+		return this.secureLoginPrefs = this.getPrefManager()
+		                               .getBranch('extensions.secureLogin@blueimp.net.');
+	},
 
 	// The progress listener:
 	get progressListener () {
@@ -80,9 +84,6 @@ var secureLogin = {
 	autoLoginExceptions: null,
 
 	initialize: function () {
-		// Save the reference to the Secure Login preferences branch:
-		this.secureLoginPrefs = this.getPrefManager().getBranch('extensions.secureLogin@blueimp.net.');
-
 		// Add a preferences observer to the secureLogin preferences branch:
 		this.secureLoginPrefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
 		this.secureLoginPrefs.addObserver('', this, false);
@@ -2229,9 +2230,6 @@ var secureLogin = {
 	},
 
 	optionsInitialize: function () {
-		// Save the reference to the Secure Login preferences branch:
-		this.secureLoginPrefs = this.getPrefManager().getBranch('extensions.secureLogin@blueimp.net.');
-
 		// Display the shortcut combination:
 		document.getElementById('keyboardShortcut').value = this.getFormattedShortcut();
 
@@ -2255,9 +2253,6 @@ var secureLogin = {
 	},
 
 	exceptionsInitialize: function () {
-		// Save the reference to the Secure Login preferences branch:
-		this.secureLoginPrefs = this.getPrefManager().getBranch('extensions.secureLogin@blueimp.net.');
-
 		// Copy the secureLogin exception array into the local list:
 		this.exceptions = this.getExceptions().slice();
 
