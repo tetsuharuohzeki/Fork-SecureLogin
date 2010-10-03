@@ -2208,9 +2208,13 @@ var secureLogin = {
 		}
 	},
 
+	get consoleSvc () {
+		delete this.consoleSvc;
+		return this.consoleSvc = Components.classes['@mozilla.org/consoleservice;1']
+		                         .getService(Components.interfaces.nsIConsoleService);
+	},
 	log: function (aMessage, aSourceName, aSourceLine, aLineNumber, aColumnNumber, aFlags, aCategory) {
-		var consoleService = Components.classes['@mozilla.org/consoleservice;1']
-			.getService(Components.interfaces.nsIConsoleService);
+		var consoleService = this.consoleSvc;
 		if (aSourceName != 'undefined') {
 			var scriptError = Components.classes["@mozilla.org/scripterror;1"]
 				.createInstance(Components.interfaces.nsIScriptError);
