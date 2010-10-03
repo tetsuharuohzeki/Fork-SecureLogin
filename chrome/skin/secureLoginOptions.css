@@ -1,0 +1,24 @@
+@import url(chrome://global/skin/);
+
+#secureLoginPrefs radio[pane] {
+	list-style-image: url("chrome://browser/skin/preferences/Options.png");
+}
+
+#secureLoginPrefs radio[pane="secureLoginPrefPaneMain"] {
+	-moz-image-region: rect(0px, 32px, 32px, 0px);
+}
+#secureLoginPrefs radio[pane="secureLoginPrefPaneAdvanced"] {
+	-moz-image-region: rect(0px, 224px, 32px, 192px);
+}
+#secureLoginPrefs radio[pane="secureLoginPrefPaneGUI"] {
+	-moz-image-region: rect(0px, 64px, 32px, 32px);
+}
+
+#highlightColorPicker {
+	margin-right:5px;
+}
+
+#keyboardShortcut {
+	min-width:200px;
+	font-family:monospace;
+}
