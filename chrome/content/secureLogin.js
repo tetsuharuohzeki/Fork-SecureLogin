@@ -2120,66 +2120,103 @@ var secureLogin = {
 		}
 	},
 
+	_getWindowMediator: null,
 	getWindowMediator: function () {
-		return Components.classes['@mozilla.org/appshell/window-mediator;1']
-				.getService(Components.interfaces.nsIWindowMediator);
+		if (!this._getWindowMediator) {
+			this._getWindowMediator = Components.classes['@mozilla.org/appshell/window-mediator;1']
+			                          .getService(Components.interfaces.nsIWindowMediator);
+		}
+		return this._getWindowMediator;
 	},
 
+	_getPasswordManager: null,
 	getPasswordManager: function() {
 		// PasswordManager doesn't exist in Firefox 3:
-		if(!Components.classes['@mozilla.org/passwordmanager;1'])
+		if(!Components.classes['@mozilla.org/passwordmanager;1']) {
 			return null;
-		return Components.classes['@mozilla.org/passwordmanager;1']
-				.getService(Components.interfaces.nsIPasswordManager);
+		}
+		if (!this._getPasswordManager) {
+			this._getPasswordManager = Components.classes['@mozilla.org/passwordmanager;1']
+			                           .getService(Components.interfaces.nsIPasswordManager);
+		}
+		return this._getPasswordManager;
 	},
 
+	_getLoginManager: null,
 	getLoginManager: function () {
 		// LoginManager only exists in Firefox 3:
 		if (!Components.classes['@mozilla.org/login-manager;1']) {
 			return null;
 		}
-		return Components.classes['@mozilla.org/login-manager;1']
-				.getService(Components.interfaces.nsILoginManager);
+		if (!this._getLoginManager) {
+			this._getLoginManager = Components.classes['@mozilla.org/login-manager;1']
+			                        .getService(Components.interfaces.nsILoginManager);
+		}
+		return this._getLoginManager;
 	},
 
+	_getPrefManager: null,
 	getPrefManager: function () {
-		return Components.classes['@mozilla.org/preferences-service;1']
-				.getService(Components.interfaces.nsIPrefService);
+		if (!this._getPrefManager) {
+			this._getPrefManager = Components.classes['@mozilla.org/preferences-service;1']
+			                       .getService(Components.interfaces.nsIPrefService);
+		}
+		return this._getPrefManager;
 	},
 
+	_getSecManager: null,
 	getSecManager: function () {
-		return Components.classes['@mozilla.org/scriptsecuritymanager;1']
-				.getService(Components.interfaces.nsIScriptSecurityManager);
+		if (!this._getSecManager) {
+			this._getSecManager = Components.classes['@mozilla.org/scriptsecuritymanager;1']
+			                      .getService(Components.interfaces.nsIScriptSecurityManager);
+		}
+		return this._getSecManager;
 	},
 
+	_getIOS: null,
 	getIOS: function () {
-		return Components.classes['@mozilla.org/network/io-service;1']
-				.getService(Components.interfaces.nsIIOService);
+		if (!this._getIOS) {
+			this._getIOS = Components.classes['@mozilla.org/network/io-service;1']
+			               .getService(Components.interfaces.nsIIOService);
+		}
+		return this._getIOS;
 	},
 
 	getFileHandler: function () {
 		return this.getIOS().getProtocolHandler('file')
-				.QueryInterface(Components.interfaces.nsIFileProtocolHandler);
+		       .QueryInterface(Components.interfaces.nsIFileProtocolHandler);
 	},
 
 	getSound: function () {
 		return Components.classes['@mozilla.org/sound;1']
-				.createInstance(Components.interfaces.nsISound);
+		       .createInstance(Components.interfaces.nsISound);
 	},
 
+	_getPrompts: null,
 	getPrompts: function () {
-		return Components.classes['@mozilla.org/embedcomp/prompt-service;1']
-				.getService(Components.interfaces.nsIPromptService);
+		if (!this._getPrompts) {
+			this._getPrompts = Components.classes['@mozilla.org/embedcomp/prompt-service;1']
+			                   .getService(Components.interfaces.nsIPromptService);
+		}
+		return this._getPrompts;
 	},
 
+	_getAppInfo: null,
 	getAppInfo: function () {
-		return Components.classes['@mozilla.org/xre/app-info;1']
-				.getService(Components.interfaces.nsIXULAppInfo);
+		if (!this._getAppInfo) {
+			this._getAppInfo = Components.classes['@mozilla.org/xre/app-info;1']
+			                   .getService(Components.interfaces.nsIXULAppInfo);
+		}
+		return this._getAppInfo;
 	},
 
+	_getVersionComparator: null,
 	getVersionComparator: function () {
-		return Components.classes['@mozilla.org/xpcom/version-comparator;1']
-				.getService(Components.interfaces.nsIVersionComparator);
+		if (!this._getPrompts) {
+			this._getPrompts = Components.classes['@mozilla.org/xpcom/version-comparator;1']
+			                   .getService(Components.interfaces.nsIVersionComparator);
+		}
+		return this._getPrompts;
 	},
 
 	inArray: function (aArray, aItem) {
