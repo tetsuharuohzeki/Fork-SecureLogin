@@ -10,8 +10,38 @@ var secureLogin = {
 
 	// Secure Logins preferences branch:
 	secureLoginPrefs: null,
+
 	// The progress listener:
-	progressListener: null,
+	get progressListener () {
+		delete this.progressListener;
+		var self = this;
+		// Implement the listener methods:
+		this.progressListener = {
+			QueryInterface: function (aIID) {
+				if(aIID.equals(Components.interfaces.nsIWebProgressListener) ||
+					aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
+					aIID.equals(Components.interfaces.nsISupports))
+					return this;
+				throw Components.results.NS_NOINTERFACE;
+			},
+			onStateChange: function (aProgress, aRequest, aFlag, aStatus) {
+				// Update status when load finishes:
+				if(aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP) {
+					self.updateStatus(aProgress, aRequest, null, aFlag, aStatus);
+				}
+			},
+			// Update status when location changes (tab change):
+			onLocationChange: function (aProgress, aRequest, aLocation) {
+				self.updateStatus(aProgress, aRequest, aLocation, null, null);
+			},
+			onProgressChange: function (a,b,c,d,e,f) {},
+			onStatusChange: function (a,b,c,d) {},
+			onSecurityChange: function (a,b,c) {},
+			onLinkIconAvailable: function (a) {}
+		};
+		return this.progressListener;
+	},
+
 	// Variable to define if the progress listener has been registered to the browser:
 	isProgressListenerRegistered: null,
 	// Helper var to remember original autofillForms setting (this has nothing to to with the extension autofillForms@blueimp.net:
@@ -56,33 +86,6 @@ var secureLogin = {
 		// Add a preferences observer to the secureLogin preferences branch:
 		this.secureLoginPrefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
 		this.secureLoginPrefs.addObserver('', this, false);
-
-		// Implement the listener methods:
-		this.progressListener = {
-			QueryInterface: function (aIID) {
-				if(aIID.equals(Components.interfaces.nsIWebProgressListener) ||
-					aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
-					aIID.equals(Components.interfaces.nsISupports))
-					return this;
-				throw Components.results.NS_NOINTERFACE;
-			},
-			onStateChange: function (aProgress,aRequest,aFlag,aStatus) {
-				// Update status when load finishes:
-				if(aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP) {
-					this.parent.updateStatus(aProgress,aRequest,null,aFlag,aStatus);
-				}
-			},
-			// Update status when location changes (tab change):
-			onLocationChange: function (aProgress,aRequest,aLocation) {
-				this.parent.updateStatus(aProgress,aRequest,aLocation,null,null);
-			},
-			onProgressChange: function (a,b,c,d,e,f) {},
-			onStatusChange: function (a,b,c,d) {},
-			onSecurityChange: function (a,b,c) {},
-			onLinkIconAvailable: function (a) {}
-		}
-		// Set the secureLogin object as parent:
-		this.progressListener.parent = this;
 
 		// Implement the event listener for the content area context menu:
 		this.contentAreaContextMenuEventListener = function (event) {
