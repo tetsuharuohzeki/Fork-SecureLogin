@@ -5,6 +5,36 @@
  * @license GNU General Public License
  * @link https://blueimp.net/mozilla/
  */
- 
-window.addEventListener('load', function() { secureLogin.initialize(); }, false);
-window.addEventListener('unload', function() { secureLogin.finalize(); }, false);
+var secureLoginOverlay = {
+
+	get service() {
+		delete this.service;
+		return this.service = secureLogin;
+	},
+
+	handleEvent: function (aEvent) {
+		switch (aEvent.type) {
+			case "load":
+				this.onLoad();
+				break;
+			case "unload":
+				this.onUnLoad();
+				break;
+		}
+	},
+
+	onLoad: function () {
+		window.removeEventListener("load", this, false);
+		window.addEventListener("unload", this, false);
+
+		this.service.initialize();
+	},
+
+	onUnLoad: function() {
+		window.removeEventListener("unload", this, false);
+
+		this.service.finalize();
+	},
+
+};
+window.addEventListener("load", secureLoginOverlay, false);
