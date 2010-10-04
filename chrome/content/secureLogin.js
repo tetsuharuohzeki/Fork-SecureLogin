@@ -72,8 +72,39 @@ var secureLogin = {
 	exceptions: null,
 	// The exceptions tree object:
 	exceptionsTree: null,
+
 	// The exceptions treeView object
-	exceptionsTreeView: null,
+	get exceptionsTreeView () {
+		delete this.exceptionsTreeView;
+		// Implement the TreeView interface:
+		var self = this;
+		this.exceptionsTreeView = {
+			rowCount: 0,
+			setTree: function (aTree) {},
+			getImageSrc: function (aRow, aColumn) {},
+			getProgressMode: function (aRow, aColumn) {},
+			getCellValue: function (aRow, aColumn) {},
+			getCellText: function (aRow, aColumn) {
+				if (aColumn.id=='exceptionsCol') {
+					return self.exceptions[aRow];
+				}
+				else {
+					return '';
+				}
+			},
+			isSeparator: function (aIndex) { return false; },
+			isSorted: function () { return false; },
+			isContainer: function (aIndex) { return false; },
+			cycleHeader: function (aColumn) {},
+			getRowProperties: function (aRow, aProp) {},
+			getColumnProperties: function (aColumn, aProp) {},
+			getCellProperties: function (aRow, aColumn, aProp) {},
+			getParentIndex: function (aIndex) { return -1; }
+		};
+
+		return this.exceptionsTreeView;
+	},
+
 	// The exceptions treeBox object:
 	exceptionsTreeBox: null,
 	// The exceptions treeSelection object:
@@ -2299,33 +2330,6 @@ var secureLogin = {
 
 		// Get the tree:
 		this.exceptionsTree = document.getElementById('exceptionsTree');
-		
-		// Implement the TreeView interface:
-		this.exceptionsTreeView = {
-			rowCount: 0,
-			setTree: function(tree){},
-			getImageSrc: function(row,column) {},
-			getProgressMode: function(row,column) {},
-			getCellValue: function(row,column) {},
-			getCellText: function(row,column){
-				if (column.id=='exceptionsCol') {
-					return this.parent.exceptions[row];
-				}
-				else {
-					return '';
-				}
-			},
-			isSeparator: function(index) {return false;},
-			isSorted: function() { return false; },
-			isContainer: function(index) {return false;},
-			cycleHeader: function(column) {},
-			getRowProperties: function(row,prop){},
-			getColumnProperties: function(column,prop){},
-			getCellProperties: function(row,column,prop){},
-			getParentIndex: function(index) {return -1}
-		};
-		// Set the secureLogin object as parent:
-		this.exceptionsTreeView.parent = this;
 
 		// Set the tree length using the exception list length:
 		this.exceptionsTreeView.rowCount = this.exceptions.length;
