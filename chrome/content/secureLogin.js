@@ -180,22 +180,11 @@ var secureLogin = {
 		// Disable the prefilling of login forms if enabled, remember status:
 		try {
 			var rootPrefBranch = this.getPrefManager().getBranch('');
-			if (this.getVersionComparator().compare(this.getAppInfo().version, '2.*') < 0) {
-				// Firefox version 1.5 - 2.0.0.*:
-				if (rootPrefBranch.getBoolPref('signon.prefillForms')) {
-					rootPrefBranch.setBoolPref('signon.prefillForms', false);
-					this.autofillForms = true;
-				} else {
-					this.autofillForms = false;
-				}
+			if (rootPrefBranch.getBoolPref('signon.autofillForms')) {
+				rootPrefBranch.setBoolPref('signon.autofillForms', false);
+				this.autofillForms = true;
 			} else {
-				// Firefox version 3 and prereleases:
-				if (rootPrefBranch.getBoolPref('signon.autofillForms')) {
-					rootPrefBranch.setBoolPref('signon.autofillForms', false);
-					this.autofillForms = true;
-				} else {
-					this.autofillForms = false;
-				}
+				this.autofillForms = false;
 			}
 		} catch (e) {
 			this.log(e);
@@ -357,10 +346,6 @@ var secureLogin = {
 		aToolbarID = aToolbarID ? aToolbarID : 'navigation-toolbar';
 		if (!document.getElementById(aButtonID)) {
 			var toolbar = document.getElementById(aToolbarID);
-			if (!toolbar) {
-				// Firefox < 3:
-				toolbar = document.getElementById('nav-bar');
-			}			
 			if (toolbar && 'insertItem' in toolbar) {
 				var beforeNode = document.getElementById(aBeforeNodeID);
 				if(beforeNode && beforeNode.parentNode != toolbar) {
@@ -608,137 +593,63 @@ var secureLogin = {
 			// document (current) host:
 			var host = doc.location.protocol + '//' + doc.location.host;
 
-			if (this.getLoginManager()) {
-				// Firefox 3:
+			var formURIs = new Array();
 
-				var formURIs = new Array();
+			// Go through the forms:
+			for (var i = 0; i < doc.forms.length; i++) {
 
-				// Go through the forms:
-				for (var i = 0; i < doc.forms.length; i++) {
+				var formAction = doc.forms[i].action;
+				if (!formAction) {
+					// Forms with no "action" attribute default to submitting to their origin URL:
+					formAction = doc.baseURI;
+				}
 
-					var formAction = doc.forms[i].action;
-					if (!formAction) {
-						// Forms with no "action" attribute default to submitting to their origin URL:
-						formAction = doc.baseURI;
+				try {
+					// Create a nsIURI object from the formAction:
+					var formURI = this.makeURI(formAction, doc.characterSet);
+					var targetHost = formURI.prePath;			
+				} catch(e) {
+					// The forms seems not to have a valid "action" attribute, continue:
+					this.log(e);
+					continue;
+				}
+
+				if (this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms')) {
+					// Skip this form if the same formURI has already been added:
+					var isDuplicate = false;
+					for (var j = 0; j< formURIs.length; j++) {
+						if(formURIs[j].equals(formURI)) {
+							isDuplicate = true;
+							break;
+						}
 					}
-
-					try {
-						// Create a nsIURI object from the formAction:
-						var formURI = this.makeURI(formAction, doc.characterSet);
-						var targetHost = formURI.prePath;			
-					} catch(e) {
-						// The forms seems not to have a valid "action" attribute, continue:
-						this.log(e);
+					if (isDuplicate) {
 						continue;
-					}
-
-					if (this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms')) {
-						// Skip this form if the same formURI has already been added:
-						var isDuplicate = false;
-						for (var j = 0; j< formURIs.length; j++) {
-							if(formURIs[j].equals(formURI)) {
-								isDuplicate = true;
-								break;
-							}
-						}
-						if (isDuplicate) {
-							continue;
-						}
-					}
-
-					// Getting the number of existing logins with countLogins() instead of findLogins() to avoid a Master Password prompt:
-					var loginsCount = this.getLoginManager().countLogins(host, targetHost, null);
-
-					if (loginsCount) {
-						// Get valid login fields:
-						var loginFields = this.getLoginFields(doc.forms[i], null, null);
-
-						if (loginFields) {
-							if (this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms')) {
-								// Add the formURI to the list:
-								formURIs.push(formURI);
-							}
-
-							// Go through the logins:
-							for (var j = 0; j < loginsCount; j++) {
-								// Add null as login object to the logins list to avoid a Master Password prompt:
-								this.addToFoundLoginsList(null, i, aWin, loginFields.username, loginFields.password);
-
-								// highlight login fields:
-								this.highlightLoginFields(loginFields.username, loginFields.password);
-					 		}
-				 		}
 					}
 				}
 
-			} else {
-				// Firefox versions before Firefox 3:
+				// Getting the number of existing logins with countLogins() instead of findLogins() to avoid a Master Password prompt:
+				var loginsCount = this.getLoginManager().countLogins(host, targetHost, null);
 
-				// Get an enumerator for the stored logins:
-				var loginsEnumerator = this.getPasswordManager().enumerator;
+				if (loginsCount) {
+					// Get valid login fields:
+					var loginFields = this.getLoginFields(doc.forms[i], null, null);
 
-				// step through the login list:
-				while (loginsEnumerator.hasMoreElements()) {
-
-					// get an nsIPasswordInternal type (which inherits from nsIPassword) out of the password manager:
-					var login = loginsEnumerator.getNext().QueryInterface(Components.interfaces.nsIPasswordInternal);
-
-					// Compare login host and document (current) host:
-					if (login.host == host) {
-
-						var formURIs = new Array();
-
-					 	// Go through the forms:
-					 	for (var i = 0; i < doc.forms.length; i++) {
-
-							if (this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms')) {
-						 		var formAction = doc.forms[i].action;
-								if (!formAction) {
-									// Forms with no "action" attribute default to submitting to their origin URL:
-									formAction = doc.baseURI;
-								}
-
-								try {
-									// Create a nsIURI object from the formAction:
-									var formURI = this.makeURI(formAction, doc.characterSet);
-								} catch(e) {
-									// The forms seems not to have a valid "action" attribute, continue:
-									this.log(e);
-									continue;
-								}
-
-								// Skip this form if the same formURI has already been added:
-								var isDuplicate = false;
-								for (var j = 0; j < formURIs.length; j++) {
-									if (formURIs[j].equals(formURI)) {
-										isDuplicate = true;
-										break;
-									}
-								}
-								if (isDuplicate) {
-									continue;
-								}
-							}
-
-							// Get valid login fields:
-							var loginFields = this.getLoginFields(doc.forms[i], login.userFieldName, login.passwordFieldName);
-
-							if (loginFields) {
-								if 
-								(this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms')) {
-									// Add the formURI to the list:
-									formURIs.push(formURI);
-								}
-
-					 			// Add valid login object to the logins list:
-								this.addToFoundLoginsList(login, i, aWin, loginFields.username, loginFields.password);
-
-								// highlight login fields:
-								this.highlightLoginFields(loginFields.username, loginFields.password);
-					 		}
+					if (loginFields) {
+						if (this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms')) {
+							// Add the formURI to the list:
+							formURIs.push(formURI);
 						}
 
-					}
+						// Go through the logins:
+						for (var j = 0; j < loginsCount; j++) {
+							// Add null as login object to the logins list to avoid a Master Password prompt:
+							this.addToFoundLoginsList(null, i, aWin, loginFields.username, loginFields.password);
+
+							// highlight login fields:
+							this.highlightLoginFields(loginFields.username, loginFields.password);
+				 		}
+			 		}
 				}
 			}
 		}
@@ -1281,7 +1192,7 @@ var secureLogin = {
 			if (this.secureLogins && this.needsRealLoginObjects()) {
 				// On Firefox 3 we still have to get the valid login objects:
 				this.secureLogins = this.getRealLoginObjects();
-				
+
 				// Return if the list of login objects is empty (should not happen):
 				if(!this.secureLogins || this.secureLogins.length == 0) {
 					return false;
@@ -1344,7 +1255,7 @@ var secureLogin = {
 						if (this.needsRealLoginObjects()) {
 							// On Firefox 3 we still have to get the valid login objects:
 							this.secureLogins = this.getRealLoginObjects();
-							
+
 							// Return if the list of login objects is empty (should not happen):
 							if (!this.secureLogins || this.secureLogins.length == 0) {
 								return;
@@ -1403,7 +1314,7 @@ var secureLogin = {
 				if (this.needsRealLoginObjects()) {
 					// On Firefox 3 we still have to get the valid login objects:
 					this.secureLogins = this.getRealLoginObjects();
-					
+
 					// Return if the list of login objects is empty (user canceled master password entry):
 					if (!this.secureLogins || this.secureLogins.length == 0) {
 						return;
@@ -1684,13 +1595,7 @@ var secureLogin = {
 	},
 
 	getUsernameFromLoginObject: function (aLoginObject) {
-		if(this.getLoginManager()) {
-			// Firefox 3:
-			return aLoginObject.username;
-		} else {
-			// Versions before Firefox 3:
-			return aLoginObject.user;
-		}
+		return aLoginObject.username;
 	},
 
 	getPasswordFromLoginObject: function (aLoginObject) {
@@ -1886,35 +1791,19 @@ var secureLogin = {
 				url = doc.location.href + this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash');
 			}
 
-			if (this.getVersionComparator().compare(this.getAppInfo().version, '2.*') < 0) {
-				// Firefox version 1.5 - 2.0.0.*:
-				var bookmarkArguments = {
-					name: doc.title,
-					url: url,
-					charset: doc.characterSet
-				}
-				window.openDialog(
-					'chrome://browser/content/bookmarks/addBookmark2.xul',
-					'', 
-					'centerscreen=yes,chrome=yes,dialog=yes,resizable=yes,dependent=yes',
-					bookmarkArguments
-				);
-			} else {
-				// Firefox version 3 and prereleases:
-				var bookmarkArguments = {
-					action: 'add',
-					type: 'bookmark',
-					hiddenRows: ['location', 'description', 'load in sidebar'],
-					uri: this.makeURI(url, doc.characterSet),
-					title: doc.title
-				};
-				window.openDialog(
-					'chrome://browser/content/places/bookmarkProperties2.xul',
-					'', 
-					'centerscreen=yes,chrome=yes,dialog=yes,resizable=yes,dependent=yes',
-					bookmarkArguments
-				);
-			}
+			var bookmarkArguments = {
+				action: 'add',
+				type: 'bookmark',
+				hiddenRows: ['location', 'description', 'load in sidebar'],
+				uri: this.makeURI(url, doc.characterSet),
+				title: doc.title
+			};
+			window.openDialog(
+				'chrome://browser/content/places/bookmarkProperties2.xul',
+				'', 
+				'centerscreen=yes,chrome=yes,dialog=yes,resizable=yes,dependent=yes',
+				bookmarkArguments
+			);
 		}
 	},
 
@@ -2000,25 +1889,8 @@ var secureLogin = {
 		return this._getWindowMediator;
 	},
 
-	_getPasswordManager: null,
-	getPasswordManager: function() {
-		// PasswordManager doesn't exist in Firefox 3:
-		if(!Components.classes['@mozilla.org/passwordmanager;1']) {
-			return null;
-		}
-		if (!this._getPasswordManager) {
-			this._getPasswordManager = Components.classes['@mozilla.org/passwordmanager;1']
-			                           .getService(Components.interfaces.nsIPasswordManager);
-		}
-		return this._getPasswordManager;
-	},
-
 	_getLoginManager: null,
 	getLoginManager: function () {
-		// LoginManager only exists in Firefox 3:
-		if (!Components.classes['@mozilla.org/login-manager;1']) {
-			return null;
-		}
 		if (!this._getLoginManager) {
 			this._getLoginManager = Components.classes['@mozilla.org/login-manager;1']
 			                        .getService(Components.interfaces.nsILoginManager);
@@ -2158,16 +2030,8 @@ var secureLogin = {
 	finalizeSignonAutofillFormsStatus: function () {
 		// Re-enable the prefilling of login forms if setting has been true:
 		try {
-			if(this.getVersionComparator().compare(this.getAppInfo().version, '2.*') < 0) {
-				// Firefox version 1.5 - 2.0.0.*:
-				if(this.autofillForms) {
-					this.getPrefManager().getBranch('').setBoolPref('signon.prefillForms', true);
-				}
-			} else {
-				// Firefox version 3 and prereleases:
-				if(this.autofillForms) {
-					this.getPrefManager().getBranch('').setBoolPref('signon.autofillForms', true);
-				}
+			if(this.autofillForms) {
+				this.getPrefManager().getBranch('').setBoolPref('signon.autofillForms', true);
 			}
 		} catch(e) {
 			this.log(e);
