@@ -168,7 +168,7 @@ var secureLoginExceprions = {
 					// Select all rows:
 					this.exceptionsTreeSelection.selectAll();
 				} catch (e) {
-					this.log(e);
+					this.service.log(e);
 				}
 			}
 		}
