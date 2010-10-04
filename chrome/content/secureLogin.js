@@ -1246,9 +1246,13 @@ var secureLogin = {
 		}
 	},
 
+	_getMasterSecurityDevice: null,
 	getMasterSecurityDevice: function () {
-		return Components.classes['@mozilla.org/security/pk11tokendb;1']
-				.getService(Components.interfaces.nsIPK11TokenDB);
+		if (!this._getMasterSecurityDevice) {
+			this._getMasterSecurityDevice = Components.classes['@mozilla.org/security/pk11tokendb;1']
+			                                .getService(Components.interfaces.nsIPK11TokenDB);
+		}
+		return this._getMasterSecurityDevice;
 	},
 
 	masterSecurityDeviceLogout: function (aEvent) {
