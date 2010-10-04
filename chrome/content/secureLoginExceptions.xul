@@ -21,18 +21,18 @@
 				<button id="addExceptionButton"
 				        icon="add"
 				        label="&addexception.label;"
-				        oncommand="secureLogin.exceptionsAdd(event);"/>
+				        oncommand="secureLoginExceprions.exceptionsAdd(event);"/>
 			</hbox>
 			<separator class="thin"/>
 			<tree id="exceptionsTree"
 			      flex="1" hidecolumnpicker="true"
-			      onkeypress="secureLogin.exceptionsHandleKeyPress(event)"
-			      onselect="secureLogin.exceptionsSelected(event);">
+			      onkeypress="secureLoginExceprions.exceptionsHandleKeyPress(event)"
+			      onselect="secureLoginExceprions.exceptionsSelected(event);">
 				<treecols>
 					<treecol id="exceptionsCol"
 					         label="&exceptionsitehead.label;"
 					         flex="5"
-					         onclick="secureLogin.exceptionsSort(event);"/>
+					         onclick="secureLoginExceprions.exceptionsSort(event);"/>
 				</treecols>
 				<treechildren id="exceptionsTreeChildren" />
 			</tree>
@@ -42,12 +42,12 @@
 				        disabled="true"
 				        icon="remove"
 				        label="&removeselected.label;"
-				        oncommand="secureLogin.exceptionsRemoveSelected(event);"/>
+				        oncommand="secureLoginExceprions.exceptionsRemoveSelected(event);"/>
 				<button id="removeAllButton"
 				        disabled="true"
 				        icon="clear"
 				        label="&removeall.label;"
-				        oncommand="secureLogin.exceptionsRemoveAll(event);"/>
+				        oncommand="secureLoginExceprions.exceptionsRemoveAll(event);"/>
 			</hbox>
 		</vbox>
 	</prefpane>
