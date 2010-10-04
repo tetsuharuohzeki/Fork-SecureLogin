@@ -93,7 +93,7 @@
 					<button id="chooseLoginFoundSound"
 					        label="&chooseFile.label;"
 					        icon="open"
-					        oncommand="secureLogin.selectAudioFile(document, 'loginFoundSoundFileName');"/>
+					        oncommand="secureLoginOptions.selectAudioFile(document, 'loginFoundSoundFileName');"/>
 				</hbox>
 				<hbox>
 					<button id="playLoginFoundSound"
@@ -111,7 +111,7 @@
 					<button id="chooseLoginSound"
 					        label="&chooseFile.label;"
 					        icon="open"
-					        oncommand="secureLogin.selectAudioFile(document, 'loginSoundFileName');"/>
+					        oncommand="secureLoginOptions.selectAudioFile(document, 'loginSoundFileName');"/>
 				</hbox>
 				<hbox>
 					<button id="playLoginSound"
@@ -150,10 +150,10 @@
 					<textbox  id="keyboardShortcut"
 					          readonly="true"
 					          flex="1"
-					          onkeypress="secureLogin.applyShortcut(event, 'keyboardShortcut');"/>
+					          onkeypress="secureLoginOptions.applyShortcut(event, 'keyboardShortcut');"/>
 					<button id="deactivateShortcutButton"
 					        label="&shortcutdisable.label;"
-					        oncommand="secureLogin.disableShortcut(event, 'keyboardShortcut');"/>
+					        oncommand="secureLoginOptions.disableShortcut(event, 'keyboardShortcut');"/>
 				</hbox>
 				<separator class="thin"/>
 				<description id="shortcutInfo">&shortcutinfo.label;</description>
