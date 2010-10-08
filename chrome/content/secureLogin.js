@@ -1371,6 +1371,28 @@ var secureLogin = {
 		return new arguments.callee.shortcut(aModifiers, aKey, aKeycode);
 	},
 
+	getShortcut: function () {
+		if (this.shortcut == null) {
+			var key = null;
+			var keycode = null;
+			var shortcutItems = this.secureLoginPrefs
+								.getComplexValue('shortcut',Components.interfaces.nsIPrefLocalizedString)
+								.data.split('+');
+			if (shortcutItems.length > 0) {
+				// Remove the last element and save it as key
+				// the remaining shortcutItems are the modifiers:
+				key = shortcutItems.pop();
+				// Check if the key is a keycode:
+				if (key.indexOf('VK') == 0) {
+					keycode	= key;
+					key = null;
+				}
+			}			
+			// Create a new shortcut object:
+			this.shortcut = this.shortcutFactory(shortcutItems, key, keycode);
+		}
+		return this.shortcut;
+	},
 
 	getFormattedShortcut: function (aShortcutParam) {
 		// Get shortcut from param or take the object attribute:
