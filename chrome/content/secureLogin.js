@@ -72,109 +72,6 @@ var secureLogin = {
 	// autoLogin exceptions list:
 	autoLoginExceptions: null,
 
-	initialize: function () {
-		// Add a preferences observer to the secureLogin preferences branch:
-		this.secureLoginPrefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
-		this.secureLoginPrefs.addObserver('', this, false);
-
-		// Implement the event listener for the content area context menu:
-		this.contentAreaContextMenuEventListener = function (event) {
-			secureLogin.initContentAreaContextMenu(event);
-		}
-
-		// Initialize the preferences settings:
-		this.initializePrefs();
-	},
-
-	initContentAreaContextMenu: function (aEvent) {
-		var cm0 = document.getElementById('secureLoginContextMenuItem');
-		var cm1 = document.getElementById('secureLoginContextMenuMenu');
-		var cm2 = document.getElementById('secureLoginContextMenuSeparator1');
-		var cm3 = document.getElementById('secureLoginContextMenuSeparator2');
-		if (cm0 && gContextMenu) {
-			if (this.secureLoginPrefs.getBoolPref('hideContextMenuItem')
-				|| gContextMenu.isContentSelected
-				|| gContextMenu.onTextInput
-				|| gContextMenu.onImage
-				|| gContextMenu.onLink
-				|| gContextMenu.onCanvas
-				|| gContextMenu.onMathML
-				|| !this.getDoc().forms
-				|| !this.getDoc().forms.length) {
-				cm0.hidden = true;
-				cm1.hidden = true;
-				cm2.hidden = true;
-				cm3.hidden = true;
-			} else {
-				// Search for valid logins and outline login fields if not done automatically:
-				if (!this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
-					this.searchLoginsInitialize();
-				}
-				if (!this.secureLogins || !this.secureLogins.length) {
-					cm0.hidden = true;
-					cm1.hidden = true;
-					cm2.hidden = true;
-					cm3.hidden = true;
-				} else {
-					// Determine if no master password is set or the user has already been authenticated:
-					var masterPasswordRequired = true;
-					if (!this.getMasterSecurityDevice().getInternalKeyToken().needsLogin()
-						|| this.getMasterSecurityDevice().getInternalKeyToken().isLoggedIn()) {
-						masterPasswordRequired = false;
-					}
-					// Show the menu or the menu item depending on the numer of logins and the MSD status:
-					if (this.secureLogins.length > 1 && !masterPasswordRequired) {
-						cm0.hidden = true;
-						cm1.hidden = false;
-					} else {
-						cm0.hidden = false;
-						cm1.hidden = true;
-					}
-					// Show menuseparators if not already separated:
-					if (this.isPreviousNodeSeparated(cm2)) {
-						cm2.hidden = true;
-					} else {
-						cm2.hidden = false;
-					}
-					if (this.isNextNodeSeparated(cm3)) {
-						cm3.hidden = true;
-					} else {
-						cm3.hidden = false;
-					}
-				}
-			}
-		}
-	},
-
-	isNextNodeSeparated: function (aNode) {
-		while (aNode) {
-			aNode = aNode.nextSibling
-			if (aNode.hidden) {
-				continue;
-			}
-			if (aNode.nodeName == 'menuseparator') {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		return true;
-	},
-
-	isPreviousNodeSeparated: function (aNode) {
-		while (aNode) {
-			aNode = aNode.previousSibling;
-			if (aNode.hidden) {
-				continue;
-			}
-			if (aNode.nodeName == 'menuseparator') {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		return true;
-	},
 
 	initializeSignonAutofillFormsStatus: function () {
 		// Disable the prefilling of login forms if enabled, remember status:
@@ -1049,54 +946,6 @@ var secureLogin = {
 				this.getStringBundle().getString('tooltipNoLogin')
 			);
 			tooltip.appendChild(label);
-		}
-	},
-
-	contextMenu: function (aEvent) {
-		this.menuPreparation('secureLoginBookmarkContextItem', 'secureLoginContextAutofillFormsMenu');
-	},
-
-	toolsMenu: function (aEvent) {
-		this.menuPreparation('secureLoginBookmarkToolsMenuItem', 'secureLoginToolsMenuAutofillFormsMenu');
-	},
-
-	buttonMenu: function (aEvent) {
-		this.menuPreparation('secureLoginBookmarkButtonMenuItem', 'secureLoginButtonMenuAutofillFormsMenu');
-	},
-
-	menuPreparation: function (aBookmarkItemID, aAutofillFormsMenuID) {
-		var doc = this.getDoc();
-		var bookmarkItem = document.getElementById(aBookmarkItemID);
-		if (bookmarkItem) {
-			if (this.secureLoginPrefs.getBoolPref('secureLoginBookmarks') &&
-				doc && doc.forms && doc.forms.length > 0) {
-				bookmarkItem.setAttribute('disabled', 'false');
-			} else {
-				bookmarkItem.setAttribute('disabled', 'true');
-			}
-		}
-		var autofillFormsPopupMenu = document.getElementById('autofillFormsPopupMenu');
-		var autofillFormsMenu = document.getElementById(aAutofillFormsMenuID);
-		var autofillFormsMenuSeparator = document.getElementById(aAutofillFormsMenuID + 'Separator');
-		if (this.secureLoginPrefs.getBoolPref('autofillFormsOnLogin') && autofillFormsPopupMenu) {
-			if (autofillFormsMenu && !autofillFormsMenu.hasChildNodes()) {
-				autofillFormsPopupMenu = autofillFormsPopupMenu.cloneNode(true);
-				autofillFormsPopupMenu.removeAttribute('position');
-				autofillFormsMenu.appendChild(autofillFormsPopupMenu);
-			}
-			if (autofillFormsMenu) {
-				autofillFormsMenu.removeAttribute('hidden');
-			}
-			if (autofillFormsMenuSeparator) {
-				autofillFormsMenuSeparator.removeAttribute('hidden');
-			}
-		} else {
-			if (autofillFormsMenu) {
-				autofillFormsMenu.setAttribute('hidden', 'true');
-			}
-			if (autofillFormsMenuSeparator) {
-				autofillFormsMenuSeparator.setAttribute('hidden', 'true');
-			}
 		}
 	},
 
@@ -2013,19 +1862,6 @@ var secureLogin = {
 		}
 	},
 
-	finalizeToolbarButtonStatus: function () {
-		var secureLoginButton = document.getElementById('secureLoginButton');
-		var hideToolbarButton = this.secureLoginPrefs.getBoolPref('hideToolbarButton');
-		if(!secureLoginButton && !hideToolbarButton) {
-			// If the toolbar button icon has been removed from the toolbar by drag&drop
-			// enable the hideToolbarButton setting:
-			this.secureLoginPrefs.setBoolPref('hideToolbarButton', true);
-		} else if(secureLoginButton && !secureLoginButton.getAttribute('hidden')) {
-			// If the toolbar button icon has been added to the toolbar by drag&drop
-			// disable the hideToolbarButton setting:
-			this.secureLoginPrefs.setBoolPref('hideToolbarButton', false);
-		}
-	},
 
 	finalizeSignonAutofillFormsStatus: function () {
 		// Re-enable the prefilling of login forms if setting has been true:
@@ -2038,29 +1874,5 @@ var secureLogin = {
 		}
 	},
 
-	finalize: function () {
-		this.finalizeToolbarButtonStatus();
-		this.finalizeSignonAutofillFormsStatus();
-
-		// Remove the content area context menu listener:
-		var contentAreaContextMenu = document.getElementById('contentAreaContextMenu');
-		if(contentAreaContextMenu) {
-			contentAreaContextMenu.removeEventListener(
-				'popupshowing',
-				this.contentAreaContextMenuEventListener,
-				false
-			);
-		}
-
-		// Remove the listener from the browser object:
-		try {
-			this.getBrowser().removeProgressListener(this.progressListener);
-		} catch(e) {
-			this.log(e);
-		}
-
-		// Remove the preferences Observer:
-		this.secureLoginPrefs.removeObserver('', this);
-	}
 
 };

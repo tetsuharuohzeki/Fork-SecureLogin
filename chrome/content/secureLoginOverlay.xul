@@ -16,7 +16,7 @@
 		      class="menu-iconic secureLoginIcon"
 		      insertbefore="javascriptConsole">
 			<menupopup id="secureLoginToolsMenuPopup"
-			           onpopupshowing="secureLogin.toolsMenu(event);">
+			           onpopupshowing="secureLoginOverlay.toolsMenu(event);">
 				<menu id="secureLoginToolsMenuAutofillFormsMenu"
 				      label="&autofillformsmenu.label;"
 				      class="menu-iconic autofillFormsIcon"
@@ -60,7 +60,7 @@
 			         onpopupshowing="secureLogin.tooltip(event);"
 			         orient="vertical"/>
 			<menupopup id="secureLoginContextmenu"
-			           onpopupshowing="secureLogin.contextMenu(event);"
+			           onpopupshowing="secureLoginOverlay.contextMenu(event);"
 			           position="after_start">
 				<menu id="secureLoginContextAutofillFormsMenu"
 				      label="&autofillformsmenu.label;"
@@ -136,7 +136,7 @@
 		               onclick="secureLogin.clickHandler(event);"
 		               context="secureLoginContextmenu">
 			<menupopup id="secureLoginButtonMenu"
-			           onpopupshowing="secureLogin.buttonMenu(event);"
+			           onpopupshowing="secureLoginOverlay.buttonMenu(event);"
 			           position="after_start">
 				<menu id="secureLoginButtonMenuAutofillFormsMenu"
 				      label="&autofillformsmenu.label;"
