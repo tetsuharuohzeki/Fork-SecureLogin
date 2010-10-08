@@ -36,10 +36,40 @@ var secureLoginOverlay = {
 		this.finalize();
 	},
 
+	observe: function (aSubject, aTopic, aData) {
+		// Only observe preferences changes:
+		if (aTopic != 'nsPref:changed') {
+			return;
+		}
+		switch (aData) {
+			case 'shortcut':
+				this.service.updateShortcut();
+				break;
+			case 'hideContextMenuItem':
+				this.service.hideContextMenuItemUpdate();
+				break;
+			case 'hideToolsMenu':
+				this.service.hideToolsMenuUpdate();
+				break;
+			case 'hideStatusbarIcon':
+				this.service.hideStatusbarIconUpdate();
+				break;
+			case 'hideToolbarButton':
+				this.service.hideToolbarButtonUpdate();
+				this.service.hideToolbarButtonMenuUpdate();
+				break;
+			case 'hideToolbarButtonMenu':
+				this.service.hideToolbarButtonMenuUpdate();
+				break;
+		}
+	},
+
 	initialize: function () {
 		// Add a preferences observer to the secureLogin preferences branch:
 		this.service.secureLoginPrefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
 		this.service.secureLoginPrefs.addObserver('', this.service, false);
+
+		this.service.secureLoginPrefs.addObserver('', this, false);// add this to observer.
 
 		// Implement the event listener for the content area context menu:
 		this.service.contentAreaContextMenuEventListener = function (event) {
@@ -211,6 +241,7 @@ var secureLoginOverlay = {
 
 		// Remove the preferences Observer:
 		this.service.secureLoginPrefs.removeObserver('', this.service);
+		this.service.secureLoginPrefs.removeObserver('', this);
 	},
 
 	finalizeToolbarButtonStatus: function () {

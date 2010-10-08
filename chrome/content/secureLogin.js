@@ -112,25 +112,6 @@ var secureLogin = {
 			return;
 		}
 		switch (aData) {
-			case 'shortcut':
-				this.updateShortcut();
-				break;
-			case 'hideContextMenuItem':
-				this.hideContextMenuItemUpdate();
-				break;
-			case 'hideToolsMenu':
-				this.hideToolsMenuUpdate();
-				break;
-			case 'hideStatusbarIcon':
-				this.hideStatusbarIconUpdate();
-				break;
-			case 'hideToolbarButton':
-				this.hideToolbarButtonUpdate();
-				this.hideToolbarButtonMenuUpdate();
-				break;
-			case 'hideToolbarButtonMenu':
-				this.hideToolbarButtonMenuUpdate();
-				break;
 			case 'searchLoginsOnload':
 				this.searchLoginsOnloadUpdate();
 				break;
