@@ -43,23 +43,23 @@ var secureLoginOverlay = {
 		}
 		switch (aData) {
 			case 'shortcut':
-				this.service.updateShortcut();
+				this.updateShortcut();
 				break;
 			case 'hideContextMenuItem':
-				this.service.hideContextMenuItemUpdate();
+				this.hideContextMenuItemUpdate();
 				break;
 			case 'hideToolsMenu':
-				this.service.hideToolsMenuUpdate();
+				this.hideToolsMenuUpdate();
 				break;
 			case 'hideStatusbarIcon':
-				this.service.hideStatusbarIconUpdate();
+				this.hideStatusbarIconUpdate();
 				break;
 			case 'hideToolbarButton':
-				this.service.hideToolbarButtonUpdate();
-				this.service.hideToolbarButtonMenuUpdate();
+				this.hideToolbarButtonUpdate();
+				this.hideToolbarButtonMenuUpdate();
 				break;
 			case 'hideToolbarButtonMenu':
-				this.service.hideToolbarButtonMenuUpdate();
+				this.hideToolbarButtonMenuUpdate();
 				break;
 		}
 	},
@@ -78,6 +78,19 @@ var secureLoginOverlay = {
 
 		// Initialize the preferences settings:
 		this.service.initializePrefs();
+		this.initializePrefs();
+	},
+
+	initializePrefs: function () {
+		// Set the keyboard shortcut:
+		this.updateShortcut();
+
+		// Initialize toolbar and statusbar icons and tools and context menus:
+		this.hideToolbarButtonUpdate();
+		this.hideToolbarButtonMenuUpdate();
+		this.hideStatusbarIconUpdate();
+		this.hideToolsMenuUpdate();
+		this.hideContextMenuItemUpdate();
 	},
 
 	initContentAreaContextMenu: function (aEvent) {
@@ -168,6 +181,140 @@ var secureLoginOverlay = {
 			}
 		}
 		return true;
+	},
+
+	updateShortcut: function () {
+		// Setting the shortcut object to "null" will update it on the next getShortcut() call:
+		this.service.shortcut = null;
+		// Get the keyboard shortcut elements:
+		var modifiers = this.service.getShortcut()['modifiers'].join(' ');
+		var key = this.service.getShortcut()['key'];
+		var keycode = this.service.getShortcut()['keycode'];
+
+		// Remove current key if existing:
+		if (document.getElementById('secureLoginShortCut')) {
+			document.getElementById('mainKeyset').removeChild(
+				document.getElementById('secureLoginShortCut')
+			);
+		}
+
+		// Check if keyboard shortcut is enabled (either key or keycode set):
+		if (key || keycode) {
+			// Create a key element:
+			var keyNode = document.createElement('key');
+
+			keyNode.setAttribute('id', 'secureLoginShortCut');
+			keyNode.setAttribute('command', 'secureLogin');
+
+			// Set the key attributes from saved shortcut:
+			keyNode.setAttribute('modifiers', modifiers);
+			if (key) {
+				keyNode.setAttribute('key', key);
+			} else {
+				keyNode.setAttribute('keycode', keycode);
+			}
+
+			// Add the key to the mainKeyset:
+			document.getElementById('mainKeyset').appendChild(keyNode);
+		}
+	},
+
+	hideToolbarButtonUpdate: function () {
+		var secureLoginButton = document.getElementById('secureLoginButton');
+		var hideToolbarButton = this.service.secureLoginPrefs.getBoolPref('hideToolbarButton');
+		if (!secureLoginButton && !hideToolbarButton) {
+			// Add the toolbar button to the toolbar:
+			this.installToolbarButton('secureLoginButton');
+			secureLoginButton = document.getElementById('secureLoginButton');
+		}
+		if (secureLoginButton) {
+			secureLoginButton.setAttribute(
+				'hidden',
+				hideToolbarButton
+			);
+		}
+	},
+
+	installToolbarButton: function (aButtonID, aBeforeNodeID, aToolbarID) {
+		aBeforeNodeID = aBeforeNodeID ? aBeforeNodeID : 'urlbar-container';
+		aToolbarID = aToolbarID ? aToolbarID : 'navigation-toolbar';
+		if (!document.getElementById(aButtonID)) {
+			var toolbar = document.getElementById(aToolbarID);
+			if (toolbar && 'insertItem' in toolbar) {
+				var beforeNode = document.getElementById(aBeforeNodeID);
+				if (beforeNode && beforeNode.parentNode != toolbar) {
+					beforeNode = null;
+				}
+				// Insert before the given node or at the end of the toolbar if the node is not available:
+				toolbar.insertItem(aButtonID, beforeNode, null, false);
+				toolbar.setAttribute('currentset', toolbar.currentSet);
+				document.persist(toolbar.id, 'currentset');
+			}
+		}
+	},
+
+	hideToolbarButtonMenuUpdate: function () {
+		var secureLoginButton = document.getElementById('secureLoginButton');
+		if (secureLoginButton) {
+			if (this.service.secureLoginPrefs.getBoolPref('hideToolbarButtonMenu')) {
+				secureLoginButton.removeAttribute('type');
+			} else {
+				secureLoginButton.setAttribute('type','menu-button');
+			}
+		}
+	},
+
+	hideStatusbarIconUpdate: function () {
+		// Change the statusbar icon visibility:
+		var secureLoginPanelIcon = document.getElementById('secureLoginPanelIcon');
+		if (secureLoginPanelIcon) {
+			secureLoginPanelIcon.setAttribute(
+				'hidden',
+				this.service.secureLoginPrefs.getBoolPref('hideStatusbarIcon')
+			);
+		}
+	},
+
+	hideToolsMenuUpdate: function () {
+		// Change the tools menu visibility:
+		var secureLoginToolsMenu = document.getElementById('secureLoginToolsMenu');
+		if (secureLoginToolsMenu) {
+			secureLoginToolsMenu.setAttribute(
+				'hidden',
+				this.service.secureLoginPrefs.getBoolPref('hideToolsMenu')
+			);
+		}
+	},
+
+	hideContextMenuItemUpdate: function () {
+		var contentAreaContextMenu = document.getElementById('contentAreaContextMenu');
+		if (contentAreaContextMenu) {
+			if (!this.service.secureLoginPrefs.getBoolPref('hideContextMenuItem')) {
+				// Add the content area context menu listener:
+				contentAreaContextMenu.addEventListener(
+					'popupshowing',
+					this.service.contentAreaContextMenuEventListener,
+					false
+				);
+			} else {
+				// Hide the SL contentare context menu entries and remove the content area context menu listener:
+				var cm0 = document.getElementById('secureLoginContextMenuItem');
+				var cm1 = document.getElementById('secureLoginContextMenuMenu');
+				var cm2 = document.getElementById('secureLoginContextMenuSeparator1');
+				var cm3 = document.getElementById('secureLoginContextMenuSeparator2');
+				if (cm0) {
+					cm0.hidden = true;
+					cm1.hidden = true;
+					cm2.hidden = true;
+					cm3.hidden = true;
+				}
+				contentAreaContextMenu.removeEventListener(
+					'popupshowing',
+					this.service.contentAreaContextMenuEventListener,
+					false
+				);
+			}
+		}
 	},
 
 	contextMenu: function (aEvent) {

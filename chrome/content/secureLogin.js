@@ -94,15 +94,7 @@ var secureLogin = {
 		// Add the progress listener to the browser, set the Secure Login icons:
 		this.searchLoginsOnloadUpdate();
 
-		// Set the keyboard shortcut:
-		this.updateShortcut();
-	
 		// Initialize toolbar and statusbar icons and tools and context menus:
-		this.hideToolbarButtonUpdate();
-		this.hideToolbarButtonMenuUpdate();
-		this.hideStatusbarIconUpdate();
-		this.hideToolsMenuUpdate();
-		this.hideContextMenuItemUpdate();
 		this.javascriptProtectionUpdate();
 	},
 
@@ -215,104 +207,6 @@ var secureLogin = {
 				// Outline the password field if existing:
 				if (this.secureLoginsPassField[i])
 					this.secureLoginsPassField[i].style.outline = outlineStyle;
-			}
-		}
-	},
-
-	installToolbarButton: function (aButtonID, aBeforeNodeID, aToolbarID) {
-		aBeforeNodeID = aBeforeNodeID ? aBeforeNodeID : 'urlbar-container';
-		aToolbarID = aToolbarID ? aToolbarID : 'navigation-toolbar';
-		if (!document.getElementById(aButtonID)) {
-			var toolbar = document.getElementById(aToolbarID);
-			if (toolbar && 'insertItem' in toolbar) {
-				var beforeNode = document.getElementById(aBeforeNodeID);
-				if(beforeNode && beforeNode.parentNode != toolbar) {
-					beforeNode = null;
-				}
-				// Insert before the given node or at the end of the toolbar if the node is not available:
-				toolbar.insertItem(aButtonID, beforeNode, null, false);
-				toolbar.setAttribute('currentset', toolbar.currentSet);
-				document.persist(toolbar.id, 'currentset');
-			}
-		}
-	},
-
-	hideToolbarButtonUpdate: function () {
-		var secureLoginButton = document.getElementById('secureLoginButton');
-		var hideToolbarButton = this.secureLoginPrefs.getBoolPref('hideToolbarButton');
-		if (!secureLoginButton && !hideToolbarButton) {
-			// Add the toolbar button to the toolbar:
-			this.installToolbarButton('secureLoginButton');
-			secureLoginButton = document.getElementById('secureLoginButton');
-		}
-		if (secureLoginButton) {
-			secureLoginButton.setAttribute(
-				'hidden',
-				hideToolbarButton
-			);
-		}
-	},
-
-	hideToolbarButtonMenuUpdate: function () {
-		var secureLoginButton = document.getElementById('secureLoginButton');
-		if (secureLoginButton) {
-			if (this.secureLoginPrefs.getBoolPref('hideToolbarButtonMenu')) {
-				secureLoginButton.removeAttribute('type');
-			} else {
-				secureLoginButton.setAttribute('type','menu-button');
-			}
-		}
-	},
-
-	hideStatusbarIconUpdate: function () {
-		// Change the statusbar icon visibility:
-		var secureLoginPanelIcon = document.getElementById('secureLoginPanelIcon');
-		if (secureLoginPanelIcon) {
-			secureLoginPanelIcon.setAttribute(
-				'hidden',
-				this.secureLoginPrefs.getBoolPref('hideStatusbarIcon')
-			);
-		}
-	},
-
-	hideToolsMenuUpdate: function () {
-		// Change the tools menu visibility:
-		var secureLoginToolsMenu = document.getElementById('secureLoginToolsMenu');
-		if (secureLoginToolsMenu) {
-			secureLoginToolsMenu.setAttribute(
-				'hidden',
-				this.secureLoginPrefs.getBoolPref('hideToolsMenu')
-			);
-		}
-	},
-
-	hideContextMenuItemUpdate: function () {
-		var contentAreaContextMenu = document.getElementById('contentAreaContextMenu');
-		if (contentAreaContextMenu) {
-			if (!this.secureLoginPrefs.getBoolPref('hideContextMenuItem')) {
-				// Add the content area context menu listener:
-				contentAreaContextMenu.addEventListener(
-					'popupshowing',
-					this.contentAreaContextMenuEventListener,
-					false
-				);
-			} else {
-				// Hide the SL contentare context menu entries and remove the content area context menu listener:
-				var cm0 = document.getElementById('secureLoginContextMenuItem');
-				var cm1 = document.getElementById('secureLoginContextMenuMenu');
-				var cm2 = document.getElementById('secureLoginContextMenuSeparator1');
-				var cm3 = document.getElementById('secureLoginContextMenuSeparator2');
-				if (cm0) {
-					cm0.hidden = true;
-					cm1.hidden = true;
-					cm2.hidden = true;
-					cm3.hidden = true;
-				}
-				contentAreaContextMenu.removeEventListener(
-					'popupshowing',
-					this.contentAreaContextMenuEventListener,
-					false
-				);
 			}
 		}
 	},
@@ -1477,64 +1371,6 @@ var secureLogin = {
 		return new arguments.callee.shortcut(aModifiers, aKey, aKeycode);
 	},
 
-	getShortcut: function () {
-		if (this.shortcut == null) {
-			var key = null;
-			var keycode = null;
-			var shortcutItems = this.secureLoginPrefs
-								.getComplexValue('shortcut',Components.interfaces.nsIPrefLocalizedString)
-								.data.split('+');
-			if (shortcutItems.length > 0) {
-				// Remove the last element and save it as key
-				// the remaining shortcutItems are the modifiers:
-				key = shortcutItems.pop();
-				// Check if the key is a keycode:
-				if (key.indexOf('VK') == 0) {
-					keycode	= key;
-					key = null;
-				}
-			}			
-			// Create a new shortcut object:
-			this.shortcut = this.shortcutFactory(shortcutItems, key, keycode);
-		}
-		return this.shortcut;
-	},
-
-	updateShortcut: function () {
-		// Setting the shortcut object to "null" will update it on the next getShortcut() call:
-		this.shortcut = null;
-		// Get the keyboard shortcut elements:
-		var modifiers = this.getShortcut()['modifiers'].join(' ');
-		var key = this.getShortcut()['key'];
-		var keycode = this.getShortcut()['keycode'];
-
-		// Remove current key if existing:
-		if (document.getElementById('secureLoginShortCut')) {
-			document.getElementById('mainKeyset').removeChild(
-				document.getElementById('secureLoginShortCut')
-			);
-		}
-
-		// Check if keyboard shortcut is enabled (either key or keycode set):
-		if (key || keycode) {
-			// Create a key element:
-			var keyNode = document.createElement('key');
-
-			keyNode.setAttribute('id', 'secureLoginShortCut');
-			keyNode.setAttribute('command', 'secureLogin');
-
-			// Set the key attributes from saved shortcut:
-			keyNode.setAttribute('modifiers', modifiers);
-			if (key) {
-				keyNode.setAttribute('key', key);
-			} else {
-				keyNode.setAttribute('keycode', keycode);
-			}
-
-			// Add the key to the mainKeyset:
-			document.getElementById('mainKeyset').appendChild(keyNode);
-		}
-	},
 
 	getFormattedShortcut: function (aShortcutParam) {
 		// Get shortcut from param or take the object attribute:
