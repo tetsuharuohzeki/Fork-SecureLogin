@@ -27,6 +27,7 @@ var secureLoginOverlay = {
 		window.removeEventListener("load", this, false);
 		window.addEventListener("unload", this, false);
 
+		this.service.initialize();
 		this.initialize();
 	},
 
@@ -34,6 +35,7 @@ var secureLoginOverlay = {
 		window.removeEventListener("unload", this, false);
 
 		this.finalize();
+		this.service.finalize();
 	},
 
 	observe: function (aSubject, aTopic, aData) {
@@ -65,10 +67,6 @@ var secureLoginOverlay = {
 	},
 
 	initialize: function () {
-		// Add a preferences observer to the secureLogin preferences branch:
-		this.service.secureLoginPrefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
-		this.service.secureLoginPrefs.addObserver('', this.service, false);
-
 		this.service.secureLoginPrefs.addObserver('', this, false);// add this to observer.
 
 		// Implement the event listener for the content area context menu:
@@ -76,8 +74,6 @@ var secureLoginOverlay = {
 			secureLoginOverlay.initContentAreaContextMenu(event);
 		}
 
-		// Initialize the preferences settings:
-		this.service.initializePrefs();
 		this.initializePrefs();
 	},
 
@@ -581,7 +577,6 @@ var secureLoginOverlay = {
 
 	finalize: function () {
 		this.finalizeToolbarButtonStatus();
-		this.service.finalizeSignonAutofillFormsStatus();
 
 		// Remove the content area context menu listener:
 		var contentAreaContextMenu = document.getElementById('contentAreaContextMenu');
@@ -593,15 +588,7 @@ var secureLoginOverlay = {
 			);
 		}
 
-		// Remove the listener from the browser object:
-		try {
-			this.service.getBrowser().removeProgressListener(this.service.progressListener);
-		} catch(e) {
-			this.service.log(e);
-		}
-
 		// Remove the preferences Observer:
-		this.service.secureLoginPrefs.removeObserver('', this.service);
 		this.service.secureLoginPrefs.removeObserver('', this);
 	},
 

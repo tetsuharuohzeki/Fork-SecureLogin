@@ -72,6 +72,14 @@ var secureLogin = {
 	// autoLogin exceptions list:
 	autoLoginExceptions: null,
 
+	initialize: function () {
+		// Add a preferences observer to the secureLogin preferences branch:
+		this.secureLoginPrefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
+		this.secureLoginPrefs.addObserver('', this, false);
+
+		// Initialize the preferences settings:
+		this.initializePrefs();
+	},
 
 	initializeSignonAutofillFormsStatus: function () {
 		// Disable the prefilling of login forms if enabled, remember status:
@@ -1500,5 +1508,17 @@ var secureLogin = {
 		}
 	},
 
+	finalize: function () {
+		this.finalizeSignonAutofillFormsStatus();
 
+		// Remove the listener from the browser object:
+		try {
+			this.getBrowser().removeProgressListener(this.progressListener);
+		} catch(e) {
+			this.log(e);
+		}
+
+		// Remove the preferences Observer:
+		this.secureLoginPrefs.removeObserver('', this);
+	},
 };
