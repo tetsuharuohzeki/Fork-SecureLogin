@@ -57,7 +57,7 @@
 	<window id="main-window">
 		<popupset id="secureLoginPopUpSet">
 			<tooltip id="secureLoginTooltip"
-			         onpopupshowing="secureLogin.tooltip(event);"
+			         onpopupshowing="secureLoginOverlay.tooltip(event);"
 			         orient="vertical"/>
 			<menupopup id="secureLoginContextmenu"
 			           onpopupshowing="secureLoginOverlay.contextMenu(event);"
@@ -117,12 +117,12 @@
 		             type="checkbox"
 		             checked="false"
 		             label="&javascriptprotection.label;"
-		             oncommand="secureLogin.changePref(event, 'javascriptProtection');"/>
+		             oncommand="secureLoginOverlay.changePref(event, 'javascriptProtection');"/>
 	</broadcasterset>
 	<statusbar id="status-bar">
 		<statusbarpanel id="secureLoginPanelIcon"
 		                class="statusbarpanel-menu-iconic secureLoginIcon"
-		                onclick="secureLogin.clickHandler(event);"
+		                onclick="secureLoginOverlay.clickHandler(event);"
 		                context="secureLoginContextmenu"
 		                tooltip="secureLoginTooltip"
 		                hidden="true"/>
@@ -133,7 +133,7 @@
 		               label="&toolbarbutton.label;"
 		               tooltip="secureLoginTooltip"
 		               oncommand="if(event.target == this) secureLogin.userSelectionLogin(event);"
-		               onclick="secureLogin.clickHandler(event);"
+		               onclick="secureLoginOverlay.clickHandler(event);"
 		               context="secureLoginContextmenu">
 			<menupopup id="secureLoginButtonMenu"
 			           onpopupshowing="secureLoginOverlay.buttonMenu(event);"
@@ -192,7 +192,7 @@
 		      insertafter="context-selectall"
 		      class="menu-iconic secureLoginIcon"
 		      hidden="true">
-			<menupopup onpopupshowing="secureLogin.contextMenuSelectionLogin(this);"
+			<menupopup onpopupshowing="secureLoginOverlay.contextMenuSelectionLogin(this);"
 			           onpopuphiding="while(this.hasChildNodes()){this.removeChild(this.firstChild);}"/>
 		</menu>
 		<menuseparator id="secureLoginContextMenuSeparator1"

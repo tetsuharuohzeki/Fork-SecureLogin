@@ -365,6 +365,220 @@ var secureLoginOverlay = {
 		}
 	},
 
+	clickHandler: function (aEvent) {
+		switch (aEvent.button) {
+			case 0:
+				if (aEvent.target.id == 'secureLoginPanelIcon') {
+					// The left mouse button already performs the login command for the secureLoginButton,
+					// but not for the status bar icon:
+					this.service.userSelectionLogin(aEvent);
+				}
+				break;
+			case 1:
+				this.service.masterSecurityDeviceLogout(aEvent);
+				break;
+		}
+	},
+
+	changePref: function (aEvent, aPref) {
+		// Attribute 'checked' is empty or true, setting must be false or true:
+		this.secureLoginPrefs.setBoolPref(
+			aPref,
+			!!aEvent.target.getAttribute('checked')
+		);
+	},
+
+	contextMenuSelectionLogin: function (aPopup) {
+		try {
+			if (this.service.secureLogins && this.service.needsRealLoginObjects()) {
+				// On Firefox 3 we still have to get the valid login objects:
+				this.service.secureLogins = this.service.getRealLoginObjects();
+
+				// Return if the list of login objects is empty (should not happen):
+				if(!this.service.secureLogins || this.service.secureLogins.length == 0) {
+					return false;
+				}
+			}
+			this.service.prepareUserSelectionPopup(aPopup);
+		} catch (e) {
+			this.service.log(e);
+			// Decrypting failed
+			return false;
+		}
+	},
+
+	tooltip: function (aEvent) {
+		// Check if document.tooltipNode exists and if it is shown above a valid node:
+		if (!document.tooltipNode || !document.tooltipNode.hasAttribute('tooltip')
+			|| !(document.tooltipNode.id == 'secureLoginButton' || document.tooltipNode.id == 'secureLoginPanelIcon')) {
+			// Don't show any tooltip:
+			aEvent.preventDefault();
+			return;
+		}
+
+		// Search for valid logins and outline login fields if not done automatically:
+		if (!this.service.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
+			this.service.searchLoginsInitialize();
+		}
+
+		// Get the tooltip node:
+		var tooltip = document.getElementById('secureLoginTooltip');
+		if (tooltip) {
+			// Remove all children nodes:
+			while (tooltip.hasChildNodes()) {
+				tooltip.removeChild(tooltip.firstChild);
+			}
+
+			if (this.service.secureLogins && this.service.secureLogins.length > 0) {
+
+				// List of unique action urls:
+				var urls = new Array();
+				// Helper list to count the number of identical urls:
+				var urlsCount = new Array();
+
+				// Go through the forms and find the unique action urls:
+				var win;
+				var doc;
+				var formIndex;
+				var url;
+				var foundInList;
+				for (var i = 0; i < this.service.secureLogins.length; i++) {
+					win = this.service.secureLoginsWindow[i];
+					// Skip windows which have been closed in the meantime:
+					if (win.closed) {
+						continue;
+					}
+					doc = this.service.getDoc(win);
+					formIndex = this.service.secureLoginsFormIndex[i];
+					url = doc.forms[formIndex].action;
+					// If the url is empty, take it from the current document:
+					if (!url) {
+						url = doc.baseURI;
+					}
+					foundInList = false;
+					// Check if the form action url is already in the list:
+					for (var j = 0; j < urls.length; j++) {
+						if (urls[j] == url) {
+							// url already in the list, increase the counter:
+							foundInList = true;
+							urlsCount[j]++;
+							break;
+						}
+					}
+					if (!foundInList) {
+						// Not in list, add the current url:
+						urls[j] = url;
+						urlsCount[j] = 1;
+					}
+				}
+
+				if (urls.length) {
+					// Add the login label plus shortcut, if not empty:
+					var hbox = document.createElement('hbox');
+					hbox.setAttribute(
+						'id',
+						'secureLoginTooltipTitle'
+					);
+					var label = document.createElement('label');
+					label.setAttribute(
+						'id',
+						'secureLoginTooltipTitleLabel'
+					);
+					label.setAttribute(
+						'value',
+						this.service.getStringBundle().getString('tooltipLogin')
+					);
+					hbox.appendChild(label);
+					var formattedShortcut = this.service.getFormattedShortcut();
+					if (formattedShortcut) {
+						label = label.cloneNode(false);
+						label.setAttribute(
+							'id',
+							'secureLoginTooltipKeyboardShortcut'
+						);
+						label.setAttribute(
+							'value',
+							'('+this.service.getFormattedShortcut()+')'
+						);
+						hbox.appendChild(label);
+					}
+					tooltip.appendChild(hbox);
+
+					// Add a description of the URL elements and count:
+					hbox = hbox.cloneNode(false);
+					hbox.setAttribute(
+						'id',
+						'secureLoginTooltipUrls'
+					);
+					label = label.cloneNode(false);
+					label.removeAttribute('id');
+					label.setAttribute(
+						'class',
+						'secureLoginTooltipUrlHeader'
+					);
+					label.setAttribute(
+						'value',
+						this.service.getStringBundle().getString('tooltipLoginUrl')
+					);
+					hbox.appendChild(label);
+					var spacer = document.createElement('spacer');
+					spacer.setAttribute('flex','1');
+					hbox.appendChild(spacer);
+					label = label.cloneNode(false);
+					label.setAttribute(
+						'value',
+						this.service.getStringBundle().getString('tooltipLoginUrlCount')
+					);
+					hbox.appendChild(label);
+					tooltip.appendChild(hbox)
+					
+					// Add the url list:
+					hbox = hbox.cloneNode(false);
+					hbox.setAttribute(
+						'class',
+						'secureLoginTooltipUrlRow'
+					);
+					var descr = document.createElement('description');
+					descr.setAttribute(
+						'class',
+						'secureLoginTooltipUrl'
+					);
+					label = label.cloneNode(false);
+					label.setAttribute(
+						'class',
+						'secureLoginTooltipUrlCount'
+					);
+					for (var i = 0; i < urls.length; i++) {
+						hbox = hbox.cloneNode(false);
+						descr = descr.cloneNode(false);
+						descr.setAttribute(
+							'value',
+							urls[i]
+						);
+						hbox.appendChild(descr);
+						hbox.appendChild(spacer.cloneNode(false));
+						label = label.cloneNode(false);
+						label.setAttribute(
+							'value',
+							'('+urlsCount[i]+')'
+						);
+						hbox.appendChild(label);
+						tooltip.appendChild(hbox);
+					}
+
+					return;
+				}
+			}
+
+			var label = document.createElement('label');
+			label.setAttribute(
+				'value',
+				this.service.getStringBundle().getString('tooltipNoLogin')
+			);
+			tooltip.appendChild(label);
+		}
+	},
+
 	finalize: function () {
 		this.finalizeToolbarButtonStatus();
 		this.service.finalizeSignonAutofillFormsStatus();
