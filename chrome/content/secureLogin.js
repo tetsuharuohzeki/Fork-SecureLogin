@@ -66,8 +66,6 @@ var secureLogin = {
 	shortcut: null,
 	// Helper var to remember a failed bookmark-login attempt:
 	failedBookmarkLogin: null,
-	// Event listener for the content area context menu:
-	contentAreaContextMenuEventListener: null,
 
 	// autoLogin exceptions list:
 	autoLoginExceptions: null,

@@ -7,6 +7,9 @@
  */
 var secureLoginOverlay = {
 
+	// Event listener for the content area context menu:
+	contentAreaContextMenuEventListener: null,
+
 	get service() {
 		delete this.service;
 		return this.service = secureLogin;
@@ -70,7 +73,7 @@ var secureLoginOverlay = {
 		this.service.secureLoginPrefs.addObserver('', this, false);// add this to observer.
 
 		// Implement the event listener for the content area context menu:
-		this.service.contentAreaContextMenuEventListener = function (event) {
+		this.contentAreaContextMenuEventListener = function (event) {
 			secureLoginOverlay.initContentAreaContextMenu(event);
 		}
 
@@ -289,7 +292,7 @@ var secureLoginOverlay = {
 				// Add the content area context menu listener:
 				contentAreaContextMenu.addEventListener(
 					'popupshowing',
-					this.service.contentAreaContextMenuEventListener,
+					this.contentAreaContextMenuEventListener,
 					false
 				);
 			} else {
@@ -306,7 +309,7 @@ var secureLoginOverlay = {
 				}
 				contentAreaContextMenu.removeEventListener(
 					'popupshowing',
-					this.service.contentAreaContextMenuEventListener,
+					this.contentAreaContextMenuEventListener,
 					false
 				);
 			}
@@ -583,7 +586,7 @@ var secureLoginOverlay = {
 		if(contentAreaContextMenu) {
 			contentAreaContextMenu.removeEventListener(
 				'popupshowing',
-				this.service.contentAreaContextMenuEventListener,
+				this.contentAreaContextMenuEventListener,
 				false
 			);
 		}
