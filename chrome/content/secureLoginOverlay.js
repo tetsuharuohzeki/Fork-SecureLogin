@@ -66,6 +66,9 @@ var secureLoginOverlay = {
 			case 'hideToolbarButtonMenu':
 				this.hideToolbarButtonMenuUpdate();
 				break;
+			case 'javascriptProtection':
+				this.javascriptProtectionUpdate();
+				break;
 		}
 	},
 
@@ -90,6 +93,7 @@ var secureLoginOverlay = {
 		this.hideStatusbarIconUpdate();
 		this.hideToolsMenuUpdate();
 		this.hideContextMenuItemUpdate();
+		this.javascriptProtectionUpdate();
 	},
 
 	initContentAreaContextMenu: function (aEvent) {
@@ -404,6 +408,13 @@ var secureLoginOverlay = {
 			// Decrypting failed
 			return false;
 		}
+	},
+
+	javascriptProtectionUpdate: function () {
+		document.getElementById('secureLoginJavascriptProtection').setAttribute(
+				'checked',
+				this.secureLoginPrefs.getBoolPref('javascriptProtection')
+		);
 	},
 
 	tooltip: function (aEvent) {
