@@ -385,7 +385,7 @@ var secureLoginOverlay = {
 
 	changePref: function (aEvent, aPref) {
 		// Attribute 'checked' is empty or true, setting must be false or true:
-		this.secureLoginPrefs.setBoolPref(
+		this.service.secureLoginPrefs.setBoolPref(
 			aPref,
 			!!aEvent.target.getAttribute('checked')
 		);
@@ -413,7 +413,7 @@ var secureLoginOverlay = {
 	javascriptProtectionUpdate: function () {
 		document.getElementById('secureLoginJavascriptProtection').setAttribute(
 				'checked',
-				this.secureLoginPrefs.getBoolPref('javascriptProtection')
+				this.service.secureLoginPrefs.getBoolPref('javascriptProtection')
 		);
 	},
 
