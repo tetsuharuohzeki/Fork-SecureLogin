@@ -306,9 +306,19 @@ var secureLogin = {
 		}
 	},
 
+	get loginPanelIcon () {
+		delete this.loginPanelIcon;
+		return this.loginPanelIcon = document.getElementById('secureLoginPanelIcon');
+	},
+
+	get loginButton () {
+		delete this.loginButton;
+		return this.loginButton = document.getElementById('secureLoginButton');
+	},
+
 	updateLoginsFoundStatus: function () {
-		var secureLoginPanelIcon = document.getElementById('secureLoginPanelIcon');
-		var secureLoginButton = document.getElementById('secureLoginButton');
+		var secureLoginPanelIcon = this.loginPanelIcon;
+		var secureLoginButton = this.loginButton;
 		if (this.secureLogins && this.secureLogins.length > 0) {
 			if (secureLoginPanelIcon) {
 				secureLoginPanelIcon.setAttribute(
@@ -733,6 +743,11 @@ var secureLogin = {
 		}
 	},
 
+	get loginUserSelectionPopup () {
+		delete this.loginUserSelectionPopup;
+		return this.loginUserSelectionPopup = document.getElementById('secureLoginUserSelectionPopup');
+	},
+
 	userSelectionLogin: function (aEvent) {
 		if(aEvent.ctrlKey) {
 			this.masterSecurityDeviceLogout();
@@ -753,7 +768,7 @@ var secureLogin = {
 					|| this.getMasterSecurityDevice().getInternalKeyToken().isLoggedIn()) {
 					masterPasswordRequired = false;
 				}
-				var popup = document.getElementById('secureLoginUserSelectionPopup');
+				var popup = this.loginUserSelectionPopup;
 				if (popup && typeof popup.openPopup == 'function' && !masterPasswordRequired) {
 					try {
 						if (this.needsRealLoginObjects()) {
