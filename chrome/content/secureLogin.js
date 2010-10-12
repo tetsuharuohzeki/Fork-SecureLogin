@@ -99,9 +99,6 @@ var secureLogin = {
 
 		// Add the progress listener to the browser, set the Secure Login icons:
 		this.searchLoginsOnloadUpdate();
-
-		// Initialize toolbar and statusbar icons and tools and context menus:
-		this.javascriptProtectionUpdate();
 	},
 
 	observe: function (aSubject, aTopic, aData) {
@@ -118,9 +115,6 @@ var secureLogin = {
 				break;
 			case 'highlightColor':
 				this.highlightColorUpdate();
-				break;
-			case 'javascriptProtection':
-				this.javascriptProtectionUpdate();
 				break;
 			case 'autoLoginExceptions':
 				this.autoLoginExceptions = null;
@@ -210,13 +204,6 @@ var secureLogin = {
 		}
 	},
 
-	javascriptProtectionUpdate: function () {
-		document.getElementById('secureLoginJavascriptProtection').setAttribute(
-				'checked',
-				this.secureLoginPrefs.getBoolPref('javascriptProtection')
-		);
-	},
-	
 	updateStatus: function (aProgress, aRequest, aLocation, aFlag, aStatus) {
 		var progressWindow = aProgress.DOMWindow;
 
