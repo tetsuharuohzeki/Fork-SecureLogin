@@ -1358,11 +1358,12 @@ var secureLogin = {
 	},
 
 	getBrowser: function () {
-		try {
+		if (gBrowser) {
 			return gBrowser;
-		} catch(e) {
+		}
+		else {
 			// gBrowser is not available, so make use of the WindowMediator service instead:
-			return this.getWindowMediator().getMostRecentWindow('navigator:browser').getBrowser();
+			return this.getWindowMediator().getMostRecentWindow('navigator:browser').gBrowser;
 		}
 	},
 
