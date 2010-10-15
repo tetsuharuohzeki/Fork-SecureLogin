@@ -49,6 +49,7 @@ var secureLogin = {
 	updateStatus: function (aProgress, aRequest, aLocation, aFlag, aStatus) {
 		var progressWindow = aProgress.DOMWindow;
 
+		var isSecureLoginBookmarks = this.secureLoginPrefs.getBoolPref('secureLoginBookmarks');
 		if (this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
 			// Initialize the recursive search for logins on the current window:
 			this.searchLoginsInitialize(progressWindow);
@@ -56,14 +57,13 @@ var secureLogin = {
 			var doc = this.getDoc(progressWindow);
 
 			var isAutoLogin = this.secureLoginPrefs.getBoolPref('autoLogin');
-			var isSecureLoginBookmarks = this.secureLoginPrefs.getBoolPref('secureLoginBookmarks');
-			var isInExceptionArray = this.inArray(this.getAutoLoginExceptions(), doc.location.protocol + '//' + doc.location.host);
+			//var isInExceptionArray = this.inArray(this.getAutoLoginExceptions(), doc.location.protocol + '//' + doc.location.host);
 			if (isAutoLogin
 			    && this.secureLogins
 			    && (this.secureLogins.length > 0)
 			    && (!isSecureLoginBookmarks
 			       || (doc.location.hash.indexOf(this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash')) != 0))
-			    && !isInExceptionArray
+			    && !this.inArray(this.getAutoLoginExceptions(), doc.location.protocol + '//' + doc.location.host)
 			) {
 				// Auto-Login if enabled, logins have been found, URL is not a Secure Login bookmark
 				// and the current website is not in the autoLoginExceptions list:
@@ -71,7 +71,7 @@ var secureLogin = {
 			}
 		}
 
-		if (this.secureLoginPrefs.getBoolPref('secureLoginBookmarks')) {
+		if (isSecureLoginBookmarks) {
 			// Auto-Login if the current URL is a Secure Login Bookmark:
 			this.bookmarkLogin(progressWindow);
 		}
