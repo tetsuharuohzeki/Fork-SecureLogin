@@ -23,14 +23,15 @@ var secureLogin = {
 		this.progressListener = {
 			QueryInterface: function (aIID) {
 				if(aIID.equals(Components.interfaces.nsIWebProgressListener) ||
-					aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
-					aIID.equals(Components.interfaces.nsISupports))
+				   aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
+				   aIID.equals(Components.interfaces.nsISupports)) {
 					return this;
+				}
 				throw Components.results.NS_NOINTERFACE;
 			},
 			onStateChange: function (aProgress, aRequest, aFlag, aStatus) {
 				// Update status when load finishes:
-				if(aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP) {
+				if (aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP) {
 					self.updateStatus(aProgress, aRequest, null, aFlag, aStatus);
 				}
 			},
@@ -158,15 +159,15 @@ var secureLogin = {
 			var secureLoginPanelIcon = document.getElementById('secureLoginPanelIcon');
 			if (secureLoginPanelIcon) {
 				secureLoginPanelIcon.setAttribute(
-					'class',
-					'statusbarpanel-menu-iconic secureLoginIcon'
+				 'class',
+				 'statusbarpanel-menu-iconic secureLoginIcon'
 				);
 			}
 			var secureLoginButton = document.getElementById('secureLoginButton');
 			if (secureLoginButton) {
 				secureLoginButton.setAttribute(
-					'class',
-					'toolbarbutton-1 secureLoginButton'
+				  'class',
+				  'toolbarbutton-1 secureLoginButton'
 				);
 			}
 		}
@@ -186,20 +187,22 @@ var secureLogin = {
 		if (this.secureLoginsPassField) {
 			// The outline style:
 			var outlineStyle = ''
-								+ this.secureLoginPrefs.getIntPref('highlightOutlineWidth')
-								+ 'px '
-								+ this.secureLoginPrefs.getCharPref('highlightOutlineStyle')
-								+ ' '
-								+ this.secureLoginPrefs.getCharPref('highlightColor');
-			
+			                    + this.secureLoginPrefs.getIntPref('highlightOutlineWidth')
+			                    + 'px '
+			                    + this.secureLoginPrefs.getCharPref('highlightOutlineStyle')
+			                    + ' '
+			                    + this.secureLoginPrefs.getCharPref('highlightColor');
+
 			// Update the outlined form fields:
 			for (var i = 0; i < this.secureLoginsPassField.length; i++) {
 				// Outline the username field if existing:
-				if (this.secureLoginsUserField[i])
+				if (this.secureLoginsUserField[i]) {
 					this.secureLoginsUserField[i].style.outline = outlineStyle;
+				}
 				// Outline the password field if existing:
-				if (this.secureLoginsPassField[i])
+				if (this.secureLoginsPassField[i]) {
 					this.secureLoginsPassField[i].style.outline = outlineStyle;
+				}
 			}
 		}
 	},
@@ -214,11 +217,11 @@ var secureLogin = {
 			var doc = this.getDoc(progressWindow);
 
 			if (this.secureLoginPrefs.getBoolPref('autoLogin')
-				&& this.secureLogins && this.secureLogins.length > 0
-				&& (!this.secureLoginPrefs.getBoolPref('secureLoginBookmarks')
-					|| (doc.location.hash.indexOf(this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash')) != 0))
-				&& !this.inArray(this.getAutoLoginExceptions(), doc.location.protocol + '//' + doc.location.host)
-				) {
+			    && this.secureLogins && this.secureLogins.length > 0
+			    && (!this.secureLoginPrefs.getBoolPref('secureLoginBookmarks')
+			       || (doc.location.hash.indexOf(this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash')) != 0))
+			    && !this.inArray(this.getAutoLoginExceptions(), doc.location.protocol + '//' + doc.location.host)
+			) {
 				// Auto-Login if enabled, logins have been found, URL is not a Secure Login bookmark
 				// and the current website is not in the autoLoginExceptions list:
 				this.login(progressWindow);
@@ -235,8 +238,8 @@ var secureLogin = {
 		if (!this.autoLoginExceptions) {
 			// Get the exception list from the preferences:
 			this.autoLoginExceptions = this.secureLoginPrefs
-										.getComplexValue('autoLoginExceptions',Components.interfaces.nsISupportsString)
-										.data.split(' ');
+			                          .getComplexValue('autoLoginExceptions',Components.interfaces.nsISupportsString)
+			                          .data.split(' ');
 		}
 		return this.autoLoginExceptions;
 	},
@@ -246,7 +249,7 @@ var secureLogin = {
 
 		// Check for first four characters of Secure Login anchor (hash):
 		if (doc && doc.location && doc.location.hash
-			&& doc.location.hash.substr(0, 4) == this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash').substr(0, 4)) {
+		    && doc.location.hash.substr(0, 4) == this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash').substr(0, 4)) {
 
 			// Check for complete Secure Login anchor (hash):
 			var index = doc.location.hash.indexOf(this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash'));
@@ -375,7 +378,7 @@ var secureLogin = {
 				try {
 					// Create a nsIURI object from the formAction:
 					var formURI = this.makeURI(formAction, doc.characterSet);
-					var targetHost = formURI.prePath;			
+					var targetHost = formURI.prePath;
 				} catch(e) {
 					// The forms seems not to have a valid "action" attribute, continue:
 					this.log(e);
@@ -386,7 +389,7 @@ var secureLogin = {
 					// Skip this form if the same formURI has already been added:
 					var isDuplicate = false;
 					for (var j = 0; j< formURIs.length; j++) {
-						if(formURIs[j].equals(formURI)) {
+						if (formURIs[j].equals(formURI)) {
 							isDuplicate = true;
 							break;
 						}
@@ -443,7 +446,7 @@ var secureLogin = {
 				}
 				var doc = this.getDoc(win);
 				var formIndex = this.secureLoginsFormIndex[i];
-				
+
 				var host = doc.location.protocol + '//' + doc.location.host;
 				var targetHost;
 				if (doc.forms[formIndex].action) {
@@ -494,7 +497,7 @@ var secureLogin = {
 
 		// The form elements list:
 		var elements = aForm.elements;
-		
+
 		// Go through the form elements:
 		for (var i = 0; i < elements.length; i++) {
 			// Skip disabled elements or elements without a "name":
@@ -605,11 +608,11 @@ var secureLogin = {
 
 			// The outline style:
 			var outlineStyle = ''
-								+ this.secureLoginPrefs.getIntPref('highlightOutlineWidth')
-								+ 'px '
-								+ this.secureLoginPrefs.getCharPref('highlightOutlineStyle')
-								+ ' '
-								+ this.secureLoginPrefs.getCharPref('highlightColor');
+			                   + this.secureLoginPrefs.getIntPref('highlightOutlineWidth')
+			                   + 'px '
+			                   + this.secureLoginPrefs.getCharPref('highlightOutlineStyle')
+			                   + ' '
+			                   + this.secureLoginPrefs.getCharPref('highlightColor');
 
 			// The outline radius:
 			var outlineRadius = this.secureLoginPrefs.getIntPref('highlightOutlineRadius');
@@ -702,9 +705,9 @@ var secureLogin = {
 	removeNotification: function (aId) {
 		aId = aId ? aId : 'secureLoginNotification';
 		var notificationBox = this.getBrowser().getNotificationBox();
-		if(notificationBox) {
+		if (notificationBox) {
 			var notification = notificationBox.getNotificationWithValue(aId);
-			if(notification) {
+			if (notification) {
 				notificationBox.removeNotification(notification);
 			}
 		}
@@ -725,14 +728,14 @@ var secureLogin = {
 		while (aPopup.hasChildNodes()) {
 			aPopup.removeChild(aPopup.firstChild);
 		}
-		if(this.secureLogins) {
+		if (this.secureLogins) {
 			var menuitem = document.createElement('menuitem');
 			menuitem.setAttribute('class','menuitem-iconic secureLoginUserIcon');
 			// Add a menuitem for each available user login:
-			for(var i = 0; i < this.secureLogins.length; i++) {
+			for (var i = 0; i < this.secureLogins.length; i++) {
 				var username = this.getUsernameFromLoginObject(this.secureLogins[i]);
 				// Show form index?
-				if(this.showFormIndex) {
+				if (this.showFormIndex) {
 					username += '  (' + this.secureLoginsFormIndex[i] + ')';
 				}
 				menuitem = menuitem.cloneNode(false);
@@ -765,7 +768,7 @@ var secureLogin = {
 				// Determine if no master password is set or the user has already been authenticated:
 				var masterPasswordRequired = true;
 				if (!this.getMasterSecurityDevice().getInternalKeyToken().needsLogin()
-					|| this.getMasterSecurityDevice().getInternalKeyToken().isLoggedIn()) {
+				    || this.getMasterSecurityDevice().getInternalKeyToken().isLoggedIn()) {
 					masterPasswordRequired = false;
 				}
 				var popup = this.loginUserSelectionPopup;
