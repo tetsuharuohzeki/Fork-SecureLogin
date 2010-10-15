@@ -46,6 +46,33 @@ var secureLogin = {
 		return this.progressListener;
 	},
 
+	updateStatus: function (aProgress, aRequest, aLocation, aFlag, aStatus) {
+		var progressWindow = aProgress.DOMWindow;
+
+		if (this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
+			// Initialize the recursive search for logins on the current window:
+			this.searchLoginsInitialize(progressWindow);
+
+			var doc = this.getDoc(progressWindow);
+
+			if (this.secureLoginPrefs.getBoolPref('autoLogin')
+			    && this.secureLogins && this.secureLogins.length > 0
+			    && (!this.secureLoginPrefs.getBoolPref('secureLoginBookmarks')
+			       || (doc.location.hash.indexOf(this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash')) != 0))
+			    && !this.inArray(this.getAutoLoginExceptions(), doc.location.protocol + '//' + doc.location.host)
+			) {
+				// Auto-Login if enabled, logins have been found, URL is not a Secure Login bookmark
+				// and the current website is not in the autoLoginExceptions list:
+				this.login(progressWindow);
+			}
+		}
+
+		if (this.secureLoginPrefs.getBoolPref('secureLoginBookmarks')) {
+			// Auto-Login if the current URL is a Secure Login Bookmark:
+			this.bookmarkLogin(progressWindow);
+		}
+	},
+
 	// Variable to define if the progress listener has been registered to the browser:
 	isProgressListenerRegistered: null,
 	// Helper var to remember original autofillForms setting (this has nothing to to with the extension autofillForms@blueimp.net:
@@ -70,37 +97,6 @@ var secureLogin = {
 	// autoLogin exceptions list:
 	autoLoginExceptions: null,
 
-	initialize: function () {
-		// Add a preferences observer to the secureLogin preferences branch:
-		this.secureLoginPrefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
-		this.secureLoginPrefs.addObserver('', this, false);
-
-		// Initialize the preferences settings:
-		this.initializePrefs();
-	},
-
-	initializeSignonAutofillFormsStatus: function () {
-		// Disable the prefilling of login forms if enabled, remember status:
-		try {
-			var rootPrefBranch = this.prefSvc.getBranch('');
-			if (rootPrefBranch.getBoolPref('signon.autofillForms')) {
-				rootPrefBranch.setBoolPref('signon.autofillForms', false);
-				this.autofillForms = true;
-			} else {
-				this.autofillForms = false;
-			}
-		} catch (e) {
-			this.log(e);
-		}
-	},
-
-	initializePrefs: function () {
-		this.initializeSignonAutofillFormsStatus();
-
-		// Add the progress listener to the browser, set the Secure Login icons:
-		this.searchLoginsOnloadUpdate();
-	},
-
 	observe: function (aSubject, aTopic, aData) {
 		// Only observe preferences changes:
 		if (aTopic != 'nsPref:changed') {
@@ -122,27 +118,36 @@ var secureLogin = {
 		}
 	},
 
-	progressListenerUpdate: function () {
-		if (!this.secureLoginPrefs.getBoolPref('searchLoginsOnload') && !this.secureLoginPrefs.getBoolPref('secureLoginBookmarks')) {
-			// Remove the listener from the browser object (if added previously):
-			try {
-				this.getBrowser().removeProgressListener(this.progressListener);
-				this.isProgressListenerRegistered = false;
-			} catch (e) {
-				this.log(e);
+	initialize: function () {
+		// Add a preferences observer to the secureLogin preferences branch:
+		this.secureLoginPrefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
+		this.secureLoginPrefs.addObserver('', this, false);
+
+		// Initialize the preferences settings:
+		this.initializePrefs();
+	},
+
+	initializePrefs: function () {
+		this.initializeSignonAutofillFormsStatus();
+
+		// Add the progress listener to the browser, set the Secure Login icons:
+		this.searchLoginsOnloadUpdate();
+	},
+
+	initializeSignonAutofillFormsStatus: function () {
+		// Disable the prefilling of login forms if enabled, remember status:
+		try {
+			var rootPrefBranch = this.prefSvc.getBranch('');
+			if (rootPrefBranch.getBoolPref('signon.autofillForms')) {
+				rootPrefBranch.setBoolPref('signon.autofillForms', false);
+				this.autofillForms = true;
 			}
-		} else if (!this.isProgressListenerRegistered && 
-			(this.secureLoginPrefs.getBoolPref('searchLoginsOnload') || this.secureLoginPrefs.getBoolPref('secureLoginBookmarks'))) {
-			// Add the progress listener to the browser object (if not added previously):
-			try {
-				this.getBrowser().addProgressListener(
-					this.progressListener,
-					Components.interfaces.nsIWebProgress.NOTIFY_LOCATION | Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT
-				);
-				this.isProgressListenerRegistered = true;
-			} catch (e) {
-				this.log(e);
+			else {
+				this.autofillForms = false;
 			}
+		}
+		catch (e) {
+			this.log(e);
 		}
 	},
 
@@ -152,7 +157,8 @@ var secureLogin = {
 		if (this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
 			// Search for valid logins and outline login fields:
 			this.searchLoginsInitialize();
-		} else {
+		}
+		else {
 			// Always highlight the Secure Login icons, when not searching for valid logins automatically:
 			var secureLoginPanelIcon = document.getElementById('secureLoginPanelIcon');
 			if (secureLoginPanelIcon) {
@@ -167,6 +173,32 @@ var secureLogin = {
 				  'class',
 				  'toolbarbutton-1 secureLoginButton'
 				);
+			}
+		}
+	},
+
+	progressListenerUpdate: function () {
+		if (!this.secureLoginPrefs.getBoolPref('searchLoginsOnload') && !this.secureLoginPrefs.getBoolPref('secureLoginBookmarks')) {
+			// Remove the listener from the browser object (if added previously):
+			try {
+				this.getBrowser().removeProgressListener(this.progressListener);
+				this.isProgressListenerRegistered = false;
+			} catch (e) {
+				this.log(e);
+			}
+		}
+		else if (!this.isProgressListenerRegistered && 
+		    (this.secureLoginPrefs.getBoolPref('searchLoginsOnload') || this.secureLoginPrefs.getBoolPref('secureLoginBookmarks'))) {
+			// Add the progress listener to the browser object (if not added previously):
+			try {
+				this.getBrowser().addProgressListener(
+					this.progressListener,
+					Components.interfaces.nsIWebProgress.NOTIFY_LOCATION | Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT
+				);
+				this.isProgressListenerRegistered = true;
+			}
+			catch (e) {
+				this.log(e);
 			}
 		}
 	},
@@ -205,33 +237,6 @@ var secureLogin = {
 		}
 	},
 
-	updateStatus: function (aProgress, aRequest, aLocation, aFlag, aStatus) {
-		var progressWindow = aProgress.DOMWindow;
-
-		if (this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
-			// Initialize the recursive search for logins on the current window:
-			this.searchLoginsInitialize(progressWindow);
-
-			var doc = this.getDoc(progressWindow);
-
-			if (this.secureLoginPrefs.getBoolPref('autoLogin')
-			    && this.secureLogins && this.secureLogins.length > 0
-			    && (!this.secureLoginPrefs.getBoolPref('secureLoginBookmarks')
-			       || (doc.location.hash.indexOf(this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash')) != 0))
-			    && !this.inArray(this.getAutoLoginExceptions(), doc.location.protocol + '//' + doc.location.host)
-			) {
-				// Auto-Login if enabled, logins have been found, URL is not a Secure Login bookmark
-				// and the current website is not in the autoLoginExceptions list:
-				this.login(progressWindow);
-			}
-		}
-
-		if (this.secureLoginPrefs.getBoolPref('secureLoginBookmarks')) {
-			// Auto-Login if the current URL is a Secure Login Bookmark:
-			this.bookmarkLogin(progressWindow);
-		}
-	},
-
 	getAutoLoginExceptions: function () {
 		if (!this.autoLoginExceptions) {
 			// Get the exception list from the preferences:
@@ -260,11 +265,13 @@ var secureLogin = {
 				if (!isNaN(bookmarkLoginIndex)) {
 					// Auto-Login using the bookmarkLoginIndex:
 					this.login(aWin, bookmarkLoginIndex);
-				} else {
+				}
+				else {
 					// Auto-Login:
 					this.login(aWin);
 				}
-			} else {
+			}
+			else {
 				// Remember failed bookmark-login attempt:
 				this.failedBookmarkLogin = true;
 			}
@@ -337,7 +344,8 @@ var secureLogin = {
 			if (this.secureLoginPrefs.getBoolPref('playLoginFoundSound')) {
 				this.playSound('loginFoundSoundFileName');
 			}
-		} else {
+		}
+		else {
 			if (secureLoginPanelIcon) {
 				secureLoginPanelIcon.setAttribute(
 					'class',
@@ -377,7 +385,8 @@ var secureLogin = {
 					// Create a nsIURI object from the formAction:
 					var formURI = this.makeURI(formAction, doc.characterSet);
 					var targetHost = formURI.prePath;
-				} catch(e) {
+				}
+				catch(e) {
 					// The forms seems not to have a valid "action" attribute, continue:
 					this.log(e);
 					continue;
@@ -397,7 +406,8 @@ var secureLogin = {
 					}
 				}
 
-				// Getting the number of existing logins with countLogins() instead of findLogins() to avoid a Master Password prompt:
+				// Getting the number of existing logins with countLogins()
+				// instead of findLogins() to avoid a Master Password prompt:
 				var loginsCount = this.loginManager.countLogins(host, targetHost, null);
 
 				if (loginsCount) {
@@ -427,61 +437,6 @@ var secureLogin = {
 		for (var f=0; f < aWin.frames.length; f++) {
 			this.searchLogins(aWin.frames[f]);
 		}
-	},
-
-	getRealLoginObjects: function () {
-		// Method for Firefox 3 to get the real login objects instead of the null values:
-
-		var loginObjects = new Array();
-
-		if (this.secureLogins) {
-			// Go through the collected dummy login objects (null values):
-			for (var i=0; i < this.secureLogins.length; i++) {
-				var win = this.secureLoginsWindow[i];
-				// Skip windows which have been closed in the meantime:
-				if (win.closed) {
-					continue;
-				}
-				var doc = this.getDoc(win);
-				var formIndex = this.secureLoginsFormIndex[i];
-
-				var host = doc.location.protocol + '//' + doc.location.host;
-				var targetHost;
-				if (doc.forms[formIndex].action) {
-					try {
-						targetHost = this.makeURI(doc.forms[formIndex].action, doc.characterSet).prePath;
-					} catch (e) {
-						// The forms seems not to have a valid "acion" attribute, continue:
-						this.log(e);
-						continue;
-					}
-				} else {
-					// Forms with no "action" attribute default to submitting to their origin URL:
-					targetHost = host;
-				}
-
-				try {
-					// This should return some login objects, as countLogins() had not returned 0 either:
-					var logins = this.loginManager.findLogins({}, host, targetHost, null);
-					// Make sure the saved passwords have not been deleted in the meanwhile:
-					if (logins && logins.length) {
-						loginObjects = loginObjects.concat(logins);				
-						// Skip the next iterations for the number of found logins (-1 as i++ increases the counter already +1):
-						i = i + logins.length -1;
-					} else {
-						// Re-initialize the logins search and break out of the loop:
-						this.searchLoginsInitialize();
-						break;
-					}
-				} catch (e) {
-					this.log(e);
-					// User cancelled master password entry, so we break out of the loop:
-					break;
-				}
-			}
-		}
-
-		return loginObjects;
 	},
 
 	getLoginFields: function (aForm, aLoginUsernameFieldName, aLoginPasswordFieldName) {
@@ -521,19 +476,22 @@ var secureLogin = {
 							break;
 						}
 					}
-				} else {
+				}
+				else {
 					if (elements[i].name == aLoginUsernameFieldName) {
 						usernameField = elements[i];
 					}
 				}
-			} else if (elements[i].type == 'password') {
+			}
+			else if (elements[i].type == 'password') {
 				// We do not get a loginPasswordFieldName from Firefox 3:
 				if (!aLoginPasswordFieldName) {
 					// Skip registration or password change forms (two password fields):
 					if (!(elements[i+1] && elements[i+1].type == 'password')) {
 						passwordField = elements[i];
 					}
-				} else {
+				}
+				else {
 					// Skip registration or password change forms (two password fields):
 					if (!(elements[i+1] && elements[i+1].type == 'password') && elements[i].name == aLoginPasswordFieldName) {
 						passwordField = elements[i];
@@ -560,7 +518,7 @@ var secureLogin = {
 		return null;
 	},
 
-	addToFoundLoginsList: function(aLoginObject, aFormIndex, aWindowObject, aUsernameField, aPasswordField) {
+	addToFoundLoginsList: function (aLoginObject, aFormIndex, aWindowObject, aUsernameField, aPasswordField) {
 		// Lazy initialization of the logins and helper lists:
 		if (!this.secureLogins) {
 			// New valid logins list:
@@ -621,13 +579,14 @@ var secureLogin = {
 			// Overwrite style if set:
 			if (highlightStyle) {
 				aUsernameField.setAttribute('style', highlightStyle);
-			} else {
+			}
+			else {
 				aUsernameField.style.outline = outlineStyle;
 	    		if (outlineRadius) {
 					aUsernameField.style.setProperty(
-						'-moz-outline-radius',
-						outlineRadius+'px',
-						null
+					  '-moz-outline-radius',
+					  outlineRadius+'px',
+					  null
 					);
 				}
 			}
@@ -636,14 +595,15 @@ var secureLogin = {
 		// Overwrite highlight style if set:
 		if (highlightStyle) {
 			aPasswordField.setAttribute('style', highlightStyle);
-		} else {
+		}
+		else {
 			// outline the password field:
 			aPasswordField.style.outline = outlineStyle;
 			if (outlineRadius) {
 				aPasswordField.style.setProperty(
-					'-moz-outline-radius',
-					outlineRadius+'px',
-					null
+				  '-moz-outline-radius',
+				  outlineRadius+'px',
+				  null
 				);
 			}
 		}
@@ -670,12 +630,7 @@ var secureLogin = {
 		aButtons = aButtons ? aButtons : null;
 		this.showNotification(aLabel, aId, aImage, aPriority, aButtons);
 		// Automatically remove the notification after the timeout:
-		window.setTimeout(
-			function() {
-				secureLogin.removeNotification()
-			},
-			aTimeout
-		);
+		window.setTimeout(function() { secureLogin.removeNotification() }, aTimeout);
 	},
 
 	showNotification: function (aLabel, aId, aImage, aPriority, aButtons) {
@@ -686,7 +641,7 @@ var secureLogin = {
 		// First remove notifications with the same id:
 		this.removeNotification(aId);
 		var notificationBox = this.getBrowser().getNotificationBox();
-		if(notificationBox) {
+		if (notificationBox) {
 			notificationBox.appendNotification(
 				aLabel,
 				aId,
@@ -718,6 +673,76 @@ var secureLogin = {
 		return false;
 	},
 
+	get loginUserSelectionPopup () {
+		delete this.loginUserSelectionPopup;
+		return this.loginUserSelectionPopup = document.getElementById('secureLoginUserSelectionPopup');
+	},
+
+	userSelectionLogin: function (aEvent) {
+		if (aEvent.ctrlKey) {
+			this.masterSecurityDeviceLogout();
+			return;
+		}
+
+		// Search for valid logins and outline login fields if not done automatically:
+		if (!this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
+			this.searchLoginsInitialize();
+		}
+
+		// Check for valid logins:
+		if (this.secureLogins && this.secureLogins.length > 0) {
+			if (this.secureLogins.length > 1) {
+				// Determine if no master password is set or the user has already been authenticated:
+				var masterPasswordRequired = true;
+				if (!this.masterSecurityDevice.getInternalKeyToken().needsLogin()
+				    || this.masterSecurityDevice.getInternalKeyToken().isLoggedIn()) {
+					masterPasswordRequired = false;
+				}
+				var popup = this.loginUserSelectionPopup;
+				if (popup && typeof popup.openPopup == 'function' && !masterPasswordRequired) {
+					try {
+						if (this.needsRealLoginObjects()) {
+							// On Firefox 3 we still have to get the valid login objects:
+							this.secureLogins = this.getRealLoginObjects();
+
+							// Return if the list of login objects is empty (should not happen):
+							if (!this.secureLogins || this.secureLogins.length == 0) {
+								return;
+							}
+						}
+						this.prepareUserSelectionPopup(popup);
+						// Show the popup menu (only available for Firefox >= 3):
+						popup.openPopup(aEvent.target, null, 0, 0, false, true);
+					}
+					catch (e) {
+						this.log(e);
+						// Decrypting failed
+						return;
+					}
+				}
+				else {
+					// Show a selection box instead of the popup menu:
+					this.login(null, null, true);
+				}
+			}
+			else {
+				// Just login with the single available username:
+				this.login(null, 0, true);
+			}
+		}
+		else {
+			// Autofill Forms integration (requires extension autofillForms@blueimp.net):
+			if (this.secureLoginPrefs.getBoolPref('autofillFormsOnLogin')) {
+				try {
+					autofillForms.fillForms();
+				}
+				catch(e) {
+					this.log(e);
+				}
+			}
+		}
+	},
+
 	prepareUserSelectionPopup: function (aPopup) {
 		// Remove the old child nodes (should be already removed by the popuphiding event):
 		while (aPopup.hasChildNodes()) {
@@ -741,71 +766,6 @@ var secureLogin = {
 		}
 	},
 
-	get loginUserSelectionPopup () {
-		delete this.loginUserSelectionPopup;
-		return this.loginUserSelectionPopup = document.getElementById('secureLoginUserSelectionPopup');
-	},
-
-	userSelectionLogin: function (aEvent) {
-		if(aEvent.ctrlKey) {
-			this.masterSecurityDeviceLogout();
-			return;
-		}
-
-		// Search for valid logins and outline login fields if not done automatically:
-		if(!this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
-			this.searchLoginsInitialize();
-		}
-
-		// Check for valid logins:
-		if (this.secureLogins && this.secureLogins.length > 0) {
-			if(this.secureLogins.length > 1) {
-				// Determine if no master password is set or the user has already been authenticated:
-				var masterPasswordRequired = true;
-				if (!this.masterSecurityDevice.getInternalKeyToken().needsLogin()
-				    || this.masterSecurityDevice.getInternalKeyToken().isLoggedIn()) {
-					masterPasswordRequired = false;
-				}
-				var popup = this.loginUserSelectionPopup;
-				if (popup && typeof popup.openPopup == 'function' && !masterPasswordRequired) {
-					try {
-						if (this.needsRealLoginObjects()) {
-							// On Firefox 3 we still have to get the valid login objects:
-							this.secureLogins = this.getRealLoginObjects();
-
-							// Return if the list of login objects is empty (should not happen):
-							if (!this.secureLogins || this.secureLogins.length == 0) {
-								return;
-							}
-						}
-						this.prepareUserSelectionPopup(popup);
-						// Show the popup menu (only available for Firefox >= 3):
-						popup.openPopup(aEvent.target, null, 0, 0, false, true);
-					} catch (e) {
-						this.log(e);
-						// Decrypting failed
-						return;
-					}
-				} else {
-					// Show a selection box instead of the popup menu:
-					this.login(null, null, true);
-				}
-			} else {
-				// Just login with the single available username:
-				this.login(null, 0, true);
-			}
-		} else {
-			// Autofill Forms integration (requires extension autofillForms@blueimp.net):
-			if (this.secureLoginPrefs.getBoolPref('autofillFormsOnLogin')) {
-				try {
-					autofillForms.fillForms();
-				} catch(e) {
-					this.log(e);
-				}
-			}
-		}
-	},
-
 	login: function(aWin, aLoginIndex, aSkipLoginSearch) {
 		if (!aWin || !aWin.document) {
 			aWin = this.getWin();
@@ -815,7 +775,8 @@ var secureLogin = {
 		if (this.secureLoginPrefs.getBoolPref('autofillFormsOnLogin')) {
 			try {
 				autofillForms.fillForms(aWin);
-			} catch (e) {
+			}
+			catch (e) {
 				this.log(e);
 			}
 		}
@@ -864,14 +825,14 @@ var secureLogin = {
 						}
 
 						var ok = this.promptSvc.select(
-							window,
-							this.stringBundle.getString('loginSelectionWindowTitle'),
-							selectionPrompt + ':',
-							list.length,
-							list,
-							selected
+						  window,
+						  this.stringBundle.getString('loginSelectionWindowTitle'),
+						  selectionPrompt + ':',
+						  list.length,
+						  list,
+						  selected
 						);
-						
+
 						if (!ok) {
 							return;
 						}
@@ -903,7 +864,7 @@ var secureLogin = {
 
 				// User + Pass fields:
 				var usernameField = this.secureLoginsUserField[selectedIndex];
-				var passwordField = this.secureLoginsPassField[selectedIndex];	
+				var passwordField = this.secureLoginsPassField[selectedIndex];
 
 				// The charset of the given document:
 				var charset = doc.characterSet;
@@ -914,9 +875,9 @@ var secureLogin = {
 				// Ask for confirmation if we had a failed bookmark-login:
 				if (this.failedBookmarkLogin) {
 					var continueLogin = this.promptSvc.confirm(
-						null,
-						this.stringBundle.getString('loginConfirmTitle'),
-						this.stringBundle.getString('loginConfirmURL') + ' ' + url
+					  null,
+					  this.stringBundle.getString('loginConfirmTitle'),
+					  this.stringBundle.getString('loginConfirmURL') + ' ' + url
 					);
 					if (!continueLogin) {
 						return;
@@ -925,7 +886,7 @@ var secureLogin = {
 
 				// Reset failed bookmark-login:
 				this.failedBookmarkLogin = null;
-				
+
 				// If JavaScript protection is to be used, check the exception list:
 				var useJavaScriptProtection = this.secureLoginPrefs.getBoolPref('javascriptProtection');
 				if (useJavaScriptProtection && this.inArray(this.getExceptions(), doc.location.protocol + '//' + doc.location.host))
@@ -938,18 +899,18 @@ var secureLogin = {
 
 					// String to save the form data:
 					var dataString = '';
-					
+
 					// Reference to the main secureLogin object:
 					var parentObject = this;
-					
+
 					// Local helper function to add name and value pairs urlEncoded to the dataString:
 					function addToDataString(aName, aValue) {
 						if (dataString) {
 							dataString += '&';
 						}
 						dataString += parentObject.urlEncode(aName, charset)
-									+ '='
-									+ parentObject.urlEncode(aValue, charset);
+						              + '='
+						              + parentObject.urlEncode(aValue, charset);
 					}
 
 					var submitButtonFound = false;
@@ -969,16 +930,16 @@ var secureLogin = {
 								} else {
 									// This is the userName field - use the saved username as value:
 									addToDataString(
-										usernameField.name,
-										this.getUsernameFromLoginObject(this.secureLogins[selectedIndex])
+									  usernameField.name,
+									  this.getUsernameFromLoginObject(this.secureLogins[selectedIndex])
 									);
 								}
 								break;
 							case 'password':
 								// This is the password field - use the saved password as value:
 								addToDataString(
-									passwordField.name,
-									this.getPasswordFromLoginObject(this.secureLogins[selectedIndex])
+								  passwordField.name,
+								  this.getPasswordFromLoginObject(this.secureLogins[selectedIndex])
 								);
 								break;
 							case 'hidden':
@@ -1010,12 +971,14 @@ var secureLogin = {
 
 					}
 
-					// If no submit button found, search for an input of type="image" which ist not in the elements list:
+					// If no submit button found,
+					//search for an input of type="image" which ist not in the elements list:
 					if (!submitButtonFound) {
 						var inputElements = form.getElementsByTagName('input');
 						for (var i = 0; i < inputElements.length; i++) {
 							if(inputElements[i].type == 'image') {
-								// Image submit buttons add the "click-coordinates" name.x and name.y to the request data:
+								// Image submit buttons add the "click-coordinates" name.x and name.y
+								// to the request data:
 								addToDataString(inputElements[i].name + '.x', 1);
 								addToDataString(inputElements[i].name + '.y', 1);
 								addToDataString(inputElements[i].name, inputElements[i].value);
@@ -1054,7 +1017,8 @@ var secureLogin = {
 					passwordField.value = this.getPasswordFromLoginObject(this.secureLogins[selectedIndex]);
 
 					if (this.secureLoginPrefs.getBoolPref('autoSubmitForm')) {
-						// Prevent multiple submits (e.g. if submit is delayed) by setting a variable (after click on a submit button):
+						// Prevent multiple submits (e.g. if submit is delayed)
+						// by setting a variable (after click on a submit button):
 						var submitted = false;
 						// Search for the submit button:
 						for (var i = 0; i < elements.length; i++) {
@@ -1083,7 +1047,8 @@ var secureLogin = {
 								form.submit();
 							}
 						}
-					} else {
+					}
+					else {
 						// Don't submit automatically but set the focus on the password field,
 						// this way submitting can be done by hitting return on the keyboard:
 						passwordField.focus();
@@ -1112,6 +1077,65 @@ var secureLogin = {
 		this.secureLoginsWindow = null;
 	},
 
+	getRealLoginObjects: function () {
+		// Method for Firefox 3 to get the real login objects instead of the null values:
+
+		var loginObjects = new Array();
+
+		if (this.secureLogins) {
+			// Go through the collected dummy login objects (null values):
+			for (var i=0; i < this.secureLogins.length; i++) {
+				var win = this.secureLoginsWindow[i];
+				// Skip windows which have been closed in the meantime:
+				if (win.closed) {
+					continue;
+				}
+				var doc = this.getDoc(win);
+				var formIndex = this.secureLoginsFormIndex[i];
+
+				var host = doc.location.protocol + '//' + doc.location.host;
+				var targetHost;
+				if (doc.forms[formIndex].action) {
+					try {
+						targetHost = this.makeURI(doc.forms[formIndex].action, doc.characterSet).prePath;
+					}
+					catch (e) {
+						// The forms seems not to have a valid "acion" attribute, continue:
+						this.log(e);
+						continue;
+					}
+				}
+				else {
+					// Forms with no "action" attribute default to submitting to their origin URL:
+					targetHost = host;
+				}
+
+				try {
+					// This should return some login objects, as countLogins() had not returned 0 either:
+					var logins = this.loginManager.findLogins({}, host, targetHost, null);
+					// Make sure the saved passwords have not been deleted in the meanwhile:
+					if (logins && logins.length) {
+						loginObjects = loginObjects.concat(logins);
+						// Skip the next iterations for the number of found logins (-1 as i++ increases the counter already +1):
+						i = i + logins.length -1;
+					}
+					else {
+						// Re-initialize the logins search and break out of the loop:
+						this.searchLoginsInitialize();
+						break;
+					}
+				}
+				catch (e) {
+					this.log(e);
+					// User cancelled master password entry, so we break out of the loop:
+					break;
+				}
+			}
+		}
+
+		return loginObjects;
+	},
+
 	getUsernameFromLoginObject: function (aLoginObject) {
 		return aLoginObject.username;
 	},
@@ -1124,8 +1148,8 @@ var secureLogin = {
 	getExceptions: function () {
 		// Get the exception list from the preferences:
 		var exceptions = this.secureLoginPrefs
-							.getComplexValue('exceptionList',Components.interfaces.nsISupportsString)
-							.data.split(' ');
+		                 .getComplexValue('exceptionList',Components.interfaces.nsISupportsString)
+		                 .data.split(' ');
 		return exceptions && exceptions[0] ? exceptions : new Array();
 	},
 
@@ -1136,9 +1160,10 @@ var secureLogin = {
 				this.key = aKey;
 				this.keycode = aKeycode;
 				this.toString = function() {
-					if(this.modifiers.length) {
+					if (this.modifiers.length) {
 						return this.modifiers.join('+')+'+'+this.key+this.keycode;
-					} else {
+					}
+					else {
 						return this.key+this.keycode;
 					}
 				}
@@ -1153,7 +1178,7 @@ var secureLogin = {
 						return false;
 					}
 					for (var i=0; i<this.modifiers.length; i++) {
-						if(this.modifiers[i] != shortcut.modifiers[i]) {
+						if (this.modifiers[i] != shortcut.modifiers[i]) {
 							return false;
 						}
 					}
@@ -1170,8 +1195,8 @@ var secureLogin = {
 			var key = null;
 			var keycode = null;
 			var shortcutItems = this.secureLoginPrefs
-								.getComplexValue('shortcut',Components.interfaces.nsIPrefLocalizedString)
-								.data.split('+');
+			                    .getComplexValue('shortcut',Components.interfaces.nsIPrefLocalizedString)
+			                    .data.split('+');
 			if (shortcutItems.length > 0) {
 				// Remove the last element and save it as key
 				// the remaining shortcutItems are the modifiers:
@@ -1181,7 +1206,7 @@ var secureLogin = {
 					keycode	= key;
 					key = null;
 				}
-			}			
+			}
 			// Create a new shortcut object:
 			this.shortcut = this.shortcutFactory(shortcutItems, key, keycode);
 		}
@@ -1196,7 +1221,8 @@ var secureLogin = {
 		for (var i = 0; i < shortcut['modifiers'].length; i++)
 			try {
 				formattedShortcut += this.stringBundle.getString(shortcut['modifiers'][i]) + '+';
-			} catch (e) {
+			}
+			catch (e) {
 				this.log(e);
 				// Error in shortcut string, return empty String;
 				return '';
@@ -1231,7 +1257,8 @@ var secureLogin = {
 
 			// Play the sound:
 			this.getSound().play(url);
-		} catch (e) {
+		}
+		catch (e) {
 			this.log(e);
 			// No file found
 		}
@@ -1240,10 +1267,10 @@ var secureLogin = {
 	showDialog: function (aUrl, aParams) {
 		var paramObject = aParams ? aParams : this;
 		return window.openDialog(
-			aUrl,
-			'',
-			'chrome=yes,resizable=yes,toolbar=yes,centerscreen=yes,modal=no,dependent=no,dialog=no',
-			paramObject
+		  aUrl,
+		  '',
+		  'chrome=yes,resizable=yes,toolbar=yes,centerscreen=yes,modal=no,dependent=no,dialog=no',
+		  paramObject
 		);
 	},
 
@@ -1252,12 +1279,13 @@ var secureLogin = {
 		try {
 			// Filter the passwords list with the current host as filterString:
 			params.filterString = this.getDoc().location.host;
-		} catch (e) {
+		}
+		catch (e) {
 			// Invalid location.host, e.g. about:config
 		}
 		this.showDialog(
-			'chrome://passwordmgr/content/passwordManager.xul',
-			params
+		  'chrome://passwordmgr/content/passwordManager.xul',
+		  params
 		);
 	},
 
@@ -1269,7 +1297,8 @@ var secureLogin = {
 			if (doc.location.hash) {
 				var regExp = new RegExp(doc.location.hash + '$');
 				url = doc.location.href.replace(regExp, this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash'));
-			} else {
+			}
+			else {
 				url = doc.location.href + this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash');
 			}
 
@@ -1281,10 +1310,10 @@ var secureLogin = {
 				title: doc.title
 			};
 			window.openDialog(
-				'chrome://browser/content/places/bookmarkProperties2.xul',
-				'', 
-				'centerscreen=yes,chrome=yes,dialog=yes,resizable=yes,dependent=yes',
-				bookmarkArguments
+			  'chrome://browser/content/places/bookmarkProperties2.xul',
+			  '', 
+			  'centerscreen=yes,chrome=yes,dialog=yes,resizable=yes,dependent=yes',
+			  bookmarkArguments
 			);
 		}
 	},
@@ -1292,7 +1321,8 @@ var secureLogin = {
 	urlSecurityCheck: function (aUrl, aSourceURL) {
 		try {
 			this.securityManager.checkLoadURIStr(aSourceURL, aUrl, Components.interfaces.nsIScriptSecurityManager.STANDARD);
-		} catch (e) {
+		}
+		catch (e) {
 			throw 'Loading of ' + url + ' denied.';
 		}
 	},
@@ -1306,7 +1336,8 @@ var secureLogin = {
 			// encodeURIComponent encodes the strings by using escape sequences
 			// representing the UTF-8 encoding of the character:
 			return encodeURIComponent(aString);
-		} else {
+		}
+		else {
 			// This escapes characters representing the given charset,
 			// it won't work if the given string is not part of the charset
 			return this.textToSubURI.ConvertAndEscape(aCharset, aString);
@@ -1417,7 +1448,7 @@ var secureLogin = {
 	},
 
 	openHelp: function (aTopic) {
-		if(!aTopic) {
+		if (!aTopic) {
 			aTopic = '';
 		}
 		var url = this.secureLoginPrefs.getCharPref('helpURL').replace(/\[TOPIC\]$/, aTopic);
@@ -1426,7 +1457,7 @@ var secureLogin = {
 
 	openNewTab: function (aUrl, aFocus) {
 		var helpTab = this.getBrowser().addTab(aUrl);
-		if(aFocus) {
+		if (aFocus) {
 			this.getBrowser().selectedTab = helpTab;
 			this.windowMediator.getMostRecentWindow('navigator:browser').focus();
 		}
@@ -1451,7 +1482,8 @@ var secureLogin = {
 				aCategory
 			);
 			this.consoleSvc.logMessage(scriptError);
-		} else {
+		}
+		else {
 			this.consoleSvc.logStringMessage(aMessage);
 		}
 	},
@@ -1463,7 +1495,8 @@ var secureLogin = {
 			if(this.autofillForms) {
 				this.prefSvc.getBranch('').setBoolPref('signon.autofillForms', true);
 			}
-		} catch(e) {
+		}
+		catch(e) {
 			this.log(e);
 		}
 	},
@@ -1474,7 +1507,8 @@ var secureLogin = {
 		// Remove the listener from the browser object:
 		try {
 			this.getBrowser().removeProgressListener(this.progressListener);
-		} catch(e) {
+		}
+		catch(e) {
 			this.log(e);
 		}
 
