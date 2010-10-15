@@ -128,8 +128,8 @@ var secureLoginOverlay = {
 				} else {
 					// Determine if no master password is set or the user has already been authenticated:
 					var masterPasswordRequired = true;
-					if (!this.service.getMasterSecurityDevice().getInternalKeyToken().needsLogin()
-						|| this.service.getMasterSecurityDevice().getInternalKeyToken().isLoggedIn()) {
+					if (!this.service.masterSecurityDevice.getInternalKeyToken().needsLogin()
+					    || this.service.masterSecurityDevice.getInternalKeyToken().isLoggedIn()) {
 						masterPasswordRequired = false;
 					}
 					// Show the menu or the menu item depending on the numer of logins and the MSD status:
@@ -496,7 +496,7 @@ var secureLoginOverlay = {
 					);
 					label.setAttribute(
 						'value',
-						this.service.getStringBundle().getString('tooltipLogin')
+						this.service.stringBundle.getString('tooltipLogin')
 					);
 					hbox.appendChild(label);
 					var formattedShortcut = this.service.getFormattedShortcut();
@@ -528,7 +528,7 @@ var secureLoginOverlay = {
 					);
 					label.setAttribute(
 						'value',
-						this.service.getStringBundle().getString('tooltipLoginUrl')
+						this.service.stringBundle.getString('tooltipLoginUrl')
 					);
 					hbox.appendChild(label);
 					var spacer = document.createElement('spacer');
@@ -537,7 +537,7 @@ var secureLoginOverlay = {
 					label = label.cloneNode(false);
 					label.setAttribute(
 						'value',
-						this.service.getStringBundle().getString('tooltipLoginUrlCount')
+						this.service.stringBundle.getString('tooltipLoginUrlCount')
 					);
 					hbox.appendChild(label);
 					tooltip.appendChild(hbox)
@@ -583,7 +583,7 @@ var secureLoginOverlay = {
 			var label = document.createElement('label');
 			label.setAttribute(
 				'value',
-				this.service.getStringBundle().getString('tooltipNoLogin')
+				this.service.stringBundle.getString('tooltipNoLogin')
 			);
 			tooltip.appendChild(label);
 		}

@@ -11,8 +11,7 @@ var secureLogin = {
 	// Secure Logins preferences branch:
 	get secureLoginPrefs () {
 		delete this.secureLoginPrefs;
-		return this.secureLoginPrefs = this.getPrefManager()
-		                               .getBranch('extensions.secureLogin@blueimp.net.');
+		return this.secureLoginPrefs = this.prefSvc.getBranch('extensions.secureLogin@blueimp.net.');
 	},
 
 	// The progress listener:
@@ -83,7 +82,7 @@ var secureLogin = {
 	initializeSignonAutofillFormsStatus: function () {
 		// Disable the prefilling of login forms if enabled, remember status:
 		try {
-			var rootPrefBranch = this.getPrefManager().getBranch('');
+			var rootPrefBranch = this.prefSvc.getBranch('');
 			if (rootPrefBranch.getBoolPref('signon.autofillForms')) {
 				rootPrefBranch.setBoolPref('signon.autofillForms', false);
 				this.autofillForms = true;
@@ -122,7 +121,6 @@ var secureLogin = {
 				break;
 		}
 	},
-
 
 	progressListenerUpdate: function () {
 		if (!this.secureLoginPrefs.getBoolPref('searchLoginsOnload') && !this.secureLoginPrefs.getBoolPref('secureLoginBookmarks')) {
@@ -400,7 +398,7 @@ var secureLogin = {
 				}
 
 				// Getting the number of existing logins with countLogins() instead of findLogins() to avoid a Master Password prompt:
-				var loginsCount = this.getLoginManager().countLogins(host, targetHost, null);
+				var loginsCount = this.loginManager.countLogins(host, targetHost, null);
 
 				if (loginsCount) {
 					// Get valid login fields:
@@ -464,7 +462,7 @@ var secureLogin = {
 
 				try {
 					// This should return some login objects, as countLogins() had not returned 0 either:
-					var logins = this.getLoginManager().findLogins({}, host, targetHost, null);
+					var logins = this.loginManager.findLogins({}, host, targetHost, null);
 					// Make sure the saved passwords have not been deleted in the meanwhile:
 					if (logins && logins.length) {
 						loginObjects = loginObjects.concat(logins);				
@@ -651,20 +649,17 @@ var secureLogin = {
 		}
 	},
 
-	_getMasterSecurityDevice: null,
-	getMasterSecurityDevice: function () {
-		if (!this._getMasterSecurityDevice) {
-			this._getMasterSecurityDevice = Components.classes['@mozilla.org/security/pk11tokendb;1']
-			                                .getService(Components.interfaces.nsIPK11TokenDB);
-		}
-		return this._getMasterSecurityDevice;
+	get masterSecurityDevice () {
+		delete this.masterSecurityDevice;
+		return this.masterSecurityDevice = Components.classes['@mozilla.org/security/pk11tokendb;1']
+		                                   .getService(Components.interfaces.nsIPK11TokenDB);
 	},
 
 	masterSecurityDeviceLogout: function (aEvent) {
-		if(this.getMasterSecurityDevice().getInternalKeyToken().isLoggedIn()) {
-			this.getMasterSecurityDevice().findTokenByName('').logoutAndDropAuthenticatedResources();
+		if(this.masterSecurityDevice.getInternalKeyToken().isLoggedIn()) {
+			this.masterSecurityDevice.findTokenByName('').logoutAndDropAuthenticatedResources();
 		}
-		this.showAndRemoveNotification(this.getStringBundle().getString('masterSecurityDeviceLogout'));
+		this.showAndRemoveNotification(this.stringBundle.getString('masterSecurityDeviceLogout'));
 	},
 
 	showAndRemoveNotification: function (aLabel, aTimeout, aId, aImage, aPriority, aButtons) {
@@ -767,8 +762,8 @@ var secureLogin = {
 			if(this.secureLogins.length > 1) {
 				// Determine if no master password is set or the user has already been authenticated:
 				var masterPasswordRequired = true;
-				if (!this.getMasterSecurityDevice().getInternalKeyToken().needsLogin()
-				    || this.getMasterSecurityDevice().getInternalKeyToken().isLoggedIn()) {
+				if (!this.masterSecurityDevice.getInternalKeyToken().needsLogin()
+				    || this.masterSecurityDevice.getInternalKeyToken().isLoggedIn()) {
 					masterPasswordRequired = false;
 				}
 				var popup = this.loginUserSelectionPopup;
@@ -863,14 +858,14 @@ var secureLogin = {
 						}
 						var selected = {};
 
-						var selectionPrompt = this.getStringBundle().getString('loginSelectionPrompt');
+						var selectionPrompt = this.stringBundle.getString('loginSelectionPrompt');
 						if (this.showFormIndex) {
-							selectionPrompt += '  (' + this.getStringBundle().getString('formIndex') + ')';
+							selectionPrompt += '  (' + this.stringBundle.getString('formIndex') + ')';
 						}
 
-						var ok = this.getPrompts().select(
+						var ok = this.promptSvc.select(
 							window,
-							this.getStringBundle().getString('loginSelectionWindowTitle'),
+							this.stringBundle.getString('loginSelectionWindowTitle'),
 							selectionPrompt + ':',
 							list.length,
 							list,
@@ -918,10 +913,10 @@ var secureLogin = {
 
 				// Ask for confirmation if we had a failed bookmark-login:
 				if (this.failedBookmarkLogin) {
-					var continueLogin = this.getPrompts().confirm(
+					var continueLogin = this.promptSvc.confirm(
 						null,
-						this.getStringBundle().getString('loginConfirmTitle'),
-						this.getStringBundle().getString('loginConfirmURL') + ' ' + url
+						this.stringBundle.getString('loginConfirmTitle'),
+						this.stringBundle.getString('loginConfirmURL') + ' ' + url
 					);
 					if (!continueLogin) {
 						return;
@@ -933,7 +928,8 @@ var secureLogin = {
 				
 				// If JavaScript protection is to be used, check the exception list:
 				var useJavaScriptProtection = this.secureLoginPrefs.getBoolPref('javascriptProtection');
-				if (useJavaScriptProtection && this.inArray(this.getExceptions(), doc.location.protocol + '//' + doc.location.host)) {
+				if (useJavaScriptProtection && this.inArray(this.getExceptions(), doc.location.protocol + '//' + doc.location.host))
+				{
 					useJavaScriptProtection = false;
 				}
 
@@ -1199,7 +1195,7 @@ var secureLogin = {
 		// Add the modifiers:
 		for (var i = 0; i < shortcut['modifiers'].length; i++)
 			try {
-				formattedShortcut += this.getStringBundle().getString(shortcut['modifiers'][i]) + '+';
+				formattedShortcut += this.stringBundle.getString(shortcut['modifiers'][i]) + '+';
 			} catch (e) {
 				this.log(e);
 				// Error in shortcut string, return empty String;
@@ -1208,7 +1204,7 @@ var secureLogin = {
 		if (shortcut['key'])
 			// Add the key:
 			if (shortcut['key'] == ' ') {
-				formattedShortcut += this.getStringBundle().getString('VK_SPACE');
+				formattedShortcut += this.stringBundle.getString('VK_SPACE');
 			}
 			else {
 				formattedShortcut += shortcut['key'];
@@ -1216,7 +1212,7 @@ var secureLogin = {
 		else if (shortcut['keycode']) {
 			// Add the keycode (instead of the key):
 			try {
-				formattedShortcut += this.getStringBundle().getString(shortcut['keycode']);
+				formattedShortcut += this.stringBundle.getString(shortcut['keycode']);
 			} catch (e) {
 				// If no localization is available just use the plain keycode:
 				formattedShortcut += shortcut['keycode'].replace('VK_', '');
@@ -1231,7 +1227,7 @@ var secureLogin = {
 			var file = this.secureLoginPrefs.getComplexValue(aPrefName, Components.interfaces.nsILocalFile);
 
 			// Get an url for the file:
-			var url = this.getIOS().newFileURI(file, null, null);
+			var url = this.IOSvc.newFileURI(file, null, null);
 
 			// Play the sound:
 			this.getSound().play(url);
@@ -1295,14 +1291,14 @@ var secureLogin = {
 
 	urlSecurityCheck: function (aUrl, aSourceURL) {
 		try {
-			this.getSecManager().checkLoadURIStr(aSourceURL, aUrl, Components.interfaces.nsIScriptSecurityManager.STANDARD);
+			this.securityManager.checkLoadURIStr(aSourceURL, aUrl, Components.interfaces.nsIScriptSecurityManager.STANDARD);
 		} catch (e) {
 			throw 'Loading of ' + url + ' denied.';
 		}
 	},
 
 	makeURI: function (aURL, aOriginCharset) {
-		return this.getIOS().newURI(aURL, aOriginCharset, null);
+		return this.IOSvc.newURI(aURL, aOriginCharset, null);
 	},
 
 	urlEncode: function (aString, aCharset) {
@@ -1313,27 +1309,29 @@ var secureLogin = {
 		} else {
 			// This escapes characters representing the given charset,
 			// it won't work if the given string is not part of the charset
-			return this.getTextToSubURI().ConvertAndEscape(aCharset, aString);
+			return this.textToSubURI.ConvertAndEscape(aCharset, aString);
 		}
 	},
 
-	getTextToSubURI: function () {
-		return Components.classes['@mozilla.org/intl/texttosuburi;1']
-				.getService(Components.interfaces.nsITextToSubURI);
+	get textToSubURI () {
+		delete this.textToSubURI;
+		return this.textToSubURI = Components.classes['@mozilla.org/intl/texttosuburi;1']
+		                           .getService(Components.interfaces.nsITextToSubURI);
 	},
 
 	getUnicodeString: function (aStringData) {
 		// Create an Unicode String:
 		var str = Components.classes['@mozilla.org/supports-string;1']
-					.createInstance(Components.interfaces.nsISupportsString);
+		          .createInstance(Components.interfaces.nsISupportsString);
 		// Set the String value:
 		str.data = aStringData;
 		// Return the Unicode String:
 		return str;
 	},
 
-	getStringBundle: function () {
-		return document.getElementById('secureLoginStringBundle');
+	get stringBundle () {
+		delete this.stringBundle;
+		return this.stringBundle = document.getElementById('secureLoginStringBundle');
 	},
 
 	getDoc: function(aWin) {
@@ -1363,58 +1361,38 @@ var secureLogin = {
 		}
 		else {
 			// gBrowser is not available, so make use of the WindowMediator service instead:
-			return this.getWindowMediator().getMostRecentWindow('navigator:browser').gBrowser;
+			return this.windowMediator.getMostRecentWindow('navigator:browser').gBrowser;
 		}
 	},
 
-	_getWindowMediator: null,
-	getWindowMediator: function () {
-		if (!this._getWindowMediator) {
-			this._getWindowMediator = Components.classes['@mozilla.org/appshell/window-mediator;1']
-			                          .getService(Components.interfaces.nsIWindowMediator);
-		}
-		return this._getWindowMediator;
+	get windowMediator () {
+		delete this.windowMediator;
+		return this.windowMediator = Components.classes['@mozilla.org/appshell/window-mediator;1']
+		                             .getService(Components.interfaces.nsIWindowMediator);
 	},
 
-	_getLoginManager: null,
-	getLoginManager: function () {
-		if (!this._getLoginManager) {
-			this._getLoginManager = Components.classes['@mozilla.org/login-manager;1']
-			                        .getService(Components.interfaces.nsILoginManager);
-		}
-		return this._getLoginManager;
+	get loginManager () {
+		delete this.loginManager;
+		return this.loginManager = Components.classes['@mozilla.org/login-manager;1']
+		                           .getService(Components.interfaces.nsILoginManager);
 	},
 
-	_getPrefManager: null,
-	getPrefManager: function () {
-		if (!this._getPrefManager) {
-			this._getPrefManager = Components.classes['@mozilla.org/preferences-service;1']
-			                       .getService(Components.interfaces.nsIPrefService);
-		}
-		return this._getPrefManager;
+	get prefSvc () {
+		delete this.prefSvc;
+		return this.prefSvc = Components.classes['@mozilla.org/preferences-service;1']
+		                      .getService(Components.interfaces.nsIPrefService);
 	},
 
-	_getSecManager: null,
-	getSecManager: function () {
-		if (!this._getSecManager) {
-			this._getSecManager = Components.classes['@mozilla.org/scriptsecuritymanager;1']
-			                      .getService(Components.interfaces.nsIScriptSecurityManager);
-		}
-		return this._getSecManager;
+	get securityManager () {
+		delete this.securityManager;
+		return this.securityManager = Components.classes['@mozilla.org/scriptsecuritymanager;1']
+		                              .getService(Components.interfaces.nsIScriptSecurityManager);
 	},
 
-	_getIOS: null,
-	getIOS: function () {
-		if (!this._getIOS) {
-			this._getIOS = Components.classes['@mozilla.org/network/io-service;1']
-			               .getService(Components.interfaces.nsIIOService);
-		}
-		return this._getIOS;
-	},
-
-	getFileHandler: function () {
-		return this.getIOS().getProtocolHandler('file')
-		       .QueryInterface(Components.interfaces.nsIFileProtocolHandler);
+	get IOSvc () {
+		delete this.IOSvc;
+		return this.IOSvc = Components.classes['@mozilla.org/network/io-service;1']
+		                    .getService(Components.interfaces.nsIIOService);
 	},
 
 	getSound: function () {
@@ -1422,31 +1400,10 @@ var secureLogin = {
 		       .createInstance(Components.interfaces.nsISound);
 	},
 
-	_getPrompts: null,
-	getPrompts: function () {
-		if (!this._getPrompts) {
-			this._getPrompts = Components.classes['@mozilla.org/embedcomp/prompt-service;1']
-			                   .getService(Components.interfaces.nsIPromptService);
-		}
-		return this._getPrompts;
-	},
-
-	_getAppInfo: null,
-	getAppInfo: function () {
-		if (!this._getAppInfo) {
-			this._getAppInfo = Components.classes['@mozilla.org/xre/app-info;1']
-			                   .getService(Components.interfaces.nsIXULAppInfo);
-		}
-		return this._getAppInfo;
-	},
-
-	_getVersionComparator: null,
-	getVersionComparator: function () {
-		if (!this._getPrompts) {
-			this._getPrompts = Components.classes['@mozilla.org/xpcom/version-comparator;1']
-			                   .getService(Components.interfaces.nsIVersionComparator);
-		}
-		return this._getPrompts;
+	get promptSvc () {
+		delete this.promptSvc;
+		return this.promptSvc = Components.classes['@mozilla.org/embedcomp/prompt-service;1']
+		                        .getService(Components.interfaces.nsIPromptService);
 	},
 
 	inArray: function (aArray, aItem) {
@@ -1471,7 +1428,7 @@ var secureLogin = {
 		var helpTab = this.getBrowser().addTab(aUrl);
 		if(aFocus) {
 			this.getBrowser().selectedTab = helpTab;
-			this.getWindowMediator().getMostRecentWindow('navigator:browser').focus();
+			this.windowMediator.getMostRecentWindow('navigator:browser').focus();
 		}
 	},
 
@@ -1481,7 +1438,6 @@ var secureLogin = {
 		                         .getService(Components.interfaces.nsIConsoleService);
 	},
 	log: function (aMessage, aSourceName, aSourceLine, aLineNumber, aColumnNumber, aFlags, aCategory) {
-		var consoleService = this.consoleSvc;
 		if (aSourceName != 'undefined') {
 			var scriptError = Components.classes["@mozilla.org/scripterror;1"]
 				.createInstance(Components.interfaces.nsIScriptError);
@@ -1494,9 +1450,9 @@ var secureLogin = {
 				aFlags,
 				aCategory
 			);
-			consoleService.logMessage(scriptError);
+			this.consoleSvc.logMessage(scriptError);
 		} else {
-			consoleService.logStringMessage(aMessage);
+			this.consoleSvc.logStringMessage(aMessage);
 		}
 	},
 
@@ -1505,7 +1461,7 @@ var secureLogin = {
 		// Re-enable the prefilling of login forms if setting has been true:
 		try {
 			if(this.autofillForms) {
-				this.getPrefManager().getBranch('').setBoolPref('signon.autofillForms', true);
+				this.prefSvc.getBranch('').setBoolPref('signon.autofillForms', true);
 			}
 		} catch(e) {
 			this.log(e);

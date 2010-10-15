@@ -71,7 +71,7 @@ var secureLoginOptions = {
 			// Initialize the file picker window:
 			fp.init(
 				window,
-				this.service.getStringBundle().getString('selectAudioFile'),
+				this.service.stringBundle.getString('selectAudioFile'),
 				Components.interfaces.nsIFilePicker.modeOpen
 			);
 
