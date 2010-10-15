@@ -12,8 +12,28 @@ var secureLoginExceprions = {
 		return this.service = secureLogin;
 	},
 
+	get addExceptionTextbox () {
+		delete this.addExceptionTextbox;
+		return this.addExceptionTextbox = document.getElementById('addExceptionTextbox');
+	},
+
+	get removeAllButton () {
+		delete this.removeAllButton;
+		return this.removeAllButton = document.getElementById('removeAllButton');
+	},
+
+	get removeSelectedButton () {
+		delete this.removeSelectedButton;
+		return this.removeSelectedButton = document.getElementById('removeSelectedButton');
+	},
+
+	// The exceptions tree object:
+	get exceptionsTree () {
+		delete this.exceptionsTree;
+		return this.exceptionsTree = document.getElementById('exceptionsTree');
+	},
+
 	exceptions: null,// Temporary exceptions list copy for the exceptions window:
-	exceptionsTree: null,// The exceptions tree object:
 	exceptionsTreeSelection: null,// The exceptions treeSelection object:
 	exceptionsTreeBox: null,// The exceptions treeBox object:
 	exceptionsAscending: null,// Determines if exceptions sort is to be ascending or descending:
@@ -78,21 +98,18 @@ var secureLoginExceprions = {
 		// Copy the secureLogin exception array into the local list:
 		this.exceptions = this.service.getExceptions().slice();
 
-		// Get the tree:
-		this.exceptionsTree = document.getElementById('exceptionsTree');
-
 		// Set the tree length using the exception list length:
 		this.exceptionsTreeView.rowCount = this.exceptions.length;
 
 		// Enable the "removeAllButton" if exceptions are stored:
 		if (this.exceptionsTreeView.rowCount > 0) {
-			document.getElementById('removeAllButton').setAttribute('disabled', 'false');
+			this.removeAllButton.setAttribute('disabled', 'false');
 		}
 
 		try {
 			var doc = this.service.getDoc();
 			// Set the textbox to the current host:
-			var textbox = document.getElementById('addExceptionTextbox');
+			var textbox = this.addExceptionTextbox;
 			textbox.value = doc.location.protocol + '//' + doc.location.host;
 		} catch(e) {
 			// Invalid location.host, e.g. about:config
@@ -124,7 +141,7 @@ var secureLoginExceprions = {
 	},
 
 	exceptionsAdd: function (aEvent) {
-		var url = document.getElementById('addExceptionTextbox').value;
+		var url = this.addExceptionTextbox.value;
 		// Get the prePath information from the given URL:
 		try {
 			url = this.service.makeURI(url, 'UTF-8').prePath;
@@ -156,7 +173,7 @@ var secureLoginExceprions = {
 		this.setExceptions(this.exceptions);
 
 		// Enable the "removeAllButton":
-		document.getElementById('removeAllButton').setAttribute('disabled', 'false');
+		this.removeAllButton.setAttribute('disabled', 'false');
 	},
 
 	exceptionsHandleKeyPress: function (aEvent) {
@@ -176,7 +193,7 @@ var secureLoginExceprions = {
 
 	exceptionsSelected: function (aEvent) {
 		if (this.exceptionsTreeSelection.count > 0) {
-			document.getElementById('removeSelectedButton').setAttribute('disabled', 'false');
+			this.removeSelectedButton.setAttribute('disabled', 'false');
 		}
 	},
 
@@ -198,7 +215,7 @@ var secureLoginExceprions = {
 		this.exceptionsTreeSelection.select(-1);
 
 		// Disable "remove" button:
-		document.getElementById('removeSelectedButton').setAttribute("disabled", "true");
+		this.removeSelectedButton.setAttribute("disabled", "true");
 	},
 
 	exceptionsRemoveSelected: function (aEvent) {
@@ -266,9 +283,9 @@ var secureLoginExceprions = {
 
 		// Disable buttons:
 		if (this.exceptions.length == 0) {
-			document.getElementById('removeAllButton').setAttribute("disabled","true");
+			this.removeAllButton.setAttribute("disabled","true");
 		}
-		document.getElementById('removeSelectedButton').setAttribute("disabled", "true");
+		this.removeSelectedButton.setAttribute("disabled", "true");
 
 		// Update the preferences:
 		this.setExceptions(this.exceptions);
@@ -291,8 +308,8 @@ var secureLoginExceprions = {
 		this.exceptionsTreeBox.invalidate();
 
 		// Disable buttons
-		document.getElementById('removeSelectedButton').setAttribute("disabled", "true")
-		document.getElementById('removeAllButton').setAttribute("disabled","true");
+		this.removeSelectedButton.setAttribute("disabled", "true")
+		this.removeAllButton.setAttribute("disabled","true");
 
 		// Update the preferences:
 		this.setExceptions(this.exceptions);

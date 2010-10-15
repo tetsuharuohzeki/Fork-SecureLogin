@@ -15,6 +15,71 @@ var secureLoginOverlay = {
 		return this.service = secureLogin;
 	},
 
+	get secureLoginButton () {
+		delete this.secureLoginButton;
+		return this.secureLoginButton = document.getElementById('secureLoginButton');
+	},
+
+	get contentAreaContextMenu () {
+		delete this.contentAreaContextMenu;
+		return this.contentAreaContextMenu = document.getElementById('contentAreaContextMenu');
+	},
+
+	get secureLoginContextMenuItem () {
+		delete this.secureLoginContextMenuItem;
+		return this.secureLoginContextMenuItem = document.getElementById('secureLoginContextMenuItem');
+	},
+
+	get secureLoginContextMenuMenu () {
+		delete this.secureLoginContextMenuMenu;
+		return this.secureLoginContextMenuMenu = document.getElementById('secureLoginContextMenuMenu');
+	},
+
+	get secureLoginContextMenuSeparator1 () {
+		delete this.secureLoginContextMenuSeparator1;
+		return this.secureLoginContextMenuSeparator1 = document.getElementById('secureLoginContextMenuSeparator1');
+	},
+
+	get secureLoginContextMenuSeparator2 () {
+		delete this.secureLoginContextMenuSeparator2;
+		return this.secureLoginContextMenuSeparator2 = document.getElementById('secureLoginContextMenuSeparator2');
+	},
+
+	get mainKeyset () {
+		delete this.mainKeyset;
+		return this.mainKeyset = document.getElementById('mainKeyset');
+	},
+
+	get secureLoginTooltip () {
+		delete this.secureLoginTooltip;
+		return this.secureLoginTooltip = document.getElementById('secureLoginTooltip');
+	},
+
+	get autofillFormsPopupMenu () {
+		delete this.autofillFormsPopupMenu;
+		return this.autofillFormsPopupMenu = document.getElementById('autofillFormsPopupMenu');
+	},
+
+	get secureLoginShortCut () {
+		delete this.secureLoginShortCut;
+		return this.secureLoginShortCut = document.getElementById('secureLoginShortCut');
+	},
+
+	get secureLoginPanelIcon () {
+		delete this.secureLoginPanelIcon;
+		return this.secureLoginPanelIcon = document.getElementById('secureLoginPanelIcon');
+	},
+
+	get secureLoginToolsMenu () {
+		delete this.secureLoginToolsMenu;
+		return this.secureLoginToolsMenu =  document.getElementById('secureLoginToolsMenu')
+	},
+
+	get secureLoginJavascriptProtection () {
+		delete this.secureLoginJavascriptProtection;
+		return this.secureLoginJavascriptProtection = document.getElementById('secureLoginJavascriptProtection');
+	},
+
 	handleEvent: function (aEvent) {
 		switch (aEvent.type) {
 			case "load":
@@ -97,10 +162,10 @@ var secureLoginOverlay = {
 	},
 
 	initContentAreaContextMenu: function (aEvent) {
-		var cm0 = document.getElementById('secureLoginContextMenuItem');
-		var cm1 = document.getElementById('secureLoginContextMenuMenu');
-		var cm2 = document.getElementById('secureLoginContextMenuSeparator1');
-		var cm3 = document.getElementById('secureLoginContextMenuSeparator2');
+		var cm0 = this.secureLoginContextMenuItem;
+		var cm1 = this.secureLoginContextMenuMenu;
+		var cm2 = this.secureLoginContextMenuSeparator1;
+		var cm3 = this.secureLoginContextMenuSeparator2;
 		if (cm0 && gContextMenu) {
 			if (this.service.secureLoginPrefs.getBoolPref('hideContextMenuItem')
 				|| gContextMenu.isContentSelected
@@ -195,10 +260,9 @@ var secureLoginOverlay = {
 		var keycode = this.service.getShortcut()['keycode'];
 
 		// Remove current key if existing:
-		if (document.getElementById('secureLoginShortCut')) {
-			document.getElementById('mainKeyset').removeChild(
-				document.getElementById('secureLoginShortCut')
-			);
+		var secureLoginShortCut = this.secureLoginShortCut;
+		if (secureLoginShortCut) {
+			this.mainKeyset.removeChild(secureLoginShortCut);
 		}
 
 		// Check if keyboard shortcut is enabled (either key or keycode set):
@@ -218,17 +282,17 @@ var secureLoginOverlay = {
 			}
 
 			// Add the key to the mainKeyset:
-			document.getElementById('mainKeyset').appendChild(keyNode);
+			this.mainKeyset.appendChild(keyNode);
 		}
 	},
 
 	hideToolbarButtonUpdate: function () {
-		var secureLoginButton = document.getElementById('secureLoginButton');
+		var secureLoginButton = this.secureLoginButton;
 		var hideToolbarButton = this.service.secureLoginPrefs.getBoolPref('hideToolbarButton');
 		if (!secureLoginButton && !hideToolbarButton) {
 			// Add the toolbar button to the toolbar:
 			this.installToolbarButton('secureLoginButton');
-			secureLoginButton = document.getElementById('secureLoginButton');
+			secureLoginButton = this.secureLoginButton;
 		}
 		if (secureLoginButton) {
 			secureLoginButton.setAttribute(
@@ -257,7 +321,7 @@ var secureLoginOverlay = {
 	},
 
 	hideToolbarButtonMenuUpdate: function () {
-		var secureLoginButton = document.getElementById('secureLoginButton');
+		var secureLoginButton = this.secureLoginButton;
 		if (secureLoginButton) {
 			if (this.service.secureLoginPrefs.getBoolPref('hideToolbarButtonMenu')) {
 				secureLoginButton.removeAttribute('type');
@@ -269,7 +333,7 @@ var secureLoginOverlay = {
 
 	hideStatusbarIconUpdate: function () {
 		// Change the statusbar icon visibility:
-		var secureLoginPanelIcon = document.getElementById('secureLoginPanelIcon');
+		var secureLoginPanelIcon = this.secureLoginPanelIcon;
 		if (secureLoginPanelIcon) {
 			secureLoginPanelIcon.setAttribute(
 				'hidden',
@@ -280,7 +344,7 @@ var secureLoginOverlay = {
 
 	hideToolsMenuUpdate: function () {
 		// Change the tools menu visibility:
-		var secureLoginToolsMenu = document.getElementById('secureLoginToolsMenu');
+		var secureLoginToolsMenu = this.secureLoginToolsMenu;
 		if (secureLoginToolsMenu) {
 			secureLoginToolsMenu.setAttribute(
 				'hidden',
@@ -290,7 +354,7 @@ var secureLoginOverlay = {
 	},
 
 	hideContextMenuItemUpdate: function () {
-		var contentAreaContextMenu = document.getElementById('contentAreaContextMenu');
+		var contentAreaContextMenu = this.contentAreaContextMenu;
 		if (contentAreaContextMenu) {
 			var isHideContextMenuItem = this.service.secureLoginPrefs.getBoolPref('hideContextMenuItem');
 			if (!isHideContextMenuItem) {
@@ -303,10 +367,10 @@ var secureLoginOverlay = {
 			} else {
 				// Hide the SL contentare context menu entries
 				// and remove the content area context menu listener:
-				var cm0 = document.getElementById('secureLoginContextMenuItem');
-				var cm1 = document.getElementById('secureLoginContextMenuMenu');
-				var cm2 = document.getElementById('secureLoginContextMenuSeparator1');
-				var cm3 = document.getElementById('secureLoginContextMenuSeparator2');
+				var cm0 = this.secureLoginContextMenuItem;
+				var cm1 = this.secureLoginContextMenuMenu;
+				var cm2 = this.secureLoginContextMenuSeparator1;
+				var cm3 = this.secureLoginContextMenuSeparator2;
 				if (cm0) {
 					cm0.hidden = true;
 					cm1.hidden = true;
@@ -345,7 +409,7 @@ var secureLoginOverlay = {
 				bookmarkItem.setAttribute('disabled', 'true');
 			}
 		}
-		var autofillFormsPopupMenu = document.getElementById('autofillFormsPopupMenu');
+		var autofillFormsPopupMenu = this.autofillFormsPopupMenu;
 		var autofillFormsMenu = document.getElementById(aAutofillFormsMenuID);
 		var autofillFormsMenuSeparator = document.getElementById(aAutofillFormsMenuID + 'Separator');
 		if (this.service.secureLoginPrefs.getBoolPref('autofillFormsOnLogin') && autofillFormsPopupMenu) {
@@ -413,7 +477,7 @@ var secureLoginOverlay = {
 	},
 
 	javascriptProtectionUpdate: function () {
-		document.getElementById('secureLoginJavascriptProtection').setAttribute(
+		this.secureLoginJavascriptProtection.setAttribute(
 				'checked',
 				this.service.secureLoginPrefs.getBoolPref('javascriptProtection')
 		);
@@ -434,7 +498,7 @@ var secureLoginOverlay = {
 		}
 
 		// Get the tooltip node:
-		var tooltip = document.getElementById('secureLoginTooltip');
+		var tooltip = this.secureLoginTooltip;
 		if (tooltip) {
 			// Remove all children nodes:
 			while (tooltip.hasChildNodes()) {
@@ -595,7 +659,7 @@ var secureLoginOverlay = {
 		this.finalizeToolbarButtonStatus();
 
 		// Remove the content area context menu listener:
-		var contentAreaContextMenu = document.getElementById('contentAreaContextMenu');
+		var contentAreaContextMenu = this.contentAreaContextMenu;
 		if(contentAreaContextMenu) {
 			contentAreaContextMenu.removeEventListener(
 				'popupshowing',
@@ -610,7 +674,7 @@ var secureLoginOverlay = {
 
 	finalizeToolbarButtonStatus: function () {
 		var secureLoginPrefs = this.service.secureLoginPrefs;
-		var secureLoginButton = document.getElementById('secureLoginButton');
+		var secureLoginButton = this.secureLoginButton;
 		var hideToolbarButton = secureLoginPrefs.getBoolPref('hideToolbarButton');
 		if(!secureLoginButton && !hideToolbarButton) {
 			// If the toolbar button icon has been removed from the toolbar by drag&drop
