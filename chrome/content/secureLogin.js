@@ -55,11 +55,15 @@ var secureLogin = {
 
 			var doc = this.getDoc(progressWindow);
 
-			if (this.secureLoginPrefs.getBoolPref('autoLogin')
-			    && this.secureLogins && this.secureLogins.length > 0
-			    && (!this.secureLoginPrefs.getBoolPref('secureLoginBookmarks')
+			var isAutoLogin = this.secureLoginPrefs.getBoolPref('autoLogin');
+			var isSecureLoginBookmarks = this.secureLoginPrefs.getBoolPref('secureLoginBookmarks');
+			var isInExceptionArray = this.inArray(this.getAutoLoginExceptions(), doc.location.protocol + '//' + doc.location.host);
+			if (isAutoLogin
+			    && this.secureLogins
+			    && (this.secureLogins.length > 0)
+			    && (!isSecureLoginBookmarks
 			       || (doc.location.hash.indexOf(this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash')) != 0))
-			    && !this.inArray(this.getAutoLoginExceptions(), doc.location.protocol + '//' + doc.location.host)
+			    && !isInExceptionArray
 			) {
 				// Auto-Login if enabled, logins have been found, URL is not a Secure Login bookmark
 				// and the current website is not in the autoLoginExceptions list:
@@ -160,14 +164,14 @@ var secureLogin = {
 		}
 		else {
 			// Always highlight the Secure Login icons, when not searching for valid logins automatically:
-			var secureLoginPanelIcon = document.getElementById('secureLoginPanelIcon');
+			var secureLoginPanelIcon = this.loginPanelIcon;
 			if (secureLoginPanelIcon) {
 				secureLoginPanelIcon.setAttribute(
 				 'class',
 				 'statusbarpanel-menu-iconic secureLoginIcon'
 				);
 			}
-			var secureLoginButton = document.getElementById('secureLoginButton');
+			var secureLoginButton = this.loginButton;
 			if (secureLoginButton) {
 				secureLoginButton.setAttribute(
 				  'class',
@@ -178,7 +182,10 @@ var secureLogin = {
 	},
 
 	progressListenerUpdate: function () {
-		if (!this.secureLoginPrefs.getBoolPref('searchLoginsOnload') && !this.secureLoginPrefs.getBoolPref('secureLoginBookmarks')) {
+		var isSearchLoginsOnload = this.secureLoginPrefs.getBoolPref('searchLoginsOnload');
+		var isSecureLoginBookmarks = this.secureLoginPrefs.getBoolPref('secureLoginBookmarks');
+
+		if (!isSearchLoginsOnload && !isSecureLoginBookmarks) {
 			// Remove the listener from the browser object (if added previously):
 			try {
 				this.getBrowser().removeProgressListener(this.progressListener);
@@ -188,12 +195,13 @@ var secureLogin = {
 			}
 		}
 		else if (!this.isProgressListenerRegistered && 
-		    (this.secureLoginPrefs.getBoolPref('searchLoginsOnload') || this.secureLoginPrefs.getBoolPref('secureLoginBookmarks'))) {
+		         (isSearchLoginsOnload || isSecureLoginBookmarks)) {
 			// Add the progress listener to the browser object (if not added previously):
 			try {
+				let nsIWebProgress = Components.interfaces.nsIWebProgress;
 				this.getBrowser().addProgressListener(
 					this.progressListener,
-					Components.interfaces.nsIWebProgress.NOTIFY_LOCATION | Components.interfaces.nsIWebProgress.NOTIFY_STATE_DOCUMENT
+					nsIWebProgress.NOTIFY_LOCATION | nsIWebProgress.NOTIFY_STATE_DOCUMENT
 				);
 				this.isProgressListenerRegistered = true;
 			}
@@ -225,42 +233,47 @@ var secureLogin = {
 
 			// Update the outlined form fields:
 			for (var i = 0; i < this.secureLoginsPassField.length; i++) {
+				let secureLoginsUserField = this.secureLoginsUserField[i];
 				// Outline the username field if existing:
-				if (this.secureLoginsUserField[i]) {
-					this.secureLoginsUserField[i].style.outline = outlineStyle;
+				if (secureLoginsUserField) {
+					secureLoginsUserField.style.outline = outlineStyle;
 				}
 				// Outline the password field if existing:
-				if (this.secureLoginsPassField[i]) {
-					this.secureLoginsPassField[i].style.outline = outlineStyle;
+				if (secureLoginsUserField) {
+					secureLoginsUserField.style.outline = outlineStyle;
 				}
 			}
 		}
 	},
 
 	getAutoLoginExceptions: function () {
-		if (!this.autoLoginExceptions) {
+		var autoLoginExceptions = this.autoLoginExceptions;
+		if (!autoLoginExceptions) {
 			// Get the exception list from the preferences:
-			this.autoLoginExceptions = this.secureLoginPrefs
-			                          .getComplexValue('autoLoginExceptions',Components.interfaces.nsISupportsString)
-			                          .data.split(' ');
+			autoLoginExceptions = this.secureLoginPrefs
+			                      .getComplexValue('autoLoginExceptions', Components.interfaces.nsISupportsString)
+			                      .data.split(' ');
 		}
-		return this.autoLoginExceptions;
+		return autoLoginExceptions;
 	},
-	
-	bookmarkLogin: function (aWin) {
-		var doc = this.getDoc(aWin);
 
+	bookmarkLogin: function (aWin) {
+		var document = this.getDoc(aWin);
+
+		var secureLoginBookmarkHash = this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash');
 		// Check for first four characters of Secure Login anchor (hash):
-		if (doc && doc.location && doc.location.hash
-		    && doc.location.hash.substr(0, 4) == this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash').substr(0, 4)) {
+		var locationHash = document.location.hash;
+		if (document
+		    && document.location
+		    && locationHash
+		    && (locationHash.substr(0, 4) == secureLoginBookmarkHash.substr(0, 4))
+		) {
 
 			// Check for complete Secure Login anchor (hash):
-			var index = doc.location.hash.indexOf(this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash'));
+			var index = locationHash.indexOf(secureLoginBookmarkHash);
 			if (index == 0) {
 				var bookmarkLoginIndex = parseInt(
-					doc.location.hash.substr(
-						this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash').length
-					)
+					locationHash.substr(secureLoginBookmarkHash.length)
 				);
 				if (!isNaN(bookmarkLoginIndex)) {
 					// Auto-Login using the bookmarkLoginIndex:
@@ -365,7 +378,11 @@ var secureLogin = {
 		var doc = this.getDoc(aWin);
 
 		// Check if any web forms are available on the current window:
-		if (doc && doc.forms && doc.forms.length > 0 && doc.location) {
+		if (doc
+		    && doc.forms
+		    && (doc.forms.length > 0)
+		    && doc.location
+		) {
 
 			// document (current) host:
 			var host = doc.location.protocol + '//' + doc.location.host;
@@ -452,12 +469,13 @@ var secureLogin = {
 		var elements = aForm.elements;
 
 		// Go through the form elements:
-		for (var i = 0; i < elements.length; i++) {
+		for (let i = 0; i < elements.length; i++) {
+			let element = elements[i];
 			// Skip disabled elements or elements without a "name":
-			if (!elements[i].name || elements[i].disabled) {
+			if (!element.name || element.disabled) {
 				continue;
 			}
-			if (elements[i].type == 'text') {
+			if (element.type == 'text') {
 				// input of type "text" found, this is no password only form:
 				inputTextFound = true;
 
@@ -468,7 +486,7 @@ var secureLogin = {
 					for (var j = i+1; j < elements.length; j++) {
 						if (elements[j].type == 'password') {
 							// Following password field found so the username field might be valid:
-							usernameField = elements[i];
+							usernameField = element;
 							break;
 						}
 						if (elements[j].type == 'text') {
@@ -478,23 +496,24 @@ var secureLogin = {
 					}
 				}
 				else {
-					if (elements[i].name == aLoginUsernameFieldName) {
-						usernameField = elements[i];
+					if (element.name == aLoginUsernameFieldName) {
+						usernameField = element;
 					}
 				}
 			}
-			else if (elements[i].type == 'password') {
+			else if (element.type == 'password') {
 				// We do not get a loginPasswordFieldName from Firefox 3:
+				let isNextElmIsPassword = (elements[i+1] && elements[i+1].type == 'password');
 				if (!aLoginPasswordFieldName) {
 					// Skip registration or password change forms (two password fields):
-					if (!(elements[i+1] && elements[i+1].type == 'password')) {
-						passwordField = elements[i];
+					if (!isNextElmIsPassword) {
+						passwordField = element;
 					}
 				}
 				else {
 					// Skip registration or password change forms (two password fields):
-					if (!(elements[i+1] && elements[i+1].type == 'password') && elements[i].name == aLoginPasswordFieldName) {
-						passwordField = elements[i];
+					if (!isNextElmIsPassword && element.name == aLoginPasswordFieldName) {
+						passwordField = element;
 					}
 				}
 
@@ -536,7 +555,10 @@ var secureLogin = {
 		var loginIndex = this.secureLogins.length;
 
 		// Test if there is only one valid login form:
-		if (!this.showFormIndex && loginIndex > 0 && !this.inArray(this.secureLoginsFormIndex, aFormIndex)) {
+		if (!this.showFormIndex
+		    && (loginIndex > 0)
+		    && !this.inArray(this.secureLoginsFormIndex, aFormIndex)
+		) {
 			this.showFormIndex = true;
 		}
 
@@ -616,7 +638,7 @@ var secureLogin = {
 	},
 
 	masterSecurityDeviceLogout: function (aEvent) {
-		if(this.masterSecurityDevice.getInternalKeyToken().isLoggedIn()) {
+		if (this.masterSecurityDevice.getInternalKeyToken().isLoggedIn()) {
 			this.masterSecurityDevice.findTokenByName('').logoutAndDropAuthenticatedResources();
 		}
 		this.showAndRemoveNotification(this.stringBundle.getString('masterSecurityDeviceLogout'));
@@ -643,11 +665,11 @@ var secureLogin = {
 		var notificationBox = this.getBrowser().getNotificationBox();
 		if (notificationBox) {
 			notificationBox.appendNotification(
-				aLabel,
-				aId,
-				aImage,
-				aPriority,
-				aButtons
+			  aLabel,
+			  aId,
+			  aImage,
+			  aPriority,
+			  aButtons
 			);
 		}
 	},
@@ -782,7 +804,8 @@ var secureLogin = {
 		}
 
 		// Search for valid logins and outline login fields if not done automatically:
-		if (!this.secureLoginPrefs.getBoolPref('searchLoginsOnload') && !aSkipLoginSearch) {
+		var isSearchLoginsOnload = this.secureLoginPrefs.getBoolPref('searchLoginsOnload');
+		if (!isSearchLoginsOnload && !aSkipLoginSearch) {
 			this.searchLoginsInitialize(aWin);
 		}
 
@@ -805,7 +828,10 @@ var secureLogin = {
 				// Prompt for a selection, if list contains more than one login:
 				if (this.secureLogins.length > 1) {
 					// Check if the loginIndex contains an index to select:
-					if (typeof aLoginIndex != 'undefined' && !isNaN(parseInt(aLoginIndex)) && aLoginIndex < this.secureLogins.length) {
+					if (typeof aLoginIndex != 'undefined'
+					    && !isNaN(parseInt(aLoginIndex))
+					    && (aLoginIndex < this.secureLogins.length)
+					) {
 						selectedIndex = aLoginIndex;
 					}
 					else {
@@ -889,8 +915,8 @@ var secureLogin = {
 
 				// If JavaScript protection is to be used, check the exception list:
 				var useJavaScriptProtection = this.secureLoginPrefs.getBoolPref('javascriptProtection');
-				if (useJavaScriptProtection && this.inArray(this.getExceptions(), doc.location.protocol + '//' + doc.location.host))
-				{
+				var isInExceptionArray = this.inArray(this.getExceptions(), doc.location.protocol + '//' + doc.location.host);
+				if (useJavaScriptProtection && isInExceptionArray) {
 					useJavaScriptProtection = false;
 				}
 
@@ -917,17 +943,19 @@ var secureLogin = {
 
 					// Search for form elements other than user+pass fields and add them to the dataString:
 					for (var i = 0; i < elements.length; i++) {
+						let element = elements[i];
 
 						// Don't add disabled elements or elements without a "name":
-						if (!elements[i].name || elements[i].disabled) {
+						if (!element.name || element.disabled) {
 							continue;
 						}
 
-						switch (elements[i].type) {
+						switch (element.type) {
 							case 'text':
-								if (!usernameField || elements[i].name != usernameField.name) {
-									addToDataString(elements[i].name, elements[i].value);
-								} else {
+								if (!usernameField || element.name != usernameField.name) {
+									addToDataString(element.name, element.value);
+								}
+								else {
 									// This is the userName field - use the saved username as value:
 									addToDataString(
 									  usernameField.name,
@@ -945,25 +973,25 @@ var secureLogin = {
 							case 'hidden':
 							case 'select-one':
 							case 'textarea':
-								addToDataString(elements[i].name, elements[i].value);
+								addToDataString(element.name, element.value);
 								break;
 							case 'select-multiple':
-								for (var j = 0; j < elements[i].options.length; j++) {
-									if (elements[i].options[j].selected) {
-										addToDataString(elements[i].name, elements[i].options[j].value);
+								for (var j = 0; j < element.options.length; j++) {
+									if (element.options[j].selected) {
+										addToDataString(element.name, element.options[j].value);
 									}
 								}
 								break;
 							case 'checkbox':
 							case 'radio':
-								if (elements[i].checked) {
-		    						addToDataString(elements[i].name, elements[i].value);
+								if (element.checked) {
+		    						addToDataString(element.name, element.value);
 								}
 								break;
 							case 'submit':
 								// Only add first submit button:
 								if (!submitButtonFound) {
-									addToDataString(elements[i].name, elements[i].value);
+									addToDataString(element.name, element.value);
 									submitButtonFound = true;
 								}
 								break;
@@ -976,12 +1004,13 @@ var secureLogin = {
 					if (!submitButtonFound) {
 						var inputElements = form.getElementsByTagName('input');
 						for (var i = 0; i < inputElements.length; i++) {
-							if(inputElements[i].type == 'image') {
+							let inputElement = inputElements[i];
+							if (inputElement.type == 'image') {
 								// Image submit buttons add the "click-coordinates" name.x and name.y
 								// to the request data:
-								addToDataString(inputElements[i].name + '.x', 1);
-								addToDataString(inputElements[i].name + '.y', 1);
-								addToDataString(inputElements[i].name, inputElements[i].value);
+								addToDataString(inputElement.name + '.x', 1);
+								addToDataString(inputElement.name + '.y', 1);
+								addToDataString(inputElement.name, inputElement.value);
 							}
 						}
 					}
@@ -1022,9 +1051,10 @@ var secureLogin = {
 						var submitted = false;
 						// Search for the submit button:
 						for (var i = 0; i < elements.length; i++) {
+							let element = elements[i];
 							// auto-login by clicking on the submit button:
-							if (elements[i].type && elements[i].type == 'submit') {
-								elements[i].click();
+							if (element.type && element.type == 'submit') {
+								element.click();
 								submitted = true;
 								break;
 							}
@@ -1034,9 +1064,13 @@ var secureLogin = {
 							// Search for a submit button of type="image" which ist not in the elements list:
 							var inputElements = doc.getElementsByTagName('input');
 							for (var i = 0; i < inputElements.length; i++) {
-								// auto-login by clicking on the image submit button if it belongs to the current form:
-								if (inputElements[i].type == 'image' && inputElements[i].form && inputElements[i].form == form) {
-									inputElements[i].click();
+								let inputElement = inputElements[i];
+								// auto-login by clicking on the image submit button
+								//if it belongs to the current form:
+								if (inputElement.type == 'image'
+								    && inputElement.form
+								    && (inputElement.form == form)) {
+									inputElement.click();
 									submitted = true;
 									break;
 								}
@@ -1148,9 +1182,9 @@ var secureLogin = {
 	getExceptions: function () {
 		// Get the exception list from the preferences:
 		var exceptions = this.secureLoginPrefs
-		                 .getComplexValue('exceptionList',Components.interfaces.nsISupportsString)
+		                 .getComplexValue('exceptionList', Components.interfaces.nsISupportsString)
 		                 .data.split(' ');
-		return exceptions && exceptions[0] ? exceptions : new Array();
+		return (exceptions && exceptions[0]) ? exceptions : new Array();
 	},
 
 	shortcutFactory: function (aModifiers, aKey, aKeycode) {
@@ -1195,7 +1229,7 @@ var secureLogin = {
 			var key = null;
 			var keycode = null;
 			var shortcutItems = this.secureLoginPrefs
-			                    .getComplexValue('shortcut',Components.interfaces.nsIPrefLocalizedString)
+			                    .getComplexValue('shortcut', Components.interfaces.nsIPrefLocalizedString)
 			                    .data.split('+');
 			if (shortcutItems.length > 0) {
 				// Remove the last element and save it as key
@@ -1203,7 +1237,7 @@ var secureLogin = {
 				key = shortcutItems.pop();
 				// Check if the key is a keycode:
 				if (key.indexOf('VK') == 0) {
-					keycode	= key;
+					keycode = key;
 					key = null;
 				}
 			}
@@ -1291,15 +1325,16 @@ var secureLogin = {
 
 	showBookmarkDialog: function () {
 		var doc = this.getDoc();
-		if (doc && doc.forms && doc.forms.length > 0 && doc.location) {
+		var location = doc.location;
+		if (doc && doc.forms && doc.forms.length > 0 && location) {
 			var url;
 			// Create a Secure Login Bookmark out of the current URL:
-			if (doc.location.hash) {
-				var regExp = new RegExp(doc.location.hash + '$');
-				url = doc.location.href.replace(regExp, this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash'));
+			if (location.hash) {
+				var regExp = new RegExp(location.hash + '$');
+				url = location.href.replace(regExp, this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash'));
 			}
 			else {
-				url = doc.location.href + this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash');
+				url = location.href + this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash');
 			}
 
 			var bookmarkArguments = {
@@ -1370,6 +1405,7 @@ var secureLogin = {
 			return aWin.document;
 		}
 		else if (content) {
+			// Existing window.content
 			return content.document;
 		}
 		else {
@@ -1379,6 +1415,7 @@ var secureLogin = {
 
 	getWin: function () {
 		if (content) {
+			// Existing window.content
 			return content;
 		}
 		else {
@@ -1388,6 +1425,7 @@ var secureLogin = {
 
 	getBrowser: function () {
 		if (gBrowser) {
+			// Existing window.gBrowser
 			return gBrowser;
 		}
 		else {
@@ -1471,7 +1509,7 @@ var secureLogin = {
 	log: function (aMessage, aSourceName, aSourceLine, aLineNumber, aColumnNumber, aFlags, aCategory) {
 		if (aSourceName != 'undefined') {
 			var scriptError = Components.classes["@mozilla.org/scripterror;1"]
-				.createInstance(Components.interfaces.nsIScriptError);
+			                  .createInstance(Components.interfaces.nsIScriptError);
 			scriptError.init(
 				aMessage,
 				aSourceName,

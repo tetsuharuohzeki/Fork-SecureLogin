@@ -292,7 +292,8 @@ var secureLoginOverlay = {
 	hideContextMenuItemUpdate: function () {
 		var contentAreaContextMenu = document.getElementById('contentAreaContextMenu');
 		if (contentAreaContextMenu) {
-			if (!this.service.secureLoginPrefs.getBoolPref('hideContextMenuItem')) {
+			var isHideContextMenuItem = this.service.secureLoginPrefs.getBoolPref('hideContextMenuItem');
+			if (!isHideContextMenuItem) {
 				// Add the content area context menu listener:
 				contentAreaContextMenu.addEventListener(
 					'popupshowing',
@@ -300,7 +301,8 @@ var secureLoginOverlay = {
 					false
 				);
 			} else {
-				// Hide the SL contentare context menu entries and remove the content area context menu listener:
+				// Hide the SL contentare context menu entries
+				// and remove the content area context menu listener:
 				var cm0 = document.getElementById('secureLoginContextMenuItem');
 				var cm1 = document.getElementById('secureLoginContextMenuMenu');
 				var cm2 = document.getElementById('secureLoginContextMenuSeparator1');
@@ -607,16 +609,17 @@ var secureLoginOverlay = {
 	},
 
 	finalizeToolbarButtonStatus: function () {
+		var secureLoginPrefs = this.service.secureLoginPrefs;
 		var secureLoginButton = document.getElementById('secureLoginButton');
-		var hideToolbarButton = this.service.secureLoginPrefs.getBoolPref('hideToolbarButton');
+		var hideToolbarButton = secureLoginPrefs.getBoolPref('hideToolbarButton');
 		if(!secureLoginButton && !hideToolbarButton) {
 			// If the toolbar button icon has been removed from the toolbar by drag&drop
 			// enable the hideToolbarButton setting:
-			this.service.secureLoginPrefs.setBoolPref('hideToolbarButton', true);
+			secureLoginPrefs.setBoolPref('hideToolbarButton', true);
 		} else if(secureLoginButton && !secureLoginButton.getAttribute('hidden')) {
 			// If the toolbar button icon has been added to the toolbar by drag&drop
 			// disable the hideToolbarButton setting:
-			this.service.secureLoginPrefs.setBoolPref('hideToolbarButton', false);
+			secureLoginPrefs.setBoolPref('hideToolbarButton', false);
 		}
 	},
 

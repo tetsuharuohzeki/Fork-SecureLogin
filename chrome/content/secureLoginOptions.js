@@ -103,8 +103,9 @@ var secureLoginOptions = {
 		// Save the new shortcut:
 		this.setShortcut(shortcut);
 		// Update the shortcut textbox:
-		if (aEvent.view.document && aEvent.view.document.getElementById(aId)) {
-			aEvent.view.document.getElementById(aId).value = this.service.getFormattedShortcut(shortcut);
+		var eventViewDocument = aEvent.view.document;
+		if (eventViewDocument && eventViewDocument.getElementById(aId)) {
+			eventViewDocument.getElementById(aId).value = this.service.getFormattedShortcut(shortcut);
 		}
 	},
 
@@ -176,8 +177,9 @@ var secureLoginOptions = {
 		// Disable the shortcut:
 		this.setShortcut(null);
 		// Update the shortcut textbox:
-		if (aEvent.view.document && aEvent.view.document.getElementById(aId)) {
-			aEvent.view.document.getElementById(aId).value = '';
+		var eventViewDocument = aEvent.view.document;
+		if (eventViewDocument && eventViewDocument.getElementById(aId)) {
+			eventViewDocument.getElementById(aId).value = '';
 		}
 	},
 
