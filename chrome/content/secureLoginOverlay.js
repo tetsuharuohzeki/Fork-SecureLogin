@@ -542,7 +542,12 @@ var secureLoginOverlay = {
 			this.service.searchLoginsInitialize();
 		}
 
+		// hidden both boxes in tooltip:
+		this.tooltipExistLoginBox.hidden = true;
+		this.tooltipNoLoginBox.hidden = true;
+
 		// Get the tooltip node:
+		var isLoginExist = false;
 		var tooltip = this.tooltipLoginUrlsList;
 		if (tooltip) {
 			// Remove all children nodes:
@@ -626,14 +631,12 @@ var secureLoginOverlay = {
 						tooltip.appendChild(hbox);
 					}
 
-					this.tooltipExistLoginBox.removeAttribute("hidden");
-					this.tooltipNoLoginBox.hidden = true;
-					return;
+					isLoginExist = true;
 				}
 			}
 
-			this.tooltipNoLoginBox.removeAttribute("hidden");
-			this.tooltipExistLoginBox.hidden = true;
+			this.tooltipExistLoginBox.hidden = !isLoginExist;
+			this.tooltipNoLoginBox.hidden = isLoginExist;
 		}
 	},
 
