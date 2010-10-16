@@ -54,7 +54,7 @@
 			</menupopup>
 		</menu>
 	</menupopup>
-	<window id="main-window">
+	<popupset id="mainPopupSet">
 		<popupset id="secureLoginPopUpSet">
 			<tooltip id="secureLoginTooltip"
 			         onpopupshowing="secureLoginOverlay.tooltip(event);"
@@ -122,7 +122,7 @@
 			           position="after_start"
 			           onpopuphiding="while(this.hasChildNodes()){this.removeChild(this.firstChild);}"/>
 		</popupset>
-	</window>
+	</popupset>
 	<commandset id="mainCommandSet">
 		<command id="secureLogin"
 		         oncommand="secureLogin.login();"/>
