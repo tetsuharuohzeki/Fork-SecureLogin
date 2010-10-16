@@ -485,8 +485,11 @@ var secureLoginOverlay = {
 
 	tooltip: function (aEvent) {
 		// Check if document.tooltipNode exists and if it is shown above a valid node:
-		if (!document.tooltipNode || !document.tooltipNode.hasAttribute('tooltip')
-			|| !(document.tooltipNode.id == 'secureLoginButton' || document.tooltipNode.id == 'secureLoginPanelIcon')) {
+		if (!document.tooltipNode
+		    || !document.tooltipNode.hasAttribute('tooltip')
+		    || !(document.tooltipNode.id == 'secureLoginButton'
+		    || document.tooltipNode.id == 'secureLoginPanelIcon')
+		) {
 			// Don't show any tooltip:
 			aEvent.preventDefault();
 			return;
@@ -498,7 +501,7 @@ var secureLoginOverlay = {
 		}
 
 		// Get the tooltip node:
-		var tooltip = this.secureLoginTooltip;
+		var tooltip = document.getElementById("secureLoginTooltipUrlsList");
 		if (tooltip) {
 			// Remove all children nodes:
 			while (tooltip.hasChildNodes()) {
@@ -550,108 +553,75 @@ var secureLoginOverlay = {
 
 				if (urls.length) {
 					// Add the login label plus shortcut, if not empty:
-					var hbox = document.createElement('hbox');
-					hbox.setAttribute(
-						'id',
-						'secureLoginTooltipTitle'
-					);
-					var label = document.createElement('label');
+					var label = document.getElementById("secureLoginTooltipTitleLabel");
 					label.setAttribute(
-						'id',
-						'secureLoginTooltipTitleLabel'
+					  'value',
+					  this.service.stringBundle.getString('tooltipLogin')
 					);
-					label.setAttribute(
-						'value',
-						this.service.stringBundle.getString('tooltipLogin')
-					);
-					hbox.appendChild(label);
 					var formattedShortcut = this.service.getFormattedShortcut();
 					if (formattedShortcut) {
-						label = label.cloneNode(false);
+						label = document.getElementById("secureLoginTooltipKeyboardShortcut");
 						label.setAttribute(
-							'id',
-							'secureLoginTooltipKeyboardShortcut'
+						  'value',
+						  '('+this.service.getFormattedShortcut()+')'
 						);
-						label.setAttribute(
-							'value',
-							'('+this.service.getFormattedShortcut()+')'
-						);
-						hbox.appendChild(label);
 					}
-					tooltip.appendChild(hbox);
 
 					// Add a description of the URL elements and count:
-					hbox = hbox.cloneNode(false);
-					hbox.setAttribute(
-						'id',
-						'secureLoginTooltipUrls'
-					);
-					label = label.cloneNode(false);
-					label.removeAttribute('id');
+					label = document.getElementById("secureLoginTooltipUrlHeader:URL");
 					label.setAttribute(
-						'class',
-						'secureLoginTooltipUrlHeader'
+					  'value',
+					  this.service.stringBundle.getString('tooltipLoginUrl')
 					);
+					label = document.getElementById("secureLoginTooltipUrlHeader:count");
 					label.setAttribute(
-						'value',
-						this.service.stringBundle.getString('tooltipLoginUrl')
+					  'value',
+					  this.service.stringBundle.getString('tooltipLoginUrlCount')
 					);
-					hbox.appendChild(label);
-					var spacer = document.createElement('spacer');
-					spacer.setAttribute('flex','1');
-					hbox.appendChild(spacer);
-					label = label.cloneNode(false);
-					label.setAttribute(
-						'value',
-						this.service.stringBundle.getString('tooltipLoginUrlCount')
-					);
-					hbox.appendChild(label);
-					tooltip.appendChild(hbox)
-					
+
 					// Add the url list:
-					hbox = hbox.cloneNode(false);
-					hbox.setAttribute(
-						'class',
-						'secureLoginTooltipUrlRow'
-					);
 					var descr = document.createElement('description');
 					descr.setAttribute(
-						'class',
-						'secureLoginTooltipUrl'
+					  'class',
+					  'secureLoginTooltipUrl'
 					);
-					label = label.cloneNode(false);
+					var spacer = document.createElement("spacer");
+					var label = document.createElement('label');
 					label.setAttribute(
-						'class',
-						'secureLoginTooltipUrlCount'
+					  'class',
+					  'secureLoginTooltipUrlCount'
 					);
 					for (var i = 0; i < urls.length; i++) {
-						hbox = hbox.cloneNode(false);
+						let hbox = document.createElement("hbox");
 						descr = descr.cloneNode(false);
 						descr.setAttribute(
-							'value',
-							urls[i]
+						  'value',
+						  urls[i]
 						);
 						hbox.appendChild(descr);
 						hbox.appendChild(spacer.cloneNode(false));
 						label = label.cloneNode(false);
 						label.setAttribute(
-							'value',
-							'('+urlsCount[i]+')'
+						  'value',
+						  '('+urlsCount[i]+')'
 						);
 						hbox.appendChild(label);
 						tooltip.appendChild(hbox);
 					}
 
+					document.getElementById("secureLoginTooltipBox:existLogin").removeAttribute("hidden");
+					document.getElementById("secureLoginTooltipBox:noLogin").hidden = true;
 					return;
 				}
 			}
 
-			var label = document.createElement('label');
+			var label = document.getElementById("secureLoginTooltips:noLogin");
 			label.setAttribute(
-				'value',
-				this.service.stringBundle.getString('tooltipNoLogin')
+			  'value',
+			  this.service.stringBundle.getString('tooltipNoLogin')
 			);
-			tooltip.appendChild(label);
+			document.getElementById("secureLoginTooltipBox:noLogin").removeAttribute("hidden");
+			document.getElementById("secureLoginTooltipBox:existLogin").hidden = true;
 		}
 	},
 

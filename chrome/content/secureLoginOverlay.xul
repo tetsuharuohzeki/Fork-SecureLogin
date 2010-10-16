@@ -58,7 +58,28 @@
 		<popupset id="secureLoginPopUpSet">
 			<tooltip id="secureLoginTooltip"
 			         onpopupshowing="secureLoginOverlay.tooltip(event);"
-			         orient="vertical"/>
+			         orient="vertical">
+				<vbox id="secureLoginTooltipBox:existLogin"
+				      hidden="true">
+					<hbox id="secureLoginTooltipBox:Title">
+						<label id="secureLoginTooltipTitleLabel"/>
+						<label id="secureLoginTooltipKeyboardShortcut"/>
+					</hbox>
+					<hbox>
+						<label id="secureLoginTooltipUrlHeader:URL"
+						       class="secureLoginTooltipUrlHeader"/>
+						<spacer flex="1"/>
+						<label id="secureLoginTooltipUrlHeader:count"
+						       class="secureLoginTooltipUrlHeader"/>
+					</hbox>
+					<vbox id="secureLoginTooltipUrlsList"
+					      class="secureLoginTooltipUrlRow">
+					</vbox>
+				</vbox>
+				<box id="secureLoginTooltipBox:noLogin">
+					<label id="secureLoginTooltips:noLogin"/>
+				</box>
+			</tooltip>
 			<menupopup id="secureLoginContextmenu"
 			           onpopupshowing="secureLoginOverlay.contextMenu(event);"
 			           position="after_start">
