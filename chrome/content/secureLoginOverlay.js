@@ -80,6 +80,46 @@ var secureLoginOverlay = {
 		return this.secureLoginJavascriptProtection = document.getElementById('secureLoginJavascriptProtection');
 	},
 
+	get tooltipNoLoginLabel () {
+		delete this.tooltipNoLoginLabel;
+		return this.tooltipNoLoginLabel = document.getElementById("secureLoginTooltips:noLogin");
+	},
+
+	get tooltipNoLoginBox () {
+		delete this.tooltipNoLoginBox;
+		return this.tooltipNoLoginBox = document.getElementById("secureLoginTooltipBox:noLogin");
+	},
+
+	get tooltipExistLoginBox () {
+		delete this.tooltipExistLoginBox;
+		return this.tooltipExistLoginBox = document.getElementById("secureLoginTooltipBox:existLogin");
+	},
+
+	get tooltipLoginUrlsList () {
+		delete this.tooltipLoginUrlsList;
+		return this.tooltipLoginUrlsList = document.getElementById("secureLoginTooltipUrlsList")
+	},
+
+	get tooltipTitleLabel () {
+		delete this.tooltipTitleLabel;
+		return this.tooltipTitleLabel = document.getElementById("secureLoginTooltipTitleLabel");
+	},
+
+	get tooltipKeyboardShortcut () {
+		delete this.tooltipKeyboardShortcut;
+		return this.tooltipKeyboardShortcut = document.getElementById("secureLoginTooltipKeyboardShortcut");
+	},
+
+	get tooltipUrlHeaderURL () {
+		delete this.tooltipUrlHeaderURL;
+		return this.tooltipUrlHeaderURL = document.getElementById("secureLoginTooltipUrlHeader:URL");
+	},
+
+	get tooltipUrlHeaderCount () {
+		delete this.tooltipUrlHeaderCount;
+		return this.tooltipUrlHeaderCount = document.getElementById("secureLoginTooltipUrlHeader:count");
+	},
+
 	handleEvent: function (aEvent) {
 		switch (aEvent.type) {
 			case "load":
@@ -501,7 +541,7 @@ var secureLoginOverlay = {
 		}
 
 		// Get the tooltip node:
-		var tooltip = document.getElementById("secureLoginTooltipUrlsList");
+		var tooltip = this.tooltipLoginUrlsList;
 		if (tooltip) {
 			// Remove all children nodes:
 			while (tooltip.hasChildNodes()) {
@@ -553,75 +593,72 @@ var secureLoginOverlay = {
 
 				if (urls.length) {
 					// Add the login label plus shortcut, if not empty:
-					var label = document.getElementById("secureLoginTooltipTitleLabel");
-					label.setAttribute(
+					this.tooltipTitleLabel.setAttribute(
 					  'value',
 					  this.service.stringBundle.getString('tooltipLogin')
 					);
 					var formattedShortcut = this.service.getFormattedShortcut();
 					if (formattedShortcut) {
-						label = document.getElementById("secureLoginTooltipKeyboardShortcut");
-						label.setAttribute(
+						this.tooltipKeyboardShortcut.setAttribute(
 						  'value',
 						  '('+this.service.getFormattedShortcut()+')'
 						);
 					}
 
 					// Add a description of the URL elements and count:
-					label = document.getElementById("secureLoginTooltipUrlHeader:URL");
-					label.setAttribute(
+					this.tooltipUrlHeaderURL.setAttribute(
 					  'value',
 					  this.service.stringBundle.getString('tooltipLoginUrl')
 					);
-					label = document.getElementById("secureLoginTooltipUrlHeader:count");
-					label.setAttribute(
+					this.tooltipUrlHeaderCount.setAttribute(
 					  'value',
 					  this.service.stringBundle.getString('tooltipLoginUrlCount')
 					);
 
 					// Add the url list:
-					var descr = document.createElement('description');
-					descr.setAttribute(
+					var tooltipLoginURL = document.createElement('description');
+					tooltipLoginURL.setAttribute(
 					  'class',
 					  'secureLoginTooltipUrl'
 					);
 					var spacer = document.createElement("spacer");
-					var label = document.createElement('label');
-					label.setAttribute(
+					spacer.setAttribute("flex", "1");
+					var tooltipUrlCount = document.createElement('label');
+					tooltipUrlCount.setAttribute(
 					  'class',
 					  'secureLoginTooltipUrlCount'
 					);
 					for (var i = 0; i < urls.length; i++) {
 						let hbox = document.createElement("hbox");
-						descr = descr.cloneNode(false);
+						let descr = tooltipLoginURL.cloneNode(false);
 						descr.setAttribute(
 						  'value',
 						  urls[i]
 						);
-						hbox.appendChild(descr);
-						hbox.appendChild(spacer.cloneNode(false));
-						label = label.cloneNode(false);
-						label.setAttribute(
+						let label = tooltipUrlCount.cloneNode(false);
+						tooltipUrlCount.setAttribute(
 						  'value',
 						  '('+urlsCount[i]+')'
 						);
+
+						hbox.appendChild(descr);
+						hbox.appendChild(spacer.cloneNode(false));
 						hbox.appendChild(label);
 						tooltip.appendChild(hbox);
 					}
 
-					document.getElementById("secureLoginTooltipBox:existLogin").removeAttribute("hidden");
-					document.getElementById("secureLoginTooltipBox:noLogin").hidden = true;
+					this.tooltipExistLoginBox.removeAttribute("hidden");
+					this.tooltipNoLoginBox.hidden = true;
 					return;
 				}
 			}
 
-			var label = document.getElementById("secureLoginTooltips:noLogin");
-			label.setAttribute(
+			this.tooltipNoLoginLabel.setAttribute(
 			  'value',
 			  this.service.stringBundle.getString('tooltipNoLogin')
 			);
-			document.getElementById("secureLoginTooltipBox:noLogin").removeAttribute("hidden");
-			document.getElementById("secureLoginTooltipBox:existLogin").hidden = true;
+			this.tooltipNoLoginBox.removeAttribute("hidden");
+			this.tooltipExistLoginBox.hidden = true;
 		}
 	},
 
