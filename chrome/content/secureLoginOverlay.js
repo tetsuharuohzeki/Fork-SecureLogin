@@ -154,6 +154,7 @@ var secureLoginOverlay = {
 		switch (aData) {
 			case 'shortcut':
 				this.updateShortcut();
+				this.initializeTooltip();
 				break;
 			case 'hideContextMenuItem':
 				this.hideContextMenuItemUpdate();
@@ -191,6 +192,7 @@ var secureLoginOverlay = {
 	initializePrefs: function () {
 		// Set the keyboard shortcut:
 		this.updateShortcut();
+		this.initializeTooltip();
 
 		// Initialize toolbar and statusbar icons and tools and context menus:
 		this.hideToolbarButtonUpdate();
@@ -592,29 +594,6 @@ var secureLoginOverlay = {
 				}
 
 				if (urls.length) {
-					// Add the login label plus shortcut, if not empty:
-					this.tooltipTitleLabel.setAttribute(
-					  'value',
-					  this.service.stringBundle.getString('tooltipLogin')
-					);
-					var formattedShortcut = this.service.getFormattedShortcut();
-					if (formattedShortcut) {
-						this.tooltipKeyboardShortcut.setAttribute(
-						  'value',
-						  '('+this.service.getFormattedShortcut()+')'
-						);
-					}
-
-					// Add a description of the URL elements and count:
-					this.tooltipUrlHeaderURL.setAttribute(
-					  'value',
-					  this.service.stringBundle.getString('tooltipLoginUrl')
-					);
-					this.tooltipUrlHeaderCount.setAttribute(
-					  'value',
-					  this.service.stringBundle.getString('tooltipLoginUrlCount')
-					);
-
 					// Add the url list:
 					var tooltipLoginURL = document.createElement('description');
 					tooltipLoginURL.setAttribute(
@@ -653,13 +632,39 @@ var secureLoginOverlay = {
 				}
 			}
 
-			this.tooltipNoLoginLabel.setAttribute(
-			  'value',
-			  this.service.stringBundle.getString('tooltipNoLogin')
-			);
 			this.tooltipNoLoginBox.removeAttribute("hidden");
 			this.tooltipExistLoginBox.hidden = true;
 		}
+	},
+
+	initializeTooltip: function () {
+		// Add the login label plus shortcut, if not empty:
+		this.tooltipTitleLabel.setAttribute(
+		  'value',
+		  this.service.stringBundle.getString('tooltipLogin')
+		);
+		var formattedShortcut = this.service.getFormattedShortcut();
+		if (formattedShortcut) {
+			this.tooltipKeyboardShortcut.setAttribute(
+			  'value',
+			  '('+this.service.getFormattedShortcut()+')'
+			);
+		}
+
+		// Add a description of the URL elements and count:
+		this.tooltipUrlHeaderURL.setAttribute(
+		  'value',
+		  this.service.stringBundle.getString('tooltipLoginUrl')
+		);
+		this.tooltipUrlHeaderCount.setAttribute(
+		  'value',
+		  this.service.stringBundle.getString('tooltipLoginUrlCount')
+		);
+
+		this.tooltipNoLoginLabel.setAttribute(
+		  'value',
+		  this.service.stringBundle.getString('tooltipNoLogin')
+		);
 	},
 
 	finalize: function () {
