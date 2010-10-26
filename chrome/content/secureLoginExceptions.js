@@ -144,11 +144,11 @@ var secureLoginExceprions = {
 		var url = this.addExceptionTextbox.value;
 		// Get the prePath information from the given URL:
 		try {
-			url = this.service.makeURI(url, 'UTF-8').prePath;
+			url = this.service.makeURI(url, 'UTF-8', null).prePath;
 		} catch (e) {
 			try {
 				// Try adding "http://" in front of the url:
-				url = this.service.makeURI('http://'+url, 'UTF-8').prePath;	
+				url = this.service.makeURI('http://'+url, 'UTF-8', null).prePath;
 			} catch (e) {
 				// The given URL is not a valid one, log and return:
 				this.service.log('Invalid URL: '+url);

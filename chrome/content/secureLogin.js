@@ -398,18 +398,9 @@ var secureLogin = {
 					formAction = doc.baseURI;
 				}
 
-				var formURI;
 				try {
 					// Create a nsIURI object from the formAction:
-					//var formURI = this.makeURI(formAction, doc.characterSet);
-					try {
-						formURI = this.IOSvc.newURI(formAction, doc.characterSet, null);
-					}
-					catch (e) {
-						// make absolute path if formAction is relative one.
-						let tempFormURI = this.IOSvc.newURI(doc.location.href, doc.characterSet, null).resolve(formAction);
-						formURI = this.IOSvc.newURI(tempFormURI, doc.characterSet, null);
-					}
+					var formURI = this.makeURI(formAction, doc.characterSet, doc.baseURI);
 					var targetHost = formURI.prePath;
 				}
 				catch(e) {
@@ -1038,13 +1029,13 @@ var secureLogin = {
 							url = url.substring(0, paramIndex+1) + dataString;
 						}
 						// Load the url in the current window (params are url, referrer and post data):
-						loadURI(url, this.makeURI(doc.location.href, charset), null);
+						loadURI(url, this.makeURI(doc.location.href, charset, null), null);
 					}
 					else {
 						// Create post data mime stream (params are aStringData, aKeyword, aEncKeyword, aType):
 						var postData = getPostDataStream(dataString, '', '', 'application/x-www-form-urlencoded');
 						// Load the url in the current window (params are url, referrer and post data):
-						loadURI(url, this.makeURI(doc.location.href, charset), postData);
+						loadURI(url, this.makeURI(doc.location.href, charset, null), postData);
 					}
 
 				} else {
@@ -1140,7 +1131,7 @@ var secureLogin = {
 				var targetHost;
 				if (doc.forms[formIndex].action) {
 					try {
-						targetHost = this.makeURI(doc.forms[formIndex].action, doc.characterSet).prePath;
+						targetHost = this.makeURI(doc.forms[formIndex].action, doc.characterSet, doc.baseURI).prePath;
 					}
 					catch (e) {
 						// The forms seems not to have a valid "acion" attribute, continue:
@@ -1350,7 +1341,7 @@ var secureLogin = {
 				action: 'add',
 				type: 'bookmark',
 				hiddenRows: ['location', 'description', 'load in sidebar'],
-				uri: this.makeURI(url, doc.characterSet),
+				uri: this.makeURI(url, doc.characterSet, null),
 				title: doc.title
 			};
 			window.openDialog(
@@ -1371,8 +1362,17 @@ var secureLogin = {
 		}
 	},
 
-	makeURI: function (aURL, aOriginCharset) {
-		return this.IOSvc.newURI(aURL, aOriginCharset, null);
+	makeURI: function (aURI, aOriginCharset, aBaseURI) {
+		var absoluteURI;
+		try {
+			absoluteURI = this.IOSvc.newURI(aURI, aOriginCharset, null);
+		}
+		catch (e) {
+			// make absolute URI, if aURI is relative one.
+			let tempURI = this.IOSvc.newURI(aBaseURI, aOriginCharset, null).resolve(aURI);
+			absoluteURI = this.IOSvc.newURI(tempURI, aOriginCharset, null);
+		}
+		return absoluteURI;
 	},
 
 	urlEncode: function (aString, aCharset) {
