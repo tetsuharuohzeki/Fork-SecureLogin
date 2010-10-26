@@ -375,32 +375,32 @@ var secureLogin = {
 	},
 
 	searchLogins: function (aWin) {
-		var doc = this.getDoc(aWin);
+		var document = this.getDoc(aWin);
+		var forms = document.forms;
+		var location = document.location;
 
 		// Check if any web forms are available on the current window:
-		if (doc
-		    && doc.forms
-		    && (doc.forms.length > 0)
-		    && doc.location
+		if (document
+		    && forms
+		    && (forms.length > 0)
+		    && location
 		) {
 
 			// document (current) host:
-			var host = doc.location.protocol + '//' + doc.location.host;
+			var host = location.protocol + '//' + location.host;
 
 			var formURIs = new Array();
 
 			// Go through the forms:
-			for (var i = 0; i < doc.forms.length; i++) {
+			for (var i = 0; i < forms.length; i++) {
+				let form = forms[i];
 
-				var formAction = doc.forms[i].action;
-				if (!formAction) {
-					// Forms with no "action" attribute default to submitting to their origin URL:
-					formAction = doc.baseURI;
-				}
+				// Forms with no "action" attribute default to submitting to their origin URL:
+				var formAction = form.action ? form.action : document.baseURI;
 
 				try {
 					// Create a nsIURI object from the formAction:
-					var formURI = this.makeURI(formAction, doc.characterSet, doc.baseURI);
+					var formURI = this.makeURI(formAction, document.characterSet, document.baseURI);
 					var targetHost = formURI.prePath;
 				}
 				catch(e) {
@@ -429,7 +429,7 @@ var secureLogin = {
 
 				if (loginsCount) {
 					// Get valid login fields:
-					var loginFields = this.getLoginFields(doc.forms[i], null, null);
+					var loginFields = this.getLoginFields(form, null, null);
 
 					if (loginFields) {
 						if (this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms')) {
@@ -770,12 +770,13 @@ var secureLogin = {
 		while (aPopup.hasChildNodes()) {
 			aPopup.removeChild(aPopup.firstChild);
 		}
-		if (this.secureLogins) {
+		var secureLogins = this.secureLogins;
+		if (secureLogins) {
 			var menuitem = document.createElement('menuitem');
 			menuitem.setAttribute('class','menuitem-iconic secureLoginUserIcon');
 			// Add a menuitem for each available user login:
-			for (var i = 0; i < this.secureLogins.length; i++) {
-				var username = this.getUsernameFromLoginObject(this.secureLogins[i]);
+			for (var i = 0; i < secureLogins.length; i++) {
+				var username = this.getUsernameFromLoginObject(secureLogins[i]);
 				// Show form index?
 				if (this.showFormIndex) {
 					username += '  (' + this.secureLoginsFormIndex[i] + ')';
@@ -1253,7 +1254,7 @@ var secureLogin = {
 		var shortcut = aShortcutParam ? aShortcutParam : this.getShortcut();
 		var formattedShortcut = '';
 		// Add the modifiers:
-		for (var i = 0; i < shortcut['modifiers'].length; i++)
+		for (var i = 0; i < shortcut['modifiers'].length; i++) {
 			try {
 				formattedShortcut += this.stringBundle.getString(shortcut['modifiers'][i]) + '+';
 			}
@@ -1262,7 +1263,8 @@ var secureLogin = {
 				// Error in shortcut string, return empty String;
 				return '';
 			}
-		if (shortcut['key'])
+		}
+		if (shortcut['key']) {
 			// Add the key:
 			if (shortcut['key'] == ' ') {
 				formattedShortcut += this.stringBundle.getString('VK_SPACE');
@@ -1270,6 +1272,7 @@ var secureLogin = {
 			else {
 				formattedShortcut += shortcut['key'];
 			}
+		}
 		else if (shortcut['keycode']) {
 			// Add the keycode (instead of the key):
 			try {
@@ -1325,9 +1328,9 @@ var secureLogin = {
 	},
 
 	showBookmarkDialog: function () {
-		var doc = this.getDoc();
-		var location = doc.location;
-		if (doc && doc.forms && doc.forms.length > 0 && location) {
+		var document = this.getDoc();
+		var location = document.location;
+		if (document && document.forms && document.forms.length > 0 && location) {
 			var url;
 			// Create a Secure Login Bookmark out of the current URL:
 			if (location.hash) {
@@ -1342,8 +1345,8 @@ var secureLogin = {
 				action: 'add',
 				type: 'bookmark',
 				hiddenRows: ['location', 'description', 'load in sidebar'],
-				uri: this.makeURI(url, doc.characterSet, null),
-				title: doc.title
+				uri: this.makeURI(url, document.characterSet, null),
+				title: document.title
 			};
 			window.openDialog(
 			  'chrome://browser/content/places/bookmarkProperties2.xul',
