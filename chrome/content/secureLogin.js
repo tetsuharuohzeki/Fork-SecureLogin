@@ -896,7 +896,8 @@ var secureLogin = {
 				var charset = doc.characterSet;
 
 				// Get the target url from the form action value or if empty from the current document:
-				var url = form.action ? form.action : doc.baseURI;
+				var formAction = form.action ? form.action : doc.baseURI;
+				var url = this.IOSvc.newURI(doc.baseURI, doc.characterSet, null).resolve(formAction);
 
 				// Ask for confirmation if we had a failed bookmark-login:
 				if (this.failedBookmarkLogin) {
