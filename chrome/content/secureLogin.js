@@ -1486,13 +1486,11 @@ var secureLogin = {
 	},
 
 	inArray: function (aArray, aItem) {
-		var i = aArray.length;
-		while (i--) {
-			if (aArray[i] === aItem) {
-				return true;
-			}
-		}
-		return false;
+		var item = aItem;
+		var isInArray = aArray.some(function(aElm, aElmIndex, aTraversedArray){
+			return (aElm === item);
+		});
+		return isInArray;
 	},
 
 	openHelp: function (aTopic) {
