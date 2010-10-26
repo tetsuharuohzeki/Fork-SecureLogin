@@ -398,9 +398,18 @@ var secureLogin = {
 					formAction = doc.baseURI;
 				}
 
+				var formURI;
 				try {
 					// Create a nsIURI object from the formAction:
-					var formURI = this.makeURI(formAction, doc.characterSet);
+					//var formURI = this.makeURI(formAction, doc.characterSet);
+					try {
+						formURI = this.IOSvc.newURI(formAction, doc.characterSet, null);
+					}
+					catch (e) {
+						// make absolute path if formAction is relative one.
+						let tempFormURI = this.IOSvc.newURI(doc.location.href, doc.characterSet, null).resolve(formAction);
+						formURI = this.IOSvc.newURI(tempFormURI, doc.characterSet, null);
+					}
 					var targetHost = formURI.prePath;
 				}
 				catch(e) {
