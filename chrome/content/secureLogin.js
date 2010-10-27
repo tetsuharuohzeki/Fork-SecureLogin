@@ -687,12 +687,12 @@ var secureLogin = {
 
 	needsRealLoginObjects: function () {
 		// Check if any of the login objects is still null (might happen with frames):
-		for (var i = 0; i < this.secureLogins.length; i++) {
-			if (!this.secureLogins[i]) {
+		var isNeedsRealLoginObj = this.secureLogins.some(function(aElm, aElmIndex, aTraversedArray){
+			if (!aElm) {
 				return true;
 			}
-		}
-		return false;
+		});
+		return isNeedsRealLoginObj;
 	},
 
 	get loginUserSelectionPopup () {
