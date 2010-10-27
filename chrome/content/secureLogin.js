@@ -398,16 +398,9 @@ var secureLogin = {
 				// Forms with no "action" attribute default to submitting to their origin URL:
 				var formAction = form.action ? form.action : document.baseURI;
 
-				try {
-					// Create a nsIURI object from the formAction:
-					var formURI = this.makeURI(formAction, document.characterSet, document.baseURI);
-					var targetHost = formURI.prePath;
-				}
-				catch(e) {
-					// The forms seems not to have a valid "action" attribute, continue:
-					this.log(e);
-					continue;
-				}
+				// Create a nsIURI object from the formAction:
+				var formURI = this.makeURI(formAction, document.characterSet, document.baseURI);
+				var targetHost = formURI.prePath;
 
 				if (this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms')) {
 					// Skip this form if the same formURI has already been added:
