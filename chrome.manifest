@@ -1,23 +1,23 @@
-content		securelogin						jar:chrome/securelogin.jar!/content/
-locale		securelogin 	bg-BG			jar:chrome/securelogin.jar!/locale/bg-BG/
-locale		securelogin 	cs-CZ			jar:chrome/securelogin.jar!/locale/cs-CZ/
-locale		securelogin 	de-DE			jar:chrome/securelogin.jar!/locale/de-DE/
-locale		securelogin 	en-US			jar:chrome/securelogin.jar!/locale/en-US/
-locale		securelogin 	fi-FI			jar:chrome/securelogin.jar!/locale/fi-FI/
-locale		securelogin 	fr-FR			jar:chrome/securelogin.jar!/locale/fr-FR/
-locale		securelogin 	he-IL			jar:chrome/securelogin.jar!/locale/he-IL/
-locale		securelogin 	hu-HU			jar:chrome/securelogin.jar!/locale/hu-HU/
-locale		securelogin 	it-IT			jar:chrome/securelogin.jar!/locale/it-IT/
-locale		securelogin 	ja-JP			jar:chrome/securelogin.jar!/locale/ja-JP/
-locale		securelogin 	nl-NL			jar:chrome/securelogin.jar!/locale/nl-NL/
-locale		securelogin 	pl-PL			jar:chrome/securelogin.jar!/locale/pl-PL/
-locale		securelogin 	pt-BR			jar:chrome/securelogin.jar!/locale/pt-BR/
-locale		securelogin 	ro-RO			jar:chrome/securelogin.jar!/locale/ro-RO/
-locale		securelogin 	ru-RU			jar:chrome/securelogin.jar!/locale/ru-RU/
-locale		securelogin 	tr-TR			jar:chrome/securelogin.jar!/locale/tr-TR/
-locale		securelogin 	zh-CN			jar:chrome/securelogin.jar!/locale/zh-CN/
-locale		securelogin 	zh-TW			jar:chrome/securelogin.jar!/locale/zh-TW/
-skin		securelogin 	classic/1.0 	jar:chrome/securelogin.jar!/skin/
+content		securelogin				chrome/content/
+locale		securelogin 	bg-BG			chrome/locale/bg-BG/
+locale		securelogin 	cs-CZ			chrome/locale/cs-CZ/
+locale		securelogin 	de-DE			chrome/locale/de-DE/
+locale		securelogin 	en-US			chrome/locale/en-US/
+locale		securelogin 	fi-FI			chrome/locale/fi-FI/
+locale		securelogin 	fr-FR			chrome/locale/fr-FR/
+locale		securelogin 	he-IL			chrome/locale/he-IL/
+locale		securelogin 	hu-HU			chrome/locale/hu-HU/
+locale		securelogin 	it-IT			chrome/locale/it-IT/
+locale		securelogin 	ja-JP			chrome/locale/ja-JP/
+locale		securelogin 	nl-NL			chrome/locale/nl-NL/
+locale		securelogin 	pl-PL			chrome/locale/pl-PL/
+locale		securelogin 	pt-BR			chrome/locale/pt-BR/
+locale		securelogin 	ro-RO			chrome/locale/ro-RO/
+locale		securelogin 	ru-RU			chrome/locale/ru-RU/
+locale		securelogin 	tr-TR			chrome/locale/tr-TR/
+locale		securelogin 	zh-CN			chrome/locale/zh-CN/
+locale		securelogin 	zh-TW			chrome/locale/zh-TW/
+skin		securelogin 	classic/1.0 		chrome/skin/
 overlay		chrome://browser/content/browser.xul					chrome://securelogin/content/secureLoginOverlay.xul
 style		chrome://global/content/customizeToolbar.xul			chrome://securelogin/skin/secureLogin.css
 style		chrome://browser/content/browser.xul					chrome://securelogin/skin/secureLogin1.5.css			appversion<2.0
