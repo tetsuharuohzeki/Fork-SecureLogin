@@ -13,9 +13,30 @@
 			<Description>
 				<!-- Firefox -->
 				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-				<em:minVersion>3.0</em:minVersion>
-				<em:maxVersion>3.7.*</em:maxVersion>
+				<em:minVersion>1.5</em:minVersion>
+				<em:maxVersion>3.0.*</em:maxVersion>
 			</Description>
 		</em:targetApplication>
+	    <em:translator>Fingli (Bulgarian)</em:translator>
+	    <em:translator>PetrTwo (Czech)</em:translator>
+	    <em:translator>Oliver Roth (German)</em:translator>
+	    <em:translator>npa111 (Finnish)</em:translator>
+	    <em:translator>menet (French)</em:translator>
+	    <em:translator>barryoni (Hebrew)</em:translator>
+	    <em:translator>Mikes Kaszmán István (Hungarian)</em:translator>
+	    <em:translator>gonzalopirobutirro (Italian)</em:translator>
+	    <em:translator>Underpass (Italian</em:translator>
+	    <em:translator>Norah (Japanese)</em:translator>
+	    <em:translator>Hirto (Japanese)</em:translator>
+	    <em:translator>markh (Dutch)</em:translator>
+	    <em:translator>teo (Polish)</em:translator>
+	    <em:translator>RodrigoBiker (Portuguese)</em:translator>
+		<em:translator>x10firefox (Romanian)</em:translator>
+	    <em:translator>Merlyel (Russian)</em:translator>
+	    <em:translator>Modex (Russian)</em:translator>
+	    <em:translator>Sergeys (Russian)</em:translator>
+	    <em:translator>xbayus (Turkish)</em:translator>
+	    <em:translator>fang5566 (Chinese - Simplified)</em:translator>
+	    <em:translator>Lu Ming-Tse (呂明澤) (Chinese - Traditional)</em:translator>
 	</Description>
 </RDF>
