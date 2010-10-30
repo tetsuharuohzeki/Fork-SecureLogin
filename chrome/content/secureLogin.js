@@ -922,29 +922,12 @@ var secureLogin = {
 						}
 
 						switch (element.type) {
-							case 'text':
-								if (!usernameField || element.name != usernameField.name) {
-									addToDataString(element.name, element.value);
-								}
-								else {
-									// This is the userName field - use the saved username as value:
-									addToDataString(
-									  usernameField.name,
-									  this.getUsernameFromLoginObject(this.secureLogins[selectedIndex])
-									);
-								}
-								break;
 							case 'password':
 								// This is the password field - use the saved password as value:
 								addToDataString(
 								  passwordField.name,
 								  this.getPasswordFromLoginObject(this.secureLogins[selectedIndex])
 								);
-								break;
-							case 'hidden':
-							case 'select-one':
-							case 'textarea':
-								addToDataString(element.name, element.value);
 								break;
 							case 'select-multiple':
 								for (var j = 0; j < element.options.length; j++) {
@@ -964,6 +947,18 @@ var secureLogin = {
 								if (!submitButtonFound) {
 									addToDataString(element.name, element.value);
 									submitButtonFound = true;
+								}
+								break;
+							default:
+								if (!usernameField || element.name != usernameField.name) {
+									addToDataString(element.name, element.value);
+								}
+								else {
+									// This is the userName field - use the saved username as value:
+									addToDataString(
+									  usernameField.name,
+									  this.getUsernameFromLoginObject(this.secureLogins[selectedIndex])
+									);
 								}
 								break;
 						}
