@@ -472,7 +472,7 @@ var secureLogin = {
 				// input of type "text" found, this is no password only form:
 				inputTextFound = true;
 
-				// We do not get a loginUsernameFieldName from Firefox 3:
+				// We do not get a aLoginUsernameFieldName from Firefox 3:
 				if (!aLoginUsernameFieldName) {
 					// Assume the first text field followed by a password field is the username field
 					// Use another loop to skip non-text fields (e.g. checkboxes) between:
@@ -495,7 +495,7 @@ var secureLogin = {
 				}
 			}
 			else if (element.type == 'password') {
-				// We do not get a loginPasswordFieldName from Firefox 3:
+				// We do not get a aLoginPasswordFieldName from Firefox 3:
 				let isNextElmIsPassword = (elements[i+1] && elements[i+1].type == 'password');
 				if (!aLoginPasswordFieldName) {
 					// Skip registration or password change forms (two password fields):
@@ -517,7 +517,7 @@ var secureLogin = {
 
 		if (passwordField) {
 			// If this is a password only form, no input of type "text" may be found and userFieldName must be empty:
-			if (!usernameField && (inputTextFound || loginUsernameFieldName)) {
+			if (!usernameField && (inputTextFound || aLoginUsernameFieldName)) {
 				return null;
 			}
 
