@@ -391,6 +391,7 @@ var secureLogin = {
 
 			var formURIs = new Array();
 
+
 			// Go through the forms:
 			for (var i = 0; i < forms.length; i++) {
 				let form = forms[i];
@@ -421,8 +422,9 @@ var secureLogin = {
 				var loginsCount = this.loginManager.countLogins(host, targetHost, null);
 
 				if (loginsCount) {
+					var loginInfos = this.loginManager.findLogins({}, host, targetHost, null);
 					// Get valid login fields:
-					var loginFields = this.getLoginFields(form, null, null);
+					var loginFields = this.getLoginFields(form, loginInfos[0].usernameField, loginInfos[0].passwordField);
 
 					if (loginFields) {
 						if (this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms')) {
@@ -468,50 +470,24 @@ var secureLogin = {
 			if (!element.name || element.disabled) {
 				continue;
 			}
-			if (element.type == 'text') {
-				// input of type "text" found, this is no password only form:
-				inputTextFound = true;
 
-				// We do not get a aLoginUsernameFieldName from Firefox 3:
-				if (!aLoginUsernameFieldName) {
-					// Assume the first text field followed by a password field is the username field
-					// Use another loop to skip non-text fields (e.g. checkboxes) between:
-					for (var j = i+1; j < elements.length; j++) {
-						if (elements[j].type == 'password') {
-							// Following password field found so the username field might be valid:
-							usernameField = element;
-							break;
-						}
-						if (elements[j].type == 'text') {
-							// Another textfield found, this might be the username field, so break out of the loop:
-							break;
-						}
-					}
-				}
-				else {
-					if (element.name == aLoginUsernameFieldName) {
-						usernameField = element;
-					}
-				}
-			}
-			else if (element.type == 'password') {
-				// We do not get a aLoginPasswordFieldName from Firefox 3:
-				let isNextElmIsPassword = (elements[i+1] && elements[i+1].type == 'password');
-				if (!aLoginPasswordFieldName) {
-					// Skip registration or password change forms (two password fields):
-					if (!isNextElmIsPassword) {
-						passwordField = element;
-					}
-				}
-				else {
-					// Skip registration or password change forms (two password fields):
-					if (!isNextElmIsPassword && element.name == aLoginPasswordFieldName) {
-						passwordField = element;
-					}
+			if (element.type == "password") {
+				let isNextElmIsPassword = (elements[i+1] && elements[i+1].type == "password");
+				// Skip registration or password change forms (two password fields):
+				if (!isNextElmIsPassword && element.name == aLoginPasswordFieldName) {
+					passwordField = element;
 				}
 
 				// We found a password field so break out of the loop:
 				break;
+			}
+			else {
+				// input of type "text" found, this is no password only form:
+				inputTextFound = true;
+
+				if (element.name == aLoginUsernameFieldName) {
+					usernameField = element;
+				}
 			}
 		}
 
