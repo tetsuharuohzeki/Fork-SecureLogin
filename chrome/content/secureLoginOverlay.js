@@ -620,7 +620,7 @@ var secureLoginOverlay = {
 						  urls[i]
 						);
 						let label = tooltipUrlCount.cloneNode(false);
-						tooltipUrlCount.setAttribute(
+						label.setAttribute(
 						  'value',
 						  '('+urlsCount[i]+')'
 						);
