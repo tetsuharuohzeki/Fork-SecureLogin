@@ -391,6 +391,7 @@ var secureLogin = {
 
 			var formURIs = new Array();
 
+			var isSkipDuplicateActionForms = this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms');
 
 			// Go through the forms:
 			for (var i = 0; i < forms.length; i++) {
@@ -403,7 +404,7 @@ var secureLogin = {
 				var formURI = this.makeURI(formAction, document.characterSet, document.baseURI);
 				var targetHost = formURI.prePath;
 
-				if (this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms')) {
+				if (isSkipDuplicateActionForms) {
 					// Skip this form if the same formURI has already been added:
 					var isDuplicate = false;
 					for (var j = 0; j< formURIs.length; j++) {
@@ -427,7 +428,7 @@ var secureLogin = {
 					var loginFields = this.getLoginFields(form, loginInfos[0].usernameField, loginInfos[0].passwordField);
 
 					if (loginFields) {
-						if (this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms')) {
+						if (isSkipDuplicateActionForms) {
 							// Add the formURI to the list:
 							formURIs.push(formURI);
 						}
