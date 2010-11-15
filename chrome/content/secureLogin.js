@@ -473,9 +473,7 @@ var secureLogin = {
 			}
 
 			if (element.type == "password") {
-				let isNextElmIsPassword = (elements[i+1] && elements[i+1].type == "password");
-				// Skip registration or password change forms (two password fields):
-				if (!isNextElmIsPassword && element.name == aLoginPasswordFieldName) {
+				if (element.name == aLoginPasswordFieldName) {
 					passwordField = element;
 				}
 
