@@ -475,10 +475,9 @@ var secureLogin = {
 			if (element.type == "password") {
 				if (element.name == aLoginPasswordFieldName) {
 					passwordField = element;
+					// We found a password field so break out of the loop:
+					break;
 				}
-
-				// We found a password field so break out of the loop:
-				break;
 			}
 			else {
 				// input which type is not password found,
