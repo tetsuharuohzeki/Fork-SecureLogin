@@ -893,167 +893,11 @@ var secureLogin = {
 
 				// Send login data without using the form:
 				if (useJavaScriptProtection) {
-
-					// String to save the form data:
-					var dataString = '';
-
-					// Reference to the main secureLogin object:
-					var parentObject = this;
-
-					// Local helper function to add name and value pairs urlEncoded to the dataString:
-					function addToDataString(aName, aValue) {
-						if (dataString) {
-							dataString += '&';
-						}
-						dataString += parentObject.urlEncode(aName, charset)
-						              + '='
-						              + parentObject.urlEncode(aValue, charset);
-					}
-
-					var submitButtonFound = false;
-
-					// Search for form elements other than user+pass fields and add them to the dataString:
-					for (var i = 0; i < elements.length; i++) {
-						let element = elements[i];
-
-						// Don't add disabled elements or elements without a "name":
-						if (!element.name || element.disabled) {
-							continue;
-						}
-
-						switch (element.type) {
-							case 'password':
-								// This is the password field - use the saved password as value:
-								addToDataString(
-								  passwordField.name,
-								  this.getPasswordFromLoginObject(this.secureLogins[selectedIndex])
-								);
-								break;
-							case 'select-multiple':
-								for (var j = 0; j < element.options.length; j++) {
-									if (element.options[j].selected) {
-										addToDataString(element.name, element.options[j].value);
-									}
-								}
-								break;
-							case 'checkbox':
-							case 'radio':
-								if (element.checked) {
-		    						addToDataString(element.name, element.value);
-								}
-								break;
-							case 'submit':
-								// Only add first submit button:
-								if (!submitButtonFound) {
-									addToDataString(element.name, element.value);
-									submitButtonFound = true;
-								}
-								break;
-							default:
-								if (!usernameField || element.name != usernameField.name) {
-									addToDataString(element.name, element.value);
-								}
-								else {
-									// This is the userName field - use the saved username as value:
-									addToDataString(
-									  usernameField.name,
-									  this.getUsernameFromLoginObject(this.secureLogins[selectedIndex])
-									);
-								}
-								break;
-						}
-
-					}
-
-					// If no submit button found,
-					//search for an input of type="image" which ist not in the elements list:
-					if (!submitButtonFound) {
-						var inputElements = form.getElementsByTagName('input');
-						for (var i = 0; i < inputElements.length; i++) {
-							let inputElement = inputElements[i];
-							if (inputElement.type == 'image') {
-								// Image submit buttons add the "click-coordinates" name.x and name.y
-								// to the request data:
-								addToDataString(inputElement.name + '.x', 1);
-								addToDataString(inputElement.name + '.y', 1);
-								addToDataString(inputElement.name, inputElement.value);
-							}
-						}
-					}
-
-					// Check if the url is an allowed one (throws an exception if not):
-					this.urlSecurityCheck(url, doc.location.href);
-
-					// Send the data by GET or POST:
-					if (form.method && form.method.toLowerCase() == 'get') {
-						// Add the parameter list to the url, remove existing parameters:
-						var paramIndex = url.indexOf('?');
-						if(paramIndex == -1) {
-							url += '?' + dataString;
-						}
-						else {
-							url = url.substring(0, paramIndex+1) + dataString;
-						}
-						// Load the url in the current window (params are url, referrer and post data):
-						loadURI(url, this.makeURI(doc.location.href, charset, null), null);
-					}
-					else {
-						// Create post data mime stream (params are aStringData, aKeyword, aEncKeyword, aType):
-						var postData = getPostDataStream(dataString, '', '', 'application/x-www-form-urlencoded');
-						// Load the url in the current window (params are url, referrer and post data):
-						loadURI(url, this.makeURI(doc.location.href, charset, null), postData);
-					}
-
+					this._loginWithJSProtection(elements, usernameField, passwordField,
+					                            form, doc, selectedIndex, url, charset);
 				} else {
-					// Fill the login fields:
-					if (usernameField) {
-						usernameField.value = this.getUsernameFromLoginObject(this.secureLogins[selectedIndex]);
-					}
-					passwordField.value = this.getPasswordFromLoginObject(this.secureLogins[selectedIndex]);
-
-					if (this.secureLoginPrefs.getBoolPref('autoSubmitForm')) {
-						// Prevent multiple submits (e.g. if submit is delayed)
-						// by setting a variable (after click on a submit button):
-						var submitted = false;
-						// Search for the submit button:
-						for (var i = 0; i < elements.length; i++) {
-							let element = elements[i];
-							// auto-login by clicking on the submit button:
-							if (element.type && element.type == 'submit') {
-								element.click();
-								submitted = true;
-								break;
-							}
-						}
-
-						if (!submitted) {
-							// Search for a submit button of type="image" which ist not in the elements list:
-							var inputElements = doc.getElementsByTagName('input');
-							for (var i = 0; i < inputElements.length; i++) {
-								let inputElement = inputElements[i];
-								// auto-login by clicking on the image submit button
-								//if it belongs to the current form:
-								if (inputElement.type == 'image'
-								    && inputElement.form
-								    && (inputElement.form == form)) {
-									inputElement.click();
-									submitted = true;
-									break;
-								}
-							}
-
-							if (!submitted) {
-								// No submit button found, try to submit anyway:
-								form.submit();
-							}
-						}
-					}
-					else {
-						// Don't submit automatically but set the focus on the password field,
-						// this way submitting can be done by hitting return on the keyboard:
-						passwordField.focus();
-						return;
-					}
+					this._loginWithNormal(elements, usernameField, passwordField,
+					                      form, doc, selectedIndex);
 				}
 
 				// Play sound notification:
@@ -1075,6 +919,187 @@ var secureLogin = {
 		this.secureLoginsPassField = null;
 		this.secureLoginsUserField = null;
 		this.secureLoginsWindow = null;
+	},
+
+	_loginWithJSProtection: function (aElms, aUsernameField, aPasswordField, aForm,
+	                                  aDoc, aSelectedIndex, aUrl, aCharset) {
+		var elements = aElms;
+		var usernameField = aUsernameField;
+		var passwordField = aPasswordField;
+		var form = aForm;
+		var url = aUrl;
+		var doc = aDoc;
+		var charset = aCharset;
+		var selectedIndex = aSelectedIndex;
+
+		// String to save the form data:
+		var dataString = '';
+
+		// Reference to the main secureLogin object:
+		var parentObject = this;
+
+		// Local helper function to add name and value pairs urlEncoded to the dataString:
+		function addToDataString(aName, aValue) {
+			if (dataString) {
+				dataString += '&';
+			}
+			dataString += parentObject.urlEncode(aName, charset)
+			              + '='
+			              + parentObject.urlEncode(aValue, charset);
+		}
+
+		var submitButtonFound = false;
+
+		// Search for form elements other than user+pass fields and add them to the dataString:
+		for (var i = 0; i < elements.length; i++) {
+			let element = elements[i];
+
+			// Don't add disabled elements or elements without a "name":
+			if (!element.name || element.disabled) {
+				continue;
+			}
+
+			switch (element.type) {
+				case 'password':
+					// This is the password field - use the saved password as value:
+					addToDataString(
+					  passwordField.name,
+					  this.getPasswordFromLoginObject(this.secureLogins[selectedIndex])
+					);
+					break;
+				case 'select-multiple':
+					for (var j = 0; j < element.options.length; j++) {
+						if (element.options[j].selected) {
+							addToDataString(element.name, element.options[j].value);
+						}
+					}
+					break;
+				case 'checkbox':
+				case 'radio':
+					if (element.checked) {
+						addToDataString(element.name, element.value);
+					}
+					break;
+				case 'submit':
+					// Only add first submit button:
+					if (!submitButtonFound) {
+						addToDataString(element.name, element.value);
+						submitButtonFound = true;
+					}
+					break;
+				default:
+					if (!usernameField || element.name != usernameField.name) {
+						addToDataString(element.name, element.value);
+					}
+					else {
+						// This is the userName field - use the saved username as value:
+						addToDataString(
+						  usernameField.name,
+						  this.getUsernameFromLoginObject(this.secureLogins[selectedIndex])
+						);
+					}
+					break;
+			}
+
+		}
+
+		// If no submit button found,
+		//search for an input of type="image" which ist not in the elements list:
+		if (!submitButtonFound) {
+			var inputElements = form.getElementsByTagName('input');
+			for (var i = 0; i < inputElements.length; i++) {
+				let inputElement = inputElements[i];
+				if (inputElement.type == 'image') {
+					// Image submit buttons add the "click-coordinates" name.x and name.y
+					// to the request data:
+					addToDataString(inputElement.name + '.x', 1);
+					addToDataString(inputElement.name + '.y', 1);
+					addToDataString(inputElement.name, inputElement.value);
+				}
+			}
+		}
+
+		// Check if the url is an allowed one (throws an exception if not):
+		this.urlSecurityCheck(url, doc.location.href);
+
+		// Send the data by GET or POST:
+		if (form.method && form.method.toLowerCase() == 'get') {
+			// Add the parameter list to the url, remove existing parameters:
+			var paramIndex = url.indexOf('?');
+			if(paramIndex == -1) {
+				url += '?' + dataString;
+			}
+			else {
+				url = url.substring(0, paramIndex+1) + dataString;
+			}
+			// Load the url in the current window (params are url, referrer and post data):
+			loadURI(url, this.makeURI(doc.location.href, charset, null), null);
+		}
+		else {
+			// Create post data mime stream (params are aStringData, aKeyword, aEncKeyword, aType):
+			var postData = getPostDataStream(dataString, '', '', 'application/x-www-form-urlencoded');
+			// Load the url in the current window (params are url, referrer and post data):
+			loadURI(url, this.makeURI(doc.location.href, charset, null), postData);
+		}
+	},
+
+	_loginWithNormal: function (aElms, aUsernameField, aPasswordField, aForm, aDoc, aSelectedIndex) {
+		var elements = aElms;
+		var usernameField = aUsernameField;
+		var passwordField = aPasswordField;
+		var form = aForm;
+		var doc = aDoc;
+		var selectedIndex = aSelectedIndex;
+
+		// Fill the login fields:
+		if (usernameField) {
+			usernameField.value = this.getUsernameFromLoginObject(this.secureLogins[selectedIndex]);
+		}
+		passwordField.value = this.getPasswordFromLoginObject(this.secureLogins[selectedIndex]);
+
+		if (this.secureLoginPrefs.getBoolPref('autoSubmitForm')) {
+			// Prevent multiple submits (e.g. if submit is delayed)
+			// by setting a variable (after click on a submit button):
+			var submitted = false;
+			// Search for the submit button:
+			for (var i = 0; i < elements.length; i++) {
+				let element = elements[i];
+				// auto-login by clicking on the submit button:
+				if (element.type && element.type == 'submit') {
+					element.click();
+					submitted = true;
+					break;
+				}
+			}
+
+			if (!submitted) {
+				// Search for a submit button of type="image" which ist not in the elements list:
+				var inputElements = doc.getElementsByTagName('input');
+				for (var i = 0; i < inputElements.length; i++) {
+					let inputElement = inputElements[i];
+					// auto-login by clicking on the image submit button
+					//if it belongs to the current form:
+					if (inputElement.type == 'image'
+					    && inputElement.form
+					    && (inputElement.form == form)) {
+						inputElement.click();
+						submitted = true;
+						break;
+					}
+				}
+
+				if (!submitted) {
+					// No submit button found, try to submit anyway:
+					form.submit();
+				}
+			}
+		}
+		else {
+			// Don't submit automatically but set the focus on the password field,
+			// this way submitting can be done by hitting return on the keyboard:
+			passwordField.focus();
+			return;
+		}
 	},
 
 	getRealLoginObjects: function () {
