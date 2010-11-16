@@ -847,13 +847,14 @@ var secureLogin = {
 				}
 
 				// The document containing the form:
-				var doc = this.getDoc(aWin);
+				var document = this.getDoc(aWin);
+				var location = document.location;
 
 				// The index for the form containing the login fields:
 				var formIndex = this.secureLoginsFormIndex[selectedIndex];
 
 				// The login form:
-				var form = doc.forms[formIndex];
+				var form = document.forms[formIndex];
 
 				// The form elements list:
 				var elements = form.elements;
@@ -863,11 +864,11 @@ var secureLogin = {
 				var passwordField = this.secureLoginsPassField[selectedIndex];
 
 				// The charset of the given document:
-				var charset = doc.characterSet;
+				var charset = document.characterSet;
 
 				// Get the target url from the form action value or if empty from the current document:
-				var formAction = form.action ? form.action : doc.baseURI;
-				var url = this.IOSvc.newURI(doc.baseURI, doc.characterSet, null).resolve(formAction);
+				var formAction = form.action ? form.action : document.baseURI;
+				var url = this.IOSvc.newURI(document.baseURI, document.characterSet, null).resolve(formAction);
 
 				// Ask for confirmation if we had a failed bookmark-login:
 				if (this.failedBookmarkLogin) {
@@ -886,18 +887,27 @@ var secureLogin = {
 
 				// If JavaScript protection is to be used, check the exception list:
 				var useJavaScriptProtection = this.secureLoginPrefs.getBoolPref('javascriptProtection');
-				var isInExceptionArray = this.inArray(this.getExceptions(), doc.location.protocol + '//' + doc.location.host);
+				var isInExceptionArray = this.inArray(this.getExceptions(), location.protocol + '//' + location.host);
 				if (useJavaScriptProtection && isInExceptionArray) {
 					useJavaScriptProtection = false;
 				}
 
+				var loginInfos = {
+					elements:      elements,
+					usernameField: usernameField,
+					passwordField: passwordField,
+					form:          form,
+					document:      document,
+					selectedIndex: selectedIndex,
+					url:           url,
+					charset:       charset,
+				};
+
 				// Send login data without using the form:
 				if (useJavaScriptProtection) {
-					this._loginWithJSProtection(elements, usernameField, passwordField,
-					                            form, doc, selectedIndex, url, charset);
+					this._loginWithJSProtection(loginInfos);
 				} else {
-					this._loginWithNormal(elements, usernameField, passwordField,
-					                      form, doc, selectedIndex);
+					this._loginWithNormal(aInfoObj);
 				}
 
 				// Play sound notification:
@@ -921,16 +931,15 @@ var secureLogin = {
 		this.secureLoginsWindow = null;
 	},
 
-	_loginWithJSProtection: function (aElms, aUsernameField, aPasswordField, aForm,
-	                                  aDoc, aSelectedIndex, aUrl, aCharset) {
-		var elements = aElms;
-		var usernameField = aUsernameField;
-		var passwordField = aPasswordField;
-		var form = aForm;
-		var url = aUrl;
-		var doc = aDoc;
-		var charset = aCharset;
-		var selectedIndex = aSelectedIndex;
+	_loginWithJSProtection: function (aInfoObj) {
+		var elements = aInfoObj.elements;
+		var usernameField = aInfoObj.usernameField;
+		var passwordField = aInfoObj.passwordField;
+		var form = aInfoObj.form;
+		var url = aInfoObj.url;
+		var location = aInfoObj.document.location;
+		var charset = aInfoObj.charset;
+		var selectedIndex = aInfoObj.selectedIndex;
 
 		// String to save the form data:
 		var dataString = '';
@@ -1020,7 +1029,7 @@ var secureLogin = {
 		}
 
 		// Check if the url is an allowed one (throws an exception if not):
-		this.urlSecurityCheck(url, doc.location.href);
+		this.urlSecurityCheck(url, location.href);
 
 		// Send the data by GET or POST:
 		if (form.method && form.method.toLowerCase() == 'get') {
@@ -1033,23 +1042,25 @@ var secureLogin = {
 				url = url.substring(0, paramIndex+1) + dataString;
 			}
 			// Load the url in the current window (params are url, referrer and post data):
-			loadURI(url, this.makeURI(doc.location.href, charset, null), null);
+			loadURI(url, this.makeURI(location.href, charset, null), null);
 		}
 		else {
 			// Create post data mime stream (params are aStringData, aKeyword, aEncKeyword, aType):
 			var postData = getPostDataStream(dataString, '', '', 'application/x-www-form-urlencoded');
 			// Load the url in the current window (params are url, referrer and post data):
-			loadURI(url, this.makeURI(doc.location.href, charset, null), postData);
+			loadURI(url, this.makeURI(location.href, charset, null), postData);
 		}
 	},
 
-	_loginWithNormal: function (aElms, aUsernameField, aPasswordField, aForm, aDoc, aSelectedIndex) {
-		var elements = aElms;
-		var usernameField = aUsernameField;
-		var passwordField = aPasswordField;
-		var form = aForm;
-		var doc = aDoc;
-		var selectedIndex = aSelectedIndex;
+	_loginWithNormal: function (aInfoObj) {
+		var elements = aInfoObj.elements;
+		var usernameField = aInfoObj.usernameField;
+		var passwordField = aInfoObj.passwordField;
+		var form = aInfoObj.form;
+		var url = aInfoObj.url;
+		var document = aInfoObj.document;
+		var charset = aInfoObj.charset;
+		var selectedIndex = aInfoObj.selectedIndex;
 
 		// Fill the login fields:
 		if (usernameField) {
@@ -1074,7 +1085,7 @@ var secureLogin = {
 
 			if (!submitted) {
 				// Search for a submit button of type="image" which ist not in the elements list:
-				var inputElements = doc.getElementsByTagName('input');
+				var inputElements = document.getElementsByTagName('input');
 				for (var i = 0; i < inputElements.length; i++) {
 					let inputElement = inputElements[i];
 					// auto-login by clicking on the image submit button
