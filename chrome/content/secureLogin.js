@@ -907,7 +907,7 @@ var secureLogin = {
 				if (useJavaScriptProtection) {
 					this._loginWithJSProtection(loginInfos);
 				} else {
-					this._loginWithNormal(aInfoObj);
+					this._loginWithNormal(loginInfos);
 				}
 
 				// Play sound notification:
