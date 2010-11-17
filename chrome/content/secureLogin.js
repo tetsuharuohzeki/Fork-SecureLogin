@@ -897,7 +897,7 @@ var secureLogin = {
 					usernameField: usernameField,
 					passwordField: passwordField,
 					form:          form,
-					document:      document,
+					location:      location,
 					selectedIndex: selectedIndex,
 					url:           url,
 					charset:       charset,
@@ -937,7 +937,7 @@ var secureLogin = {
 		var passwordField = aInfoObj.passwordField;
 		var form = aInfoObj.form;
 		var url = aInfoObj.url;
-		var location = aInfoObj.document.location;
+		var location = aInfoObj.location;
 		var charset = aInfoObj.charset;
 		var selectedIndex = aInfoObj.selectedIndex;
 
@@ -1058,7 +1058,6 @@ var secureLogin = {
 		var passwordField = aInfoObj.passwordField;
 		var form = aInfoObj.form;
 		var url = aInfoObj.url;
-		var document = aInfoObj.document;
 		var charset = aInfoObj.charset;
 		var selectedIndex = aInfoObj.selectedIndex;
 
@@ -1076,7 +1075,7 @@ var secureLogin = {
 			for (var i = 0; i < elements.length; i++) {
 				let element = elements[i];
 				// auto-login by clicking on the submit button:
-				if (element.type && element.type == 'submit') {
+				if (element.type == "submit" || element.type == "image") {
 					element.click();
 					submitted = true;
 					break;
@@ -1084,25 +1083,8 @@ var secureLogin = {
 			}
 
 			if (!submitted) {
-				// Search for a submit button of type="image" which ist not in the elements list:
-				var inputElements = document.getElementsByTagName('input');
-				for (var i = 0; i < inputElements.length; i++) {
-					let inputElement = inputElements[i];
-					// auto-login by clicking on the image submit button
-					//if it belongs to the current form:
-					if (inputElement.type == 'image'
-					    && inputElement.form
-					    && (inputElement.form == form)) {
-						inputElement.click();
-						submitted = true;
-						break;
-					}
-				}
-
-				if (!submitted) {
-					// No submit button found, try to submit anyway:
-					form.submit();
-				}
+				// No submit button found, try to submit anyway:
+				form.submit();
 			}
 		}
 		else {
