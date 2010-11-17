@@ -165,8 +165,6 @@
 				          preference="hideToolbarButton"/>
 				<checkbox label="&hidetoolbarbuttonmenu.label;"
 				          preference="hideToolbarButtonMenu"/>
-				<checkbox label="&hidestatusbaricon.label;"
-				          preference="hideStatusbarIcon"/>
 				<checkbox label="&hidetoolsmenu.label;"
 				          preference="hideToolsMenu"/>
 				<checkbox label="&hidecontextmenuitem.label;"

@@ -15,7 +15,6 @@
 <!ENTITY shortcutdisable.label "Disable">
 <!ENTITY shortcutinfo.label "Keyboard shortcut changes only take effect in a new Firefox window.">
 <!ENTITY viewcaption.label "View">
-<!ENTITY hidestatusbaricon.label "Hide statusbar icon">
 <!ENTITY hidetoolsmenu.label "Hide entry in Tools menu">
 <!ENTITY hidecontextmenuitem.label "Hide context menu item">
 <!ENTITY hidetoolbarbutton.label "Hide toolbar button">

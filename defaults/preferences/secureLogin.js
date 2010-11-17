@@ -1,6 +1,5 @@
 pref('extensions.secureLogin@blueimp.net.description', 'chrome://secureLogin/locale/secureLogin.properties');
 pref('extensions.secureLogin@blueimp.net.shortcut', 'chrome://secureLogin/locale/secureLogin.properties');
-pref('extensions.secureLogin@blueimp.net.hideStatusbarIcon',true);
 pref('extensions.secureLogin@blueimp.net.hideToolsMenu',false);
 pref('extensions.secureLogin@blueimp.net.hideContextMenuItem',true);
 pref('extensions.secureLogin@blueimp.net.hideToolbarButton',false);

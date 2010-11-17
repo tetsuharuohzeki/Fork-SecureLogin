@@ -164,13 +164,6 @@ var secureLogin = {
 		}
 		else {
 			// Always highlight the Secure Login icons, when not searching for valid logins automatically:
-			var secureLoginPanelIcon = this.loginPanelIcon;
-			if (secureLoginPanelIcon) {
-				secureLoginPanelIcon.setAttribute(
-				 'class',
-				 'statusbarpanel-menu-iconic secureLoginIcon'
-				);
-			}
 			var secureLoginButton = this.loginButton;
 			if (secureLoginButton) {
 				secureLoginButton.setAttribute(
@@ -327,26 +320,14 @@ var secureLogin = {
 		}
 	},
 
-	get loginPanelIcon () {
-		delete this.loginPanelIcon;
-		return this.loginPanelIcon = document.getElementById('secureLoginPanelIcon');
-	},
-
 	get loginButton () {
 		delete this.loginButton;
 		return this.loginButton = document.getElementById('secureLoginButton');
 	},
 
 	updateLoginsFoundStatus: function () {
-		var secureLoginPanelIcon = this.loginPanelIcon;
 		var secureLoginButton = this.loginButton;
 		if (this.secureLogins && this.secureLogins.length > 0) {
-			if (secureLoginPanelIcon) {
-				secureLoginPanelIcon.setAttribute(
-					'class',
-					'statusbarpanel-menu-iconic secureLoginIcon'
-				);
-			}
 			if (secureLoginButton) {
 				secureLoginButton.setAttribute(
 					'class',
@@ -359,12 +340,6 @@ var secureLogin = {
 			}
 		}
 		else {
-			if (secureLoginPanelIcon) {
-				secureLoginPanelIcon.setAttribute(
-					'class',
-					'statusbarpanel-menu-iconic secureLoginIconDisabled'
-				);
-			}
 			if (secureLoginButton) {
 				secureLoginButton.setAttribute(
 					'class',

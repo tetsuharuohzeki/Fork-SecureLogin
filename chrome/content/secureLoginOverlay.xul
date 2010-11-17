@@ -140,14 +140,6 @@
 		             label="&javascriptprotection.label;"
 		             oncommand="secureLoginOverlay.changePref(event, 'javascriptProtection');"/>
 	</broadcasterset>
-	<statusbar id="status-bar">
-		<statusbarpanel id="secureLoginPanelIcon"
-		                class="statusbarpanel-menu-iconic secureLoginIcon"
-		                onclick="secureLoginOverlay.clickHandler(event);"
-		                context="secureLoginContextmenu"
-		                tooltip="secureLoginTooltip"
-		                hidden="true"/>
-	</statusbar>
 	<toolbarpalette id="BrowserToolbarPalette">
 		<toolbarbutton id="secureLoginButton"
 		               class="toolbarbutton-1 secureLoginButton"

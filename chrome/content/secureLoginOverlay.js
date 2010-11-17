@@ -65,11 +65,6 @@ var secureLoginOverlay = {
 		return this.secureLoginShortCut = document.getElementById('secureLoginShortCut');
 	},
 
-	get secureLoginPanelIcon () {
-		delete this.secureLoginPanelIcon;
-		return this.secureLoginPanelIcon = document.getElementById('secureLoginPanelIcon');
-	},
-
 	get secureLoginToolsMenu () {
 		delete this.secureLoginToolsMenu;
 		return this.secureLoginToolsMenu =  document.getElementById('secureLoginToolsMenu')
@@ -162,9 +157,6 @@ var secureLoginOverlay = {
 			case 'hideToolsMenu':
 				this.hideToolsMenuUpdate();
 				break;
-			case 'hideStatusbarIcon':
-				this.hideStatusbarIconUpdate();
-				break;
 			case 'hideToolbarButton':
 				this.hideToolbarButtonUpdate();
 				this.hideToolbarButtonMenuUpdate();
@@ -197,7 +189,6 @@ var secureLoginOverlay = {
 		// Initialize toolbar and statusbar icons and tools and context menus:
 		this.hideToolbarButtonUpdate();
 		this.hideToolbarButtonMenuUpdate();
-		this.hideStatusbarIconUpdate();
 		this.hideToolsMenuUpdate();
 		this.hideContextMenuItemUpdate();
 		this.javascriptProtectionUpdate();
@@ -373,17 +364,6 @@ var secureLoginOverlay = {
 		}
 	},
 
-	hideStatusbarIconUpdate: function () {
-		// Change the statusbar icon visibility:
-		var secureLoginPanelIcon = this.secureLoginPanelIcon;
-		if (secureLoginPanelIcon) {
-			secureLoginPanelIcon.setAttribute(
-				'hidden',
-				this.service.secureLoginPrefs.getBoolPref('hideStatusbarIcon')
-			);
-		}
-	},
-
 	hideToolsMenuUpdate: function () {
 		// Change the tools menu visibility:
 		var secureLoginToolsMenu = this.secureLoginToolsMenu;
@@ -478,13 +458,6 @@ var secureLoginOverlay = {
 
 	clickHandler: function (aEvent) {
 		switch (aEvent.button) {
-			case 0:
-				if (aEvent.target.id == 'secureLoginPanelIcon') {
-					// The left mouse button already performs the login command for the secureLoginButton,
-					// but not for the status bar icon:
-					this.service.userSelectionLogin(aEvent);
-				}
-				break;
 			case 1:
 				this.service.masterSecurityDeviceLogout(aEvent);
 				break;
@@ -529,8 +502,7 @@ var secureLoginOverlay = {
 		// Check if document.tooltipNode exists and if it is shown above a valid node:
 		if (!document.tooltipNode
 		    || !document.tooltipNode.hasAttribute('tooltip')
-		    || !(document.tooltipNode.id == 'secureLoginButton'
-		    || document.tooltipNode.id == 'secureLoginPanelIcon')
+		    || !(document.tooltipNode.id == 'secureLoginButton')
 		) {
 			// Don't show any tooltip:
 			aEvent.preventDefault();

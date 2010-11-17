@@ -15,7 +15,6 @@
 <!ENTITY shortcutdisable.label "使用しない">
 <!ENTITY shortcutinfo.label "キーボードショートカットの変更は Firefox の再起動後に反映されます。">
 <!ENTITY viewcaption.label "表示">
-<!ENTITY hidestatusbaricon.label "ステータスバーのアイコンを非表示">
 <!ENTITY hidetoolsmenu.label "Secure Login を [ツール] メニューに非表示">
 <!ENTITY hidecontextmenuitem.label "コンテキストメニューに非表示">
 <!ENTITY hidetoolbarbutton.label "ツールバーのボタンを非表示">
