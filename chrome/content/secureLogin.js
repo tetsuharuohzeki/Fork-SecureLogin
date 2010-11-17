@@ -1399,7 +1399,7 @@ var secureLogin = {
 		if (aWin) {
 			return aWin.document;
 		}
-		else if (content) {
+		else if (window.content) {
 			// Existing window.content
 			return content.document;
 		}
@@ -1409,7 +1409,7 @@ var secureLogin = {
 	},
 
 	getWin: function () {
-		if (content) {
+		if (window.content) {
 			// Existing window.content
 			return content;
 		}
@@ -1419,7 +1419,7 @@ var secureLogin = {
 	},
 
 	getBrowser: function () {
-		if (gBrowser) {
+		if (window.gBrowser) {
 			// Existing window.gBrowser
 			return gBrowser;
 		}
