@@ -388,6 +388,11 @@ var secureLogin = {
 							break;
 						}
 					}
+/*
+					var isDuplicate = formURIs.some(function(aNsIURI){
+						return aNsIURI.equals(formURI);
+					});
+*/
 					if (isDuplicate) {
 						continue;
 					}
@@ -397,26 +402,28 @@ var secureLogin = {
 				// instead of findLogins() to avoid a Master Password prompt:
 				var loginsCount = this.loginManager.countLogins(host, targetHost, null);
 
-				if (loginsCount) {
+				if (loginsCount > 0) {
 					var loginInfos = this.loginManager.findLogins({}, host, targetHost, null);
-					// Get valid login fields:
-					var loginFields = this.getLoginFields(form, loginInfos[0].usernameField, loginInfos[0].passwordField);
+					// Go through the logins:
+					for (var j = 0; j < loginInfos.length; j++) {
+						// Get valid login fields:
+						let loginInfo = loginInfos[j];
+						let loginFields = this.getLoginFields(form, loginInfo.usernameField, loginInfo.passwordField);
 
-					if (loginFields) {
-						if (isSkipDuplicateActionForms) {
-							// Add the formURI to the list:
-							formURIs.push(formURI);
-						}
+						if (loginFields) {
+							if (isSkipDuplicateActionForms) {
+								// Add the formURI to the list:
+								formURIs.push(formURI);
+							}
 
-						// Go through the logins:
-						for (var j = 0; j < loginsCount; j++) {
 							// Add null as login object to the logins list to avoid a Master Password prompt:
-							this.addToFoundLoginsList(null, i, aWin, loginFields.username, loginFields.password);
+							this.addToFoundLoginsList(loginInfo, i, aWin,
+							                          loginFields.usernameField, loginFields.passwordField);
 
 							// highlight login fields:
-							this.highlightLoginFields(loginFields.username, loginFields.password);
-				 		}
-			 		}
+							this.highlightLoginFields(loginFields.usernameField, loginFields.passwordField);
+						}
+					}
 				}
 			}
 		}
@@ -446,8 +453,7 @@ var secureLogin = {
 			if (!element.name || element.disabled) {
 				continue;
 			}
-
-			if (element.type == "password") {
+			else if (element.type == "password") {
 				if (element.name == aLoginPasswordFieldName) {
 					passwordField = element;
 					// We found a password field so break out of the loop:
@@ -472,13 +478,16 @@ var secureLogin = {
 				return null;
 			}
 
-			var loginFields = new Object();
-			loginFields.username = usernameField;
-			loginFields.password = passwordField;
+			var loginFields = {
+				usernameField: usernameField,
+				passwordField: passwordField,
+			};
 
 			return loginFields;
 		}
-		return null;
+		else {
+			return null;
+		}
 	},
 
 	addToFoundLoginsList: function (aLoginObject, aFormIndex, aWindowObject, aUsernameField, aPasswordField) {
@@ -629,16 +638,6 @@ var secureLogin = {
 		}
 	},
 
-	needsRealLoginObjects: function () {
-		// Check if any of the login objects is still null (might happen with frames):
-		var isNeedsRealLoginObj = this.secureLogins.some(function(aElm, aElmIndex, aTraversedArray){
-			if (!aElm) {
-				return true;
-			}
-		});
-		return isNeedsRealLoginObj;
-	},
-
 	get loginUserSelectionPopup () {
 		delete this.loginUserSelectionPopup;
 		return this.loginUserSelectionPopup = document.getElementById('secureLoginUserSelectionPopup');
@@ -667,15 +666,6 @@ var secureLogin = {
 				var popup = this.loginUserSelectionPopup;
 				if (popup && typeof popup.openPopup == 'function' && !masterPasswordRequired) {
 					try {
-						if (this.needsRealLoginObjects()) {
-							// On Firefox 3 we still have to get the valid login objects:
-							this.secureLogins = this.getRealLoginObjects();
-
-							// Return if the list of login objects is empty (should not happen):
-							if (!this.secureLogins || this.secureLogins.length == 0) {
-								return;
-							}
-						}
 						this.prepareUserSelectionPopup(popup);
 						// Show the popup menu (only available for Firefox >= 3):
 						popup.openPopup(aEvent.target, null, 0, 0, false, true);
@@ -757,16 +747,6 @@ var secureLogin = {
 		// Check for valid logins:
 		if (this.secureLogins && this.secureLogins.length > 0) {
 			try {
-				if (this.needsRealLoginObjects()) {
-					// On Firefox 3 we still have to get the valid login objects:
-					this.secureLogins = this.getRealLoginObjects();
-
-					// Return if the list of login objects is empty (user canceled master password entry):
-					if (!this.secureLogins || this.secureLogins.length == 0) {
-						return;
-					}
-				}
-
 				// The list index of the login:
 				var selectedIndex = 0;
 
@@ -1068,65 +1048,6 @@ var secureLogin = {
 			passwordField.focus();
 			return;
 		}
-	},
-
-	getRealLoginObjects: function () {
-		// Method for Firefox 3 to get the real login objects instead of the null values:
-
-		var loginObjects = new Array();
-
-		if (this.secureLogins) {
-			// Go through the collected dummy login objects (null values):
-			for (var i=0; i < this.secureLogins.length; i++) {
-				var win = this.secureLoginsWindow[i];
-				// Skip windows which have been closed in the meantime:
-				if (win.closed) {
-					continue;
-				}
-				var doc = this.getDoc(win);
-				var formIndex = this.secureLoginsFormIndex[i];
-
-				var host = doc.location.protocol + '//' + doc.location.host;
-				var targetHost;
-				if (doc.forms[formIndex].action) {
-					try {
-						targetHost = this.makeURI(doc.forms[formIndex].action, doc.characterSet, doc.baseURI).prePath;
-					}
-					catch (e) {
-						// The forms seems not to have a valid "acion" attribute, continue:
-						this.log(e);
-						continue;
-					}
-				}
-				else {
-					// Forms with no "action" attribute default to submitting to their origin URL:
-					targetHost = host;
-				}
-
-				try {
-					// This should return some login objects, as countLogins() had not returned 0 either:
-					var logins = this.loginManager.findLogins({}, host, targetHost, null);
-					// Make sure the saved passwords have not been deleted in the meanwhile:
-					if (logins && logins.length) {
-						loginObjects = loginObjects.concat(logins);
-						// Skip the next iterations for the number of found logins (-1 as i++ increases the counter already +1):
-						i = i + logins.length -1;
-					}
-					else {
-						// Re-initialize the logins search and break out of the loop:
-						this.searchLoginsInitialize();
-						break;
-					}
-				}
-				catch (e) {
-					this.log(e);
-					// User cancelled master password entry, so we break out of the loop:
-					break;
-				}
-			}
-		}
-
-		return loginObjects;
 	},
 
 	getUsernameFromLoginObject: function (aLoginObject) {

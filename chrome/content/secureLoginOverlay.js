@@ -474,15 +474,6 @@ var secureLoginOverlay = {
 
 	contextMenuSelectionLogin: function (aPopup) {
 		try {
-			if (this.service.secureLogins && this.service.needsRealLoginObjects()) {
-				// On Firefox 3 we still have to get the valid login objects:
-				this.service.secureLogins = this.service.getRealLoginObjects();
-
-				// Return if the list of login objects is empty (should not happen):
-				if(!this.service.secureLogins || this.service.secureLogins.length == 0) {
-					return false;
-				}
-			}
 			this.service.prepareUserSelectionPopup(aPopup);
 		} catch (e) {
 			this.service.log(e);
