@@ -3,11 +3,11 @@ content     securelogin                     chrome/content/
 locale      securelogin     en-US           chrome/locale/en-US/
 locale      securelogin     ja-JP           chrome/locale/ja-JP/
 
-skin        securelogin     classic/1.0     chrome/skin/
+skin        securelogin     classic/1.0     chrome/skin/classic/WINNT/ os=WINNT
+skin        securelogin     classic/1.0     chrome/skin/classic/Darwin/ os=Darwin
+skin        securelogin     classic/1.0     chrome/skin/classic/Linux/ os=Linux
+
 
 overlay     chrome://browser/content/browser.xul                    chrome://securelogin/content/secureLoginOverlay.xul
 
 style       chrome://global/content/customizeToolbar.xul            chrome://securelogin/skin/secureLogin.css
-
-style       chrome://browser/content/browser.xul                    chrome://securelogin/skin/secureLoginMac.css            appversion>=3.0 os=Darwin
-style       chrome://global/content/customizeToolbar.xul            chrome://securelogin/skin/secureLoginMac.css            appversion>=3.0 os=Darwin
