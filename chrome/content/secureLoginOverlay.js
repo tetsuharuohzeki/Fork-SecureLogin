@@ -538,7 +538,7 @@ var secureLoginOverlay = {
 						continue;
 					}
 					doc = this.service.getDoc(win);
-					formIndex = this.service.secureLoginsFormIndex[i];
+					formIndex = this.service.secureLogins[i].formIndex;
 					url = doc.forms[formIndex].action;
 					// If the url is empty, take it from the current document:
 					if (!url) {

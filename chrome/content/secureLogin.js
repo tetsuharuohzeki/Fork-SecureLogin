@@ -83,8 +83,6 @@ var secureLogin = {
 	autofillForms: null,
 	// Valid logins list:
 	secureLogins: null,
-	// Helper list to store the form index:
-	secureLoginsFormIndex: null,
 	// Helper list to store the document window (frame):
 	secureLoginsWindow: null,
 	// Helper list to store the username field:
@@ -294,7 +292,6 @@ var secureLogin = {
 			for (var i=0; i<this.secureLogins.length; i++) {
 				if (this.secureLoginsWindow[i] == aWin || this.secureLoginsWindow[i].closed) {
 					this.secureLogins.splice(i, 1);
-					this.secureLoginsFormIndex.splice(i, 1);
 					this.secureLoginsWindow.splice(i, 1);
 					this.secureLoginsUserField.splice(i, 1);
 					this.secureLoginsPassField.splice(i, 1);
@@ -303,7 +300,6 @@ var secureLogin = {
 		} else {
 			// Reset the found logins and helper lists:
 			this.secureLogins = null;
-			this.secureLoginsFormIndex = null;
 			this.secureLoginsWindow = null;
 			this.secureLoginsUserField = null;
 			this.secureLoginsPassField = null;
@@ -501,8 +497,6 @@ var secureLogin = {
 		if (!this.secureLogins) {
 			// New valid logins list:
 			this.secureLogins = new Array();
-			// New helper list to store the form index:
-			this.secureLoginsFormIndex = new Array();
 			// New helper list to store the document window (frame):
 			this.secureLoginsWindow = new Array();
 			// New helper list to store the username field:
@@ -514,9 +508,12 @@ var secureLogin = {
 		var loginIndex = this.secureLogins.length;
 
 		// Test if there is only one valid login form:
+		var isInArray = this.secureLogins.some(function(aElm){
+			return (aElm.formIndex === aFormIndex);
+		});
 		if (!this.showFormIndex
 		    && (loginIndex > 0)
-		    && !this.inArray(this.secureLoginsFormIndex, aFormIndex)
+		    && !isInArray
 		) {
 			this.showFormIndex = true;
 		}
@@ -524,9 +521,8 @@ var secureLogin = {
 		// Save the login in the valid logins list:
 		this.secureLogins[loginIndex] = {
 			loginObject: aLoginObject,
+			formIndex  : aFormIndex,
 		};
-		// Save the form index in the list:
-		this.secureLoginsFormIndex[loginIndex] = aFormIndex;
 		// Save the current document window (frame) in the list:
 		this.secureLoginsWindow[loginIndex] = aWindowObject;
 		// Save the username field in the list:
@@ -721,7 +717,7 @@ var secureLogin = {
 				var username = this.getUsernameFromLoginObject(secureLogins[i].loginObject);
 				// Show form index?
 				if (this.showFormIndex) {
-					username += '  (' + this.secureLoginsFormIndex[i] + ')';
+					username += '  (' + this.secureLogins[i].formIndex + ')';
 				}
 				menuitem = menuitem.cloneNode(false);
 				menuitem.setAttribute('label',username);
@@ -773,7 +769,7 @@ var secureLogin = {
 							list[i] = this.getUsernameFromLoginObject(this.secureLogins[i].loginObject);
 							// Show form index?
 							if (this.showFormIndex) {
-								list[i] += '  (' + this.secureLoginsFormIndex[i] + ')';
+								list[i] += '  (' + this.secureLogins[i].formIndex + ')';
 							}
 						}
 						var selected = {};
@@ -814,7 +810,7 @@ var secureLogin = {
 				var location = document.location;
 
 				// The index for the form containing the login fields:
-				var formIndex = this.secureLoginsFormIndex[selectedIndex];
+				var formIndex = this.secureLogins[selectedIndex].formIndex;
 
 				// The login form:
 				var form = document.forms[formIndex];
@@ -888,7 +884,6 @@ var secureLogin = {
 
 		// Reset secure login objects to release memory:
 		this.secureLogins = null;
-		this.secureLoginsFormIndex = null;
 		this.secureLoginsPassField = null;
 		this.secureLoginsUserField = null;
 		this.secureLoginsWindow = null;
