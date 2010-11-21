@@ -1,9 +1,7 @@
-#secureLoginButton,
-.secureLoginButton {
+#secureLoginButton[disabled="true"] {
 	list-style-image: url("login.png");
 }
-#secureLoginButton.secureLoginButtonDisabled,
-.secureLoginButtonDisabled {
+#secureLoginButton[disabled="true"] {
 	list-style-image: url("login-disabled.png");
 }
 toolbar[iconsize="small"] #secureLoginButton,

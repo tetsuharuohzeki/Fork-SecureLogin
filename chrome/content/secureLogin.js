@@ -158,10 +158,7 @@ var secureLogin = {
 			// Always highlight the Secure Login icons, when not searching for valid logins automatically:
 			var secureLoginButton = this.loginButton;
 			if (secureLoginButton) {
-				secureLoginButton.setAttribute(
-				  'class',
-				  'toolbarbutton-1 secureLoginButton'
-				);
+				secureLoginButton.removeAttribute("disabled");
 			}
 		}
 	},
@@ -314,10 +311,7 @@ var secureLogin = {
 		var secureLoginButton = this.loginButton;
 		if (this.secureLogins && this.secureLogins.length > 0) {
 			if (secureLoginButton) {
-				secureLoginButton.setAttribute(
-					'class',
-					'toolbarbutton-1 secureLoginButton'
-				);
+				secureLoginButton.removeAttribute("disabled");
 			}
 			// Play sound notification:
 			if (this.secureLoginPrefs.getBoolPref('playLoginFoundSound')) {
@@ -326,10 +320,7 @@ var secureLogin = {
 		}
 		else {
 			if (secureLoginButton) {
-				secureLoginButton.setAttribute(
-					'class',
-					'toolbarbutton-1 secureLoginButtonDisabled'
-				);
+				secureLoginButton.setAttribute("disabled", "true");
 			}
 		}
 	},

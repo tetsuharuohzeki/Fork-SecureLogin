@@ -1,10 +1,5 @@
-#secureLoginButton,
-.secureLoginButton {
+#secureLoginButton {
 	list-style-image: url("login.png");
-}
-#secureLoginButton.secureLoginButtonDisabled,
-.secureLoginButtonDisabled {
-	list-style-image: url("login-disabled.png");
 }
 
 .secureLoginSettingsIcon {
