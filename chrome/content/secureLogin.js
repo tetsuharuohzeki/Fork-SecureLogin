@@ -522,7 +522,9 @@ var secureLogin = {
 		}
 
 		// Save the login in the valid logins list:
-		this.secureLogins[loginIndex] = aLoginObject;
+		this.secureLogins[loginIndex] = {
+			loginObject: aLoginObject,
+		};
 		// Save the form index in the list:
 		this.secureLoginsFormIndex[loginIndex] = aFormIndex;
 		// Save the current document window (frame) in the list:
@@ -716,7 +718,7 @@ var secureLogin = {
 			menuitem.setAttribute('class','menuitem-iconic secureLoginUserIcon');
 			// Add a menuitem for each available user login:
 			for (var i = 0; i < secureLogins.length; i++) {
-				var username = this.getUsernameFromLoginObject(secureLogins[i]);
+				var username = this.getUsernameFromLoginObject(secureLogins[i].loginObject);
 				// Show form index?
 				if (this.showFormIndex) {
 					username += '  (' + this.secureLoginsFormIndex[i] + ')';
@@ -768,7 +770,7 @@ var secureLogin = {
 					else {
 						var list = new Array(this.secureLogins.length);
 						for (var i = 0; i < this.secureLogins.length; i++) {
-							list[i] = this.getUsernameFromLoginObject(this.secureLogins[i]);
+							list[i] = this.getUsernameFromLoginObject(this.secureLogins[i].loginObject);
 							// Show form index?
 							if (this.showFormIndex) {
 								list[i] += '  (' + this.secureLoginsFormIndex[i] + ')';
@@ -934,7 +936,7 @@ var secureLogin = {
 					// This is the password field - use the saved password as value:
 					addToDataString(
 					  passwordField.name,
-					  this.getPasswordFromLoginObject(this.secureLogins[selectedIndex])
+					  this.getPasswordFromLoginObject(this.secureLogins[selectedIndex].loginObject)
 					);
 					break;
 				case 'select-multiple':
@@ -965,7 +967,7 @@ var secureLogin = {
 						// This is the userName field - use the saved username as value:
 						addToDataString(
 						  usernameField.name,
-						  this.getUsernameFromLoginObject(this.secureLogins[selectedIndex])
+						  this.getUsernameFromLoginObject(this.secureLogins[selectedIndex].loginObject)
 						);
 					}
 					break;
@@ -1024,9 +1026,9 @@ var secureLogin = {
 
 		// Fill the login fields:
 		if (usernameField) {
-			usernameField.value = this.getUsernameFromLoginObject(this.secureLogins[selectedIndex]);
+			usernameField.value = this.getUsernameFromLoginObject(this.secureLogins[selectedIndex].loginObject);
 		}
-		passwordField.value = this.getPasswordFromLoginObject(this.secureLogins[selectedIndex]);
+		passwordField.value = this.getPasswordFromLoginObject(this.secureLogins[selectedIndex].loginObject);
 
 		if (this.secureLoginPrefs.getBoolPref('autoSubmitForm')) {
 			// Prevent multiple submits (e.g. if submit is delayed)
