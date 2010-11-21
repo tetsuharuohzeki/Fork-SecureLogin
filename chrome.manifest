@@ -1,8 +1,12 @@
-content     securelogin                     jar:chrome/securelogin.jar!/content/
-locale      securelogin     en-US           jar:chrome/securelogin.jar!/locale/en-US/
-locale      securelogin     ja-JP           jar:chrome/securelogin.jar!/locale/ja-JP/
-skin        securelogin     classic/1.0     jar:chrome/securelogin.jar!/skin/
+content     securelogin                     chrome/content/
+
+locale      securelogin     en-US           chrome/locale/en-US/
+locale      securelogin     ja-JP           chrome/locale/ja-JP/
+
+skin        securelogin     classic/1.0     chrome/skin/
+
 overlay     chrome://browser/content/browser.xul                    chrome://securelogin/content/secureLoginOverlay.xul
+
 style       chrome://global/content/customizeToolbar.xul            chrome://securelogin/skin/secureLogin.css
 
 style       chrome://browser/content/browser.xul                    chrome://securelogin/skin/secureLoginMac.css            appversion>=3.0 os=Darwin
