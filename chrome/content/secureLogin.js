@@ -83,8 +83,6 @@ var secureLogin = {
 	autofillForms: null,
 	// Valid logins list:
 	secureLogins: null,
-	// Helper list to store the username field:
-	secureLoginsUserField: null,
 	// Helper list to store the password field:
 	secureLoginsPassField: null,
 	// Defines if form index is to be shown in selection prompt:
@@ -222,14 +220,15 @@ var secureLogin = {
 
 			// Update the outlined form fields:
 			for (var i = 0; i < this.secureLoginsPassField.length; i++) {
-				let secureLoginsUserField = this.secureLoginsUserField[i];
+				let secureLoginsUserField = this.secureLogins[i].userField;
+				let secureLoginsPassField = this.secureLoginsPassField[i];
 				// Outline the username field if existing:
 				if (secureLoginsUserField) {
 					secureLoginsUserField.style.outline = outlineStyle;
 				}
 				// Outline the password field if existing:
-				if (secureLoginsUserField) {
-					secureLoginsUserField.style.outline = outlineStyle;
+				if (secureLoginsPassField) {
+					secureLoginsPassField.style.outline = outlineStyle;
 				}
 			}
 		}
@@ -290,14 +289,12 @@ var secureLogin = {
 			for (var i=0; i<this.secureLogins.length; i++) {
 				if (this.secureLogins[i].window == aWin || this.secureLogins[i].window.closed) {
 					this.secureLogins.splice(i, 1);
-					this.secureLoginsUserField.splice(i, 1);
 					this.secureLoginsPassField.splice(i, 1);
 				}
 			}
 		} else {
 			// Reset the found logins and helper lists:
 			this.secureLogins = null;
-			this.secureLoginsUserField = null;
 			this.secureLoginsPassField = null;
 		}
 
@@ -493,8 +490,6 @@ var secureLogin = {
 		if (!this.secureLogins) {
 			// New valid logins list:
 			this.secureLogins = new Array();
-			// New helper list to store the username field:
-			this.secureLoginsUserField = new Array();
 			// New helper list to store the password field:
 			this.secureLoginsPassField = new Array();
 		}
@@ -517,9 +512,8 @@ var secureLogin = {
 			loginObject: aLoginObject,
 			formIndex  : aFormIndex,
 			window     : aWindowObject,
+			userField  : aUsernameField,
 		};
-		// Save the username field in the list:
-		this.secureLoginsUserField[loginIndex] = aUsernameField;
 		// Save the password field in the list:
 		this.secureLoginsPassField[loginIndex] = aPasswordField;
 	},
@@ -812,7 +806,7 @@ var secureLogin = {
 				var elements = form.elements;
 
 				// User + Pass fields:
-				var usernameField = this.secureLoginsUserField[selectedIndex];
+				var usernameField = this.secureLogins[selectedIndex].userField;
 				var passwordField = this.secureLoginsPassField[selectedIndex];
 
 				// The charset of the given document:
@@ -878,7 +872,6 @@ var secureLogin = {
 		// Reset secure login objects to release memory:
 		this.secureLogins = null;
 		this.secureLoginsPassField = null;
-		this.secureLoginsUserField = null;
 	},
 
 	_loginWithJSProtection: function (aInfoObj) {
