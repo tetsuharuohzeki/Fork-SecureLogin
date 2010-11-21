@@ -356,53 +356,51 @@ var secureLogin = {
 
 		// Check if any web forms are available on the current window:
 		if (document
+			&& location
 		    && forms
 		    && (forms.length > 0)
-		    && location
 		) {
 
 			// document (current) host:
 			var host = location.protocol + '//' + location.host;
 
-			var formURIs = new Array();
+			// Getting the number of existing logins with countLogins()
+			// instead of findLogins() to avoid a Master Password prompt:
+			var loginsCount = this.loginManager.countLogins(host, targetHost, null);
+			if (loginsCount > 0) {
+				let formURIs = new Array();
+				let isSkipDuplicateActionForms = this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms');
 
-			var isSkipDuplicateActionForms = this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms');
+				// Go through the forms:
+				for (var i = 0; i < forms.length; i++) {
+					let form = forms[i];
 
-			// Go through the forms:
-			for (var i = 0; i < forms.length; i++) {
-				let form = forms[i];
+					// Forms with no "action" attribute default to submitting to their origin URL:
+					var formAction = form.action ? form.action : document.baseURI;
 
-				// Forms with no "action" attribute default to submitting to their origin URL:
-				var formAction = form.action ? form.action : document.baseURI;
+					// Create a nsIURI object from the formAction:
+					var formURI = this.makeURI(formAction, document.characterSet, document.baseURI);
+					var targetHost = formURI.prePath;
 
-				// Create a nsIURI object from the formAction:
-				var formURI = this.makeURI(formAction, document.characterSet, document.baseURI);
-				var targetHost = formURI.prePath;
-
-				if (isSkipDuplicateActionForms) {
-					// Skip this form if the same formURI has already been added:
-					var isDuplicate = false;
-					for (var j = 0; j< formURIs.length; j++) {
-						if (formURIs[j].equals(formURI)) {
-							isDuplicate = true;
-							break;
+					if (isSkipDuplicateActionForms) {
+						// Skip this form if the same formURI has already been added:
+						var isDuplicate = false;
+						for (var j = 0; j< formURIs.length; j++) {
+							if (formURIs[j].equals(formURI)) {
+								isDuplicate = true;
+								break;
+							}
+						}
+/*
+						var isDuplicate = formURIs.some(function(aNsIURI){
+							return aNsIURI.equals(formURI);
+						});
+*/
+						if (isDuplicate) {
+							continue;
 						}
 					}
-/*
-					var isDuplicate = formURIs.some(function(aNsIURI){
-						return aNsIURI.equals(formURI);
-					});
-*/
-					if (isDuplicate) {
-						continue;
-					}
-				}
 
-				// Getting the number of existing logins with countLogins()
-				// instead of findLogins() to avoid a Master Password prompt:
-				var loginsCount = this.loginManager.countLogins(host, targetHost, null);
-
-				if (loginsCount > 0) {
 					var loginInfos = this.loginManager.findLogins({}, host, targetHost, null);
 					// Go through the logins:
 					for (var j = 0; j < loginInfos.length; j++) {
