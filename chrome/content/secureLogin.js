@@ -371,9 +371,14 @@ var secureLogin = {
 				let formURIs = new Array();
 				let isSkipDuplicateActionForms = this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms');
 
-				// Go through the forms:
-				for (var i = 0; i < forms.length; i++) {
-					let form = forms[i];
+ 				// Go through the forms:
+ 				for (var i = 0; i < forms.length; i++) {
+					// Check to finish searching logins in this document:
+					if (loginsCount <= 0) {
+						break;
+					}
+
+ 					let form = forms[i];
 
 					// Forms with no "action" attribute default to submitting to their origin URL:
 					var formAction = form.action ? form.action : document.baseURI;
@@ -420,6 +425,9 @@ var secureLogin = {
 
 							// highlight login fields:
 							this.highlightLoginFields(loginFields.usernameField, loginFields.passwordField);
+
+							// decrement loginsCount
+							loginsCount--;
 						}
 					}
 				}
