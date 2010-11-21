@@ -532,7 +532,7 @@ var secureLoginOverlay = {
 				var url;
 				var foundInList;
 				for (var i = 0; i < this.service.secureLogins.length; i++) {
-					win = this.service.secureLoginsWindow[i];
+					win = this.service.secureLogins[i].window;
 					// Skip windows which have been closed in the meantime:
 					if (win.closed) {
 						continue;

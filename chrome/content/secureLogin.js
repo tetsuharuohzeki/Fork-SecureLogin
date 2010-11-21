@@ -83,8 +83,6 @@ var secureLogin = {
 	autofillForms: null,
 	// Valid logins list:
 	secureLogins: null,
-	// Helper list to store the document window (frame):
-	secureLoginsWindow: null,
 	// Helper list to store the username field:
 	secureLoginsUserField: null,
 	// Helper list to store the password field:
@@ -290,9 +288,8 @@ var secureLogin = {
 		if (this.secureLogins && aWin.frameElement) {
 			// Login search initialized by a frame window - keep the logins of all remaining windows:
 			for (var i=0; i<this.secureLogins.length; i++) {
-				if (this.secureLoginsWindow[i] == aWin || this.secureLoginsWindow[i].closed) {
+				if (this.secureLogins[i].window == aWin || this.secureLogins[i].window.closed) {
 					this.secureLogins.splice(i, 1);
-					this.secureLoginsWindow.splice(i, 1);
 					this.secureLoginsUserField.splice(i, 1);
 					this.secureLoginsPassField.splice(i, 1);
 				}
@@ -300,7 +297,6 @@ var secureLogin = {
 		} else {
 			// Reset the found logins and helper lists:
 			this.secureLogins = null;
-			this.secureLoginsWindow = null;
 			this.secureLoginsUserField = null;
 			this.secureLoginsPassField = null;
 		}
@@ -497,8 +493,6 @@ var secureLogin = {
 		if (!this.secureLogins) {
 			// New valid logins list:
 			this.secureLogins = new Array();
-			// New helper list to store the document window (frame):
-			this.secureLoginsWindow = new Array();
 			// New helper list to store the username field:
 			this.secureLoginsUserField = new Array();
 			// New helper list to store the password field:
@@ -522,9 +516,8 @@ var secureLogin = {
 		this.secureLogins[loginIndex] = {
 			loginObject: aLoginObject,
 			formIndex  : aFormIndex,
+			window     : aWindowObject,
 		};
-		// Save the current document window (frame) in the list:
-		this.secureLoginsWindow[loginIndex] = aWindowObject;
 		// Save the username field in the list:
 		this.secureLoginsUserField[loginIndex] = aUsernameField;
 		// Save the password field in the list:
@@ -798,7 +791,7 @@ var secureLogin = {
 				}
 
 				// Set the win object to the window (frame) containing the login form:
-				aWin = this.secureLoginsWindow[selectedIndex];
+				aWin = this.secureLogins[selectedIndex].window;
 
 				// Return if the window has been closed in the meantime:
 				if (aWin.closed) {
@@ -886,7 +879,6 @@ var secureLogin = {
 		this.secureLogins = null;
 		this.secureLoginsPassField = null;
 		this.secureLoginsUserField = null;
-		this.secureLoginsWindow = null;
 	},
 
 	_loginWithJSProtection: function (aInfoObj) {
