@@ -5,7 +5,6 @@
 		<em:name>Secure Login</em:name>
 		<em:creator>Sebastian Tschan</em:creator>
 		<em:description>A login extension similar to Opera's Wand login</em:description>
-		<em:iconURL>chrome://securelogin/skin/icon.png</em:iconURL>
 		<em:optionsURL>chrome://securelogin/content/secureLoginOptions.xul</em:optionsURL>
 		<em:homepageURL>https://blueimp.net/mozilla/</em:homepageURL>
 		<em:version>0.9.5</em:version>
