@@ -1,17 +1,13 @@
-#secureLoginButton[disabled="true"] {
+#secureLoginButton {
 	list-style-image: url("login.png");
 }
 #secureLoginButton[disabled="true"] {
 	list-style-image: url("login-disabled.png");
 }
-toolbar[iconsize="small"] #secureLoginButton,
-toolbar[iconsize="small"] .secureLoginButton,
-.secureLoginIcon {
+toolbar[iconsize="small"] #secureLoginButton {
 	list-style-image: url("login-small.png");
 }
-toolbar[iconsize="small"] #secureLoginButton.secureLoginButtonDisabled,
-toolbar[iconsize="small"] .secureLoginButtonDisabled,
-.secureLoginIconDisabled {
+toolbar[iconsize="small"] #secureLoginButton[disabled="true"] {
 	list-style-image: url("login-small-disabled.png");
 }
 
