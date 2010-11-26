@@ -127,9 +127,6 @@
 	          flex="1"
 	          helpTopic="Interface">
 		<preferences>
-			<preference id="hideStatusbarIcon"
-			            name="extensions.secureLogin@blueimp.net.hideStatusbarIcon"
-			            type="bool"/>
 			<preference id="hideToolsMenu"
 			            name="extensions.secureLogin@blueimp.net.hideToolsMenu"
 			            type="bool"/>
