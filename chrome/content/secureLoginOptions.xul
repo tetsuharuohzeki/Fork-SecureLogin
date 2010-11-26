@@ -133,9 +133,6 @@
 			<preference id="hideContextMenuItem"
 			            name="extensions.secureLogin@blueimp.net.hideContextMenuItem"
 			            type="bool"/>
-			<preference id="hideToolbarButton"
-			            name="extensions.secureLogin@blueimp.net.hideToolbarButton"
-			            type="bool"/>
 			<preference id="hideToolbarButtonMenu"
 			            name="extensions.secureLogin@blueimp.net.hideToolbarButtonMenu"
 			            type="bool"/>
@@ -158,8 +155,6 @@
 			<separator class="thin"/>
 			<groupbox>
 				<caption label="&viewcaption.label;"/>
-				<checkbox label="&hidetoolbarbutton.label;"
-				          preference="hideToolbarButton"/>
 				<checkbox label="&hidetoolbarbuttonmenu.label;"
 				          preference="hideToolbarButtonMenu"/>
 				<checkbox label="&hidetoolsmenu.label;"

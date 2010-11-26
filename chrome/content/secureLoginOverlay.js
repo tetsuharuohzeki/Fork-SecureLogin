@@ -157,13 +157,6 @@ var secureLoginOverlay = {
 			case 'hideToolsMenu':
 				this.hideToolsMenuUpdate();
 				break;
-			case 'hideToolbarButton':
-				this.hideToolbarButtonUpdate();
-				this.hideToolbarButtonMenuUpdate();
-				break;
-			case 'hideToolbarButtonMenu':
-				this.hideToolbarButtonMenuUpdate();
-				break;
 			case 'javascriptProtection':
 				this.javascriptProtectionUpdate();
 				break;
@@ -187,7 +180,6 @@ var secureLoginOverlay = {
 		this.initializeTooltip();
 
 		// Initialize toolbar and statusbar icons and tools and context menus:
-		this.hideToolbarButtonUpdate();
 		this.hideToolbarButtonMenuUpdate();
 		this.hideToolsMenuUpdate();
 		this.hideContextMenuItemUpdate();
@@ -316,22 +308,6 @@ var secureLoginOverlay = {
 
 			// Add the key to the mainKeyset:
 			this.mainKeyset.appendChild(keyNode);
-		}
-	},
-
-	hideToolbarButtonUpdate: function () {
-		var secureLoginButton = this.secureLoginButton;
-		var hideToolbarButton = this.service.secureLoginPrefs.getBoolPref('hideToolbarButton');
-		if (!secureLoginButton && !hideToolbarButton) {
-			// Add the toolbar button to the toolbar:
-			this.installToolbarButton('secureLoginButton');
-			secureLoginButton = this.secureLoginButton;
-		}
-		if (secureLoginButton) {
-			secureLoginButton.setAttribute(
-				'hidden',
-				hideToolbarButton
-			);
 		}
 	},
 
@@ -634,8 +610,6 @@ var secureLoginOverlay = {
 	},
 
 	finalize: function () {
-		this.finalizeToolbarButtonStatus();
-
 		// Remove the content area context menu listener:
 		var contentAreaContextMenu = this.contentAreaContextMenu;
 		if(contentAreaContextMenu) {
@@ -648,21 +622,6 @@ var secureLoginOverlay = {
 
 		// Remove the preferences Observer:
 		this.service.secureLoginPrefs.removeObserver('', this);
-	},
-
-	finalizeToolbarButtonStatus: function () {
-		var secureLoginPrefs = this.service.secureLoginPrefs;
-		var secureLoginButton = this.secureLoginButton;
-		var hideToolbarButton = secureLoginPrefs.getBoolPref('hideToolbarButton');
-		if(!secureLoginButton && !hideToolbarButton) {
-			// If the toolbar button icon has been removed from the toolbar by drag&drop
-			// enable the hideToolbarButton setting:
-			secureLoginPrefs.setBoolPref('hideToolbarButton', true);
-		} else if(secureLoginButton && !secureLoginButton.getAttribute('hidden')) {
-			// If the toolbar button icon has been added to the toolbar by drag&drop
-			// disable the hideToolbarButton setting:
-			secureLoginPrefs.setBoolPref('hideToolbarButton', false);
-		}
 	},
 
 };
