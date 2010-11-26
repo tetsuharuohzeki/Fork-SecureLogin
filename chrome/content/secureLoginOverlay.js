@@ -451,10 +451,8 @@ var secureLoginOverlay = {
 
 			if (this.service.secureLogins && this.service.secureLogins.length > 0) {
 
-				// List of unique action urls:
-				var urls = new Array();
-				// Helper list to count the number of identical urls:
-				var urlsCount = new Array();
+				// Hash list of unique action urls and number of logins:
+				var urlsArray = new Array();
 
 				// Go through the forms and find the unique action urls:
 				var url;
@@ -463,22 +461,21 @@ var secureLoginOverlay = {
 					url = this.service.secureLogins[i].actionURI;
 					foundInList = false;
 					// Check if the form action url is already in the list:
-					for (var j = 0; j < urls.length; j++) {
-						if (urls[j] == url) {
+					for (var j = 0; j < urlsArray.length; j++) {
+						if (urlsArray[j].url == url) {
 							// url already in the list, increase the counter:
 							foundInList = true;
-							urlsCount[j]++;
+							urlsArray[j].count++;
 							break;
 						}
 					}
 					if (!foundInList) {
 						// Not in list, add the current url:
-						urls[j] = url;
-						urlsCount[j] = 1;
+						urlsArray.push({ url: url, count: 1,});
 					}
 				}
 
-				if (urls.length) {
+				if (urlsArray.length) {
 					// Add the url list:
 					var tooltipLoginURL = document.createElement('description');
 					tooltipLoginURL.setAttribute(
@@ -492,17 +489,18 @@ var secureLoginOverlay = {
 					  'class',
 					  'secureLoginTooltipUrlCount'
 					);
-					for (var i = 0; i < urls.length; i++) {
+					for (var i = 0; i < urlsArray.length; i++) {
 						let hbox = document.createElement("hbox");
 						let descr = tooltipLoginURL.cloneNode(false);
+						var action = urlsArray[i];
 						descr.setAttribute(
 						  'value',
-						  urls[i]
+						  action.url
 						);
 						let label = tooltipUrlCount.cloneNode(false);
 						label.setAttribute(
 						  'value',
-						  '('+urlsCount[i]+')'
+						  '('+ action.count +')'
 						);
 
 						hbox.appendChild(descr);
