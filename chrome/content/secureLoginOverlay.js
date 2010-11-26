@@ -311,24 +311,6 @@ var secureLoginOverlay = {
 		}
 	},
 
-	installToolbarButton: function (aButtonID, aBeforeNodeID, aToolbarID) {
-		aBeforeNodeID = aBeforeNodeID ? aBeforeNodeID : 'urlbar-container';
-		aToolbarID = aToolbarID ? aToolbarID : 'navigation-toolbar';
-		if (!document.getElementById(aButtonID)) {
-			var toolbar = document.getElementById(aToolbarID);
-			if (toolbar && 'insertItem' in toolbar) {
-				var beforeNode = document.getElementById(aBeforeNodeID);
-				if (beforeNode && beforeNode.parentNode != toolbar) {
-					beforeNode = null;
-				}
-				// Insert before the given node or at the end of the toolbar if the node is not available:
-				toolbar.insertItem(aButtonID, beforeNode, null, false);
-				toolbar.setAttribute('currentset', toolbar.currentSet);
-				document.persist(toolbar.id, 'currentset');
-			}
-		}
-	},
-
 	hideToolbarButtonMenuUpdate: function () {
 		var secureLoginButton = this.secureLoginButton;
 		if (secureLoginButton) {
