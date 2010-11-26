@@ -457,24 +457,10 @@ var secureLoginOverlay = {
 				var urlsCount = new Array();
 
 				// Go through the forms and find the unique action urls:
-				var win;
-				var doc;
-				var formIndex;
 				var url;
 				var foundInList;
 				for (var i = 0; i < this.service.secureLogins.length; i++) {
-					win = this.service.secureLogins[i].window;
-					// Skip windows which have been closed in the meantime:
-					if (win.closed) {
-						continue;
-					}
-					doc = this.service.getDoc(win);
-					formIndex = this.service.secureLogins[i].formIndex;
-					url = doc.forms[formIndex].action;
-					// If the url is empty, take it from the current document:
-					if (!url) {
-						url = doc.baseURI;
-					}
+					url = this.service.secureLogins[i].actionURI;
 					foundInList = false;
 					// Check if the form action url is already in the list:
 					for (var j = 0; j < urls.length; j++) {
