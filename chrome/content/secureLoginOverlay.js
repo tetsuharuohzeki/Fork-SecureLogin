@@ -512,10 +512,9 @@ var secureLoginOverlay = {
 					isLoginExist = true;
 				}
 			}
-
-			this.tooltipExistLoginBox.hidden = !isLoginExist;
-			this.tooltipNoLoginBox.hidden = isLoginExist;
 		}
+		this.tooltipExistLoginBox.hidden = !isLoginExist;
+		this.tooltipNoLoginBox.hidden = isLoginExist;
 	},
 
 	initializeTooltip: function () {
