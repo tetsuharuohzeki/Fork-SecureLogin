@@ -21,10 +21,6 @@ toolbar[iconsize="small"] #secureLoginButton[disabled="true"] {
 	list-style-image: url("user-small.png");
 }
 
-statusbarpanel.secureLoginIcon {
-	cursor: pointer;
-}
-
 #secureLoginTooltipTitle {
 	margin-bottom: 10px;
 }
