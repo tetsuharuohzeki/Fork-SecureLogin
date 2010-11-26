@@ -142,7 +142,7 @@
 	</broadcasterset>
 	<toolbarpalette id="BrowserToolbarPalette">
 		<toolbarbutton id="secureLoginButton"
-		               class="toolbarbutton-1 secureLoginButton"
+		               class="toolbarbutton-1"
 		               label="&toolbarbutton.label;"
 		               tooltip="secureLoginTooltip"
 		               oncommand="if(event.target == this) secureLogin.userSelectionLogin(event);"
