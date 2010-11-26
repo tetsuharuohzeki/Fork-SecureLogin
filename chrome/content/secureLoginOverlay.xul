@@ -147,46 +147,7 @@
 		               tooltip="secureLoginTooltip"
 		               oncommand="if(event.target == this) secureLogin.userSelectionLogin(event);"
 		               onclick="secureLoginOverlay.clickHandler(event);"
-		               context="secureLoginContextmenu">
-			<menupopup id="secureLoginButtonMenu"
-			           onpopupshowing="secureLoginOverlay.buttonMenu(event);"
-			           position="after_start">
-				<menu id="secureLoginButtonMenuAutofillFormsMenu"
-				      label="&autofillformsmenu.label;"
-				      class="menu-iconic autofillFormsIcon"
-				      hidden="true">
-				</menu>
-				<menuseparator id="secureLoginButtonMenuAutofillFormsMenuSeparator"
-				               hidden="true"/>
-				<menuitem id="secureLoginOptionsButtonMenuItem"
-				          label="&menuoptions.label;"
-				          class="menuitem-iconic secureLoginSettingsIcon"
-				          oncommand="secureLogin.showDialog('chrome://secureLogin/content/secureLoginOptions.xul');"/>
-				<menuseparator/>
-				<menuitem id="secureLoginJavascriptProtectionButtonMenuItem"
-				          observes="secureLoginJavascriptProtection"/>
-				<menuitem id="secureLoginExceptionsButtonMenuItem"
-				          label="&menuexceptions.label;"
-				          oncommand="secureLogin.showDialog('chrome://secureLogin/content/secureLoginExceptions.xul');"/>
-				<menuseparator/>
-				<menuitem id="secureLoginPasswordsButtonMenuItem"
-				          label="&menupasswords.label;"
-				          oncommand="secureLogin.showPasswordManager();"/>
-				<menuitem id="secureLoginPasswordsExceptionsButtonMenuItem"
-				          class="minVersion2"
-				          label="&menupassexceptions.label;"
-				          oncommand="secureLogin.showDialog('chrome://passwordmgr/content/passwordManagerExceptions.xul');"/>
-				<menuseparator/>
-				<menuitem id="secureLoginBookmarkButtonMenuItem"
-				          label="&addsecureloginbookmark.label;"
-				          oncommand="secureLogin.showBookmarkDialog();"/>
-				<menuseparator/>
-				<menuitem id="secureLoginHelpButtonMenuItem"
-				          label="&help.label;"
-				          class="menuitem-iconic secureLoginHelpIcon"
-				          oncommand="secureLogin.openHelp();"/>
-			</menupopup>
-		</toolbarbutton>
+		               context="secureLoginContextmenu"/>
 	</toolbarpalette>
 	<popup id="contentAreaContextMenu">
 		<menuseparator id="secureLoginContextMenuSeparator2"

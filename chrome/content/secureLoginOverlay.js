@@ -180,7 +180,6 @@ var secureLoginOverlay = {
 		this.initializeTooltip();
 
 		// Initialize toolbar and statusbar icons and tools and context menus:
-		this.hideToolbarButtonMenuUpdate();
 		this.hideToolsMenuUpdate();
 		this.hideContextMenuItemUpdate();
 		this.javascriptProtectionUpdate();
@@ -308,17 +307,6 @@ var secureLoginOverlay = {
 
 			// Add the key to the mainKeyset:
 			this.mainKeyset.appendChild(keyNode);
-		}
-	},
-
-	hideToolbarButtonMenuUpdate: function () {
-		var secureLoginButton = this.secureLoginButton;
-		if (secureLoginButton) {
-			if (this.service.secureLoginPrefs.getBoolPref('hideToolbarButtonMenu')) {
-				secureLoginButton.removeAttribute('type');
-			} else {
-				secureLoginButton.setAttribute('type','menu-button');
-			}
 		}
 	},
 
