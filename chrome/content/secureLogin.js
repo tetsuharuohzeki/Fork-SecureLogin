@@ -489,7 +489,7 @@ var secureLogin = {
 
 		// Test if there is only one valid login form:
 		var isInArray = this.secureLogins.some(function(aElm){
-			return (aElm.formIndex === aFormIndex);
+			return (aElm.formIndex === aFoundLogin.formIndex);
 		});
 		if (!this.showFormIndex
 		    && (loginIndex > 0)
