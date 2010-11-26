@@ -401,6 +401,7 @@ var secureLogin = {
 								window       : aWin,
 								usernameField: loginFields.usernameField,
 								passwordField: loginFields.passwordField,
+								actionURIStr : formURI.spec,
 							};
 							// Add null as login object to the logins list to avoid a Master Password prompt:
 							this.addToFoundLoginsList(foundLogin);
@@ -505,6 +506,7 @@ var secureLogin = {
 			window     : aFoundLogin.window,
 			userField  : aFoundLogin.usernameField,
 			passField  : aFoundLogin.passwordField,
+			actionURI  : aFoundLogin.actionURIStr,
 		};
 	},
 
@@ -803,8 +805,7 @@ var secureLogin = {
 				var charset = document.characterSet;
 
 				// Get the target url from the form action value or if empty from the current document:
-				var formAction = form.action ? form.action : document.baseURI;
-				var url = this.IOSvc.newURI(document.baseURI, document.characterSet, null).resolve(formAction);
+				var url = this.secureLogins[selectedIndex].actionURI;
 
 				// Ask for confirmation if we had a failed bookmark-login:
 				if (this.failedBookmarkLogin) {
