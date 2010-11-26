@@ -40,3 +40,7 @@
 <!ENTITY secureloginbookmarks.label "Secure Login ブックマークを有効">
 <!ENTITY addsecureloginbookmark.label "Secure Login ブックマークを追加...">
 <!ENTITY help.label "Secure Login のヘルプ...">
+<!ENTITY tooltip.login "ログイン">
+<!ENTITY tooltip.loginUrl "URL">
+<!ENTITY tooltip.loginUrlCount "保存されているログイン数">
+<!ENTITY tooltip.noLogin "このページにはログイン情報がありません">

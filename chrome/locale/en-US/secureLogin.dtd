@@ -40,3 +40,7 @@
 <!ENTITY secureloginbookmarks.label "Enable Secure Login Bookmarks">
 <!ENTITY addsecureloginbookmark.label "Add Secure Login Bookmark...">
 <!ENTITY help.label "Help...">
+<!ENTITY tooltip.login "Login">
+<!ENTITY tooltip.loginUrl "URL">
+<!ENTITY tooltip.loginUrlCount "Login count">
+<!ENTITY tooltip.noLogin "No login data found for this page">

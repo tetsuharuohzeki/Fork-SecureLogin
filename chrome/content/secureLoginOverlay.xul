@@ -62,22 +62,26 @@
 				<vbox id="secureLoginTooltipBox:existLogin"
 				      hidden="true">
 					<hbox id="secureLoginTooltipBox:Title">
-						<label id="secureLoginTooltipTitleLabel"/>
+						<label id="secureLoginTooltipTitleLabel"
+						       value="&tooltip.login;"/>
 						<label id="secureLoginTooltipKeyboardShortcut"/>
 					</hbox>
 					<hbox>
 						<label id="secureLoginTooltipUrlHeader:URL"
-						       class="secureLoginTooltipUrlHeader"/>
+						       class="secureLoginTooltipUrlHeader"
+						       value="&tooltip.loginUrl;"/>
 						<spacer flex="1"/>
 						<label id="secureLoginTooltipUrlHeader:count"
-						       class="secureLoginTooltipUrlHeader"/>
+						       class="secureLoginTooltipUrlHeader"
+						       value="(&tooltip.loginUrlCount;)"/>
 					</hbox>
 					<vbox id="secureLoginTooltipUrlsList"
 					      class="secureLoginTooltipUrlRow">
 					</vbox>
 				</vbox>
 				<box id="secureLoginTooltipBox:noLogin">
-					<label id="secureLoginTooltips:noLogin"/>
+					<label id="secureLoginTooltips:noLogin"
+					       value="&tooltip.noLogin;"/>
 				</box>
 			</tooltip>
 			<menupopup id="secureLoginContextmenu"

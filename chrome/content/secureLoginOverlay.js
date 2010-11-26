@@ -519,10 +519,6 @@ var secureLoginOverlay = {
 
 	initializeTooltip: function () {
 		// Add the login label plus shortcut, if not empty:
-		this.tooltipTitleLabel.setAttribute(
-		  'value',
-		  this.service.stringBundle.getString('tooltipLogin')
-		);
 		var formattedShortcut = this.service.getFormattedShortcut();
 		if (formattedShortcut) {
 			this.tooltipKeyboardShortcut.setAttribute(
@@ -530,21 +526,6 @@ var secureLoginOverlay = {
 			  '('+this.service.getFormattedShortcut()+')'
 			);
 		}
-
-		// Add a description of the URL elements and count:
-		this.tooltipUrlHeaderURL.setAttribute(
-		  'value',
-		  this.service.stringBundle.getString('tooltipLoginUrl')
-		);
-		this.tooltipUrlHeaderCount.setAttribute(
-		  'value',
-		  this.service.stringBundle.getString('tooltipLoginUrlCount')
-		);
-
-		this.tooltipNoLoginLabel.setAttribute(
-		  'value',
-		  this.service.stringBundle.getString('tooltipNoLogin')
-		);
 	},
 
 	finalize: function () {
