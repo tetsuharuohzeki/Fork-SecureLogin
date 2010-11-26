@@ -395,9 +395,15 @@ var secureLogin = {
 								formURIs.push(formURI);
 							}
 
+							let foundLogin = {
+								loginObject  : loginInfo,
+								formIndex    : i,
+								window       : aWin,
+								usernameField: loginFields.usernameField,
+								passwordField: loginFields.passwordField,
+							};
 							// Add null as login object to the logins list to avoid a Master Password prompt:
-							this.addToFoundLoginsList(loginInfo, i, aWin,
-							                          loginFields.usernameField, loginFields.passwordField);
+							this.addToFoundLoginsList(foundLogin);
 
 							// highlight login fields:
 							this.highlightLoginFields(loginFields.usernameField, loginFields.passwordField);
@@ -472,7 +478,7 @@ var secureLogin = {
 		}
 	},
 
-	addToFoundLoginsList: function (aLoginObject, aFormIndex, aWindowObject, aUsernameField, aPasswordField) {
+	addToFoundLoginsList: function (aFoundLogin) {
 		// Lazy initialization of the logins and helper lists:
 		if (!this.secureLogins) {
 			// New valid logins list:
@@ -494,11 +500,11 @@ var secureLogin = {
 
 		// Save the login in the valid logins list:
 		this.secureLogins[loginIndex] = {
-			loginObject: aLoginObject,
-			formIndex  : aFormIndex,
-			window     : aWindowObject,
-			userField  : aUsernameField,
-			passField  : aPasswordField,
+			loginObject: aFoundLogin.loginObject,
+			formIndex  : aFoundLogin.formIndex,
+			window     : aFoundLogin.window,
+			userField  : aFoundLogin.usernameField,
+			passField  : aFoundLogin.passwordField,
 		};
 	},
 
