@@ -1,7 +1,11 @@
 #secureLoginButton {
 	list-style-image: url("login.png");
 }
-
+#secureLoginButton > .toolbarbutton-icon {
+	margin: 0px !important;
+	width: auto !important;
+	height: auto !important;
+}
 .secureLoginSettingsIcon {
 	list-style-image: url("settings-small.png");
 }
