@@ -7,7 +7,7 @@
 		<em:description>A login extension similar to Opera's Wand login</em:description>
 		<em:optionsURL>chrome://securelogin/content/secureLoginOptions.xul</em:optionsURL>
 		<em:homepageURL>https://blueimp.net/mozilla/</em:homepageURL>
-		<em:version>0.9.5</em:version>
+		<em:version>0.9.6</em:version>
 		<em:targetApplication>
 			<Description>
 				<!-- Firefox -->
