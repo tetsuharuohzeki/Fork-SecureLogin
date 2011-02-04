@@ -8,13 +8,13 @@
 		<em:iconURL>chrome://securelogin/skin/icon.png</em:iconURL>
 		<em:optionsURL>chrome://securelogin/content/secureLoginOptions.xul</em:optionsURL>
 		<em:homepageURL>https://blueimp.net/mozilla/</em:homepageURL>
-		<em:version>0.9.6</em:version>
+		<em:version>0.9.7</em:version>
 		<em:targetApplication>
 			<Description>
 				<!-- Firefox -->
 				<em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
 				<em:minVersion>1.5</em:minVersion>
-				<em:maxVersion>4.0b8</em:maxVersion>
+				<em:maxVersion>4.0b10</em:maxVersion>
 			</Description>
 		</em:targetApplication>
 	    <em:translator>Fingli (Bulgarian)</em:translator>
