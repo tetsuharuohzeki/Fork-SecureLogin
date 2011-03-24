@@ -181,10 +181,7 @@ var secureLogin = {
 			// Add the progress listener to the browser object (if not added previously):
 			try {
 				let nsIWebProgress = Components.interfaces.nsIWebProgress;
-				this.getBrowser().addProgressListener(
-					this.progressListener,
-					nsIWebProgress.NOTIFY_LOCATION | nsIWebProgress.NOTIFY_STATE_DOCUMENT
-				);
+				this.getBrowser().addProgressListener(this.progressListener);
 				this.isProgressListenerRegistered = true;
 			}
 			catch (e) {
