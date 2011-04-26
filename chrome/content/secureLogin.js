@@ -432,29 +432,15 @@ var secureLogin = {
 		// The form elements list:
 		var elements = aForm.elements;
 
-		// Go through the form elements:
-		for (let i = 0; i < elements.length; i++) {
-			let element = elements[i];
-			// Skip disabled elements or elements without a "name":
-			if (!element.name || element.disabled) {
-				continue;
-			}
-			else if (element.type == "password") {
-				if (element.name == aLoginPasswordFieldName) {
-					passwordField = element;
-					// We found a password field so break out of the loop:
-					break;
-				}
-			}
-			else {
-				// input which type is not password found,
-				// this is not password only form:
-				inputOtherTypeFound = true;
+		var userInput = elements[aLoginUsernameFieldName];
+		if (userInput) {
+			inputOtherTypeFound = true;
+			usernameField = userInput;
+		}
 
-				if (element.name == aLoginUsernameFieldName) {
-					usernameField = element;
-				}
-			}
+		var passInput = elements[aLoginPasswordFieldName];
+		if (passInput && passInput.type == "password") {
+			passwordField = passInput;
 		}
 
 		if (passwordField) {
