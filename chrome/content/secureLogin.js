@@ -5,13 +5,13 @@
  * @license GNU General Public License
  * @link https://blueimp.net/mozilla/
  */
-
+Components.utils.import("resource://gre/modules/Services.jsm");
 var secureLogin = {
 
 	// Secure Logins preferences branch:
 	get secureLoginPrefs () {
 		delete this.secureLoginPrefs;
-		return this.secureLoginPrefs = this.prefSvc.getBranch('extensions.secureLogin@blueimp.net.');
+		return this.secureLoginPrefs = Services.prefs.getBranch('extensions.secureLogin@blueimp.net.');
 	},
 
 	// The progress listener:
@@ -133,7 +133,7 @@ var secureLogin = {
 	initializeSignonAutofillFormsStatus: function () {
 		// Disable the prefilling of login forms if enabled, remember status:
 		try {
-			var rootPrefBranch = this.prefSvc.getBranch('');
+			var rootPrefBranch = Services.prefs.getBranch('');
 			if (rootPrefBranch.getBoolPref('signon.autofillForms')) {
 				rootPrefBranch.setBoolPref('signon.autofillForms', false);
 				this.autofillForms = true;
@@ -741,7 +741,7 @@ var secureLogin = {
 							selectionPrompt += '  (' + this.stringBundle.getString('formIndex') + ')';
 						}
 
-						var ok = this.promptSvc.select(
+						var ok = Services.prompt.select(
 						  window,
 						  this.stringBundle.getString('loginSelectionWindowTitle'),
 						  selectionPrompt + ':',
@@ -792,7 +792,7 @@ var secureLogin = {
 
 				// Ask for confirmation if we had a failed bookmark-login:
 				if (this.failedBookmarkLogin) {
-					var continueLogin = this.promptSvc.confirm(
+					var continueLogin = Services.prompt.confirm(
 					  null,
 					  this.stringBundle.getString('loginConfirmTitle'),
 					  this.stringBundle.getString('loginConfirmURL') + ' ' + url
@@ -1130,7 +1130,7 @@ var secureLogin = {
 			var file = this.secureLoginPrefs.getComplexValue(aPrefName, Components.interfaces.nsILocalFile);
 
 			// Get an url for the file:
-			var url = this.IOSvc.newFileURI(file, null, null);
+			var url = Services.io.newFileURI(file, null, null);
 
 			// Play the sound:
 			this.getSound().play(url);
@@ -1208,12 +1208,12 @@ var secureLogin = {
 	makeURI: function (aURI, aOriginCharset, aBaseURI) {
 		var absoluteURI;
 		try {
-			absoluteURI = this.IOSvc.newURI(aURI, aOriginCharset, null);
+			absoluteURI = Services.io.newURI(aURI, aOriginCharset, null);
 		}
 		catch (e) {
 			// make absolute URI, if aURI is relative one.
-			let tempURI = this.IOSvc.newURI(aBaseURI, aOriginCharset, null).resolve(aURI);
-			absoluteURI = this.IOSvc.newURI(tempURI, aOriginCharset, null);
+			let tempURI = Services.io.newURI(aBaseURI, aOriginCharset, null).resolve(aURI);
+			absoluteURI = Services.io.newURI(tempURI, aOriginCharset, null);
 		}
 		return absoluteURI;
 	},
@@ -1282,14 +1282,8 @@ var secureLogin = {
 		}
 		else {
 			// gBrowser is not available, so make use of the WindowMediator service instead:
-			return this.windowMediator.getMostRecentWindow('navigator:browser').gBrowser;
+			return Services.wm.getMostRecentWindow('navigator:browser').gBrowser;
 		}
-	},
-
-	get windowMediator () {
-		delete this.windowMediator;
-		return this.windowMediator = Components.classes['@mozilla.org/appshell/window-mediator;1']
-		                             .getService(Components.interfaces.nsIWindowMediator);
 	},
 
 	get loginManager () {
@@ -1298,33 +1292,15 @@ var secureLogin = {
 		                           .getService(Components.interfaces.nsILoginManager);
 	},
 
-	get prefSvc () {
-		delete this.prefSvc;
-		return this.prefSvc = Components.classes['@mozilla.org/preferences-service;1']
-		                      .getService(Components.interfaces.nsIPrefService);
-	},
-
 	get securityManager () {
 		delete this.securityManager;
 		return this.securityManager = Components.classes['@mozilla.org/scriptsecuritymanager;1']
 		                              .getService(Components.interfaces.nsIScriptSecurityManager);
 	},
 
-	get IOSvc () {
-		delete this.IOSvc;
-		return this.IOSvc = Components.classes['@mozilla.org/network/io-service;1']
-		                    .getService(Components.interfaces.nsIIOService);
-	},
-
 	getSound: function () {
 		return Components.classes['@mozilla.org/sound;1']
 		       .createInstance(Components.interfaces.nsISound);
-	},
-
-	get promptSvc () {
-		delete this.promptSvc;
-		return this.promptSvc = Components.classes['@mozilla.org/embedcomp/prompt-service;1']
-		                        .getService(Components.interfaces.nsIPromptService);
 	},
 
 	inArray: function (aArray, aItem) {
@@ -1347,15 +1323,10 @@ var secureLogin = {
 		var helpTab = this.getBrowser().addTab(aUrl);
 		if (aFocus) {
 			this.getBrowser().selectedTab = helpTab;
-			this.windowMediator.getMostRecentWindow('navigator:browser').focus();
+			Services.wm.getMostRecentWindow('navigator:browser').focus();
 		}
 	},
 
-	get consoleSvc () {
-		delete this.consoleSvc;
-		return this.consoleSvc = Components.classes['@mozilla.org/consoleservice;1']
-		                         .getService(Components.interfaces.nsIConsoleService);
-	},
 	log: function (aMessage, aSourceName, aSourceLine, aLineNumber, aColumnNumber, aFlags, aCategory) {
 		if (aSourceName != 'undefined') {
 			var scriptError = Components.classes["@mozilla.org/scripterror;1"]
@@ -1369,10 +1340,10 @@ var secureLogin = {
 				aFlags,
 				aCategory
 			);
-			this.consoleSvc.logMessage(scriptError);
+			Services.console.logMessage(scriptError);
 		}
 		else {
-			this.consoleSvc.logStringMessage(aMessage);
+			Services.console.logStringMessage(aMessage);
 		}
 	},
 
@@ -1381,7 +1352,7 @@ var secureLogin = {
 		// Re-enable the prefilling of login forms if setting has been true:
 		try {
 			if(this.autofillForms) {
-				this.prefSvc.getBranch('').setBoolPref('signon.autofillForms', true);
+				Services.prefs.getBranch('').setBoolPref('signon.autofillForms', true);
 			}
 		}
 		catch(e) {
