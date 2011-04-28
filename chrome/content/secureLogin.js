@@ -212,8 +212,8 @@ var secureLogin = {
 
 			// Update the outlined form fields:
 			for (var i = 0; i < this.secureLogins.length; i++) {
-				let secureLoginsUserField = this.secureLogins[i].userField;
-				let secureLoginsPassField = this.secureLogins[i].passField;
+				let secureLoginsUserField = this.secureLogins[i].usernameField;
+				let secureLoginsPassField = this.secureLogins[i].passwordField;
 				// Outline the username field if existing:
 				if (secureLoginsUserField) {
 					secureLoginsUserField.style.outline = outlineStyle;
@@ -484,12 +484,12 @@ var secureLogin = {
 
 		// Save the login in the valid logins list:
 		this.secureLogins[loginIndex] = {
-			loginObject: aFoundLogin.loginObject,
-			formIndex  : aFoundLogin.formIndex,
-			window     : aFoundLogin.window,
-			userField  : aFoundLogin.usernameField,
-			passField  : aFoundLogin.passwordField,
-			actionURI  : aFoundLogin.actionURIStr,
+			loginObject    : aFoundLogin.loginObject,
+			formIndex      : aFoundLogin.formIndex,
+			window         : aFoundLogin.window,
+			usernameField  : aFoundLogin.usernameField,
+			passwordField  : aFoundLogin.passwordField,
+			actionURI      : aFoundLogin.actionURIStr,
 		};
 	},
 
@@ -862,8 +862,8 @@ var secureLogin = {
 		var url             = aInfoObj.actionURI;
 		var charset         = aInfoObj.charset;
 		var secureLoginData = aInfoObj.secureLoginData;
-		var usernameField   = secureLoginData.userField;
-		var passwordField   = secureLoginData.passField;
+		var usernameField   = secureLoginData.usernameField;
+		var passwordField   = secureLoginData.passwordField;
 		var loginObject     = secureLoginData.loginObject;
 
 		// String to save the form data:
@@ -981,8 +981,8 @@ var secureLogin = {
 		var elements        = aInfoObj.elements;
 		var form            = aInfoObj.form;
 		var secureLoginData = aInfoObj.secureLoginData;
-		var usernameField   = secureLoginData.userField;
-		var passwordField   = secureLoginData.passField;
+		var usernameField   = secureLoginData.usernameField;
+		var passwordField   = secureLoginData.passwordField;
 		var loginObject     = secureLoginData.loginObject;
 
 		// Fill the login fields:
