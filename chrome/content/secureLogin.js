@@ -714,65 +714,32 @@ var secureLogin = {
 		if (this.secureLogins && this.secureLogins.length > 0) {
 			try {
 				// The list index of the login:
-				var selectedIndex = 0;
-
-				// Prompt for a selection, if list contains more than one login:
+				var selectedIndex;
 				if (this.secureLogins.length > 1) {
-					// Check if the loginIndex contains an index to select:
-					if (typeof aLoginIndex != 'undefined'
-					    && !isNaN(parseInt(aLoginIndex))
-					    && (aLoginIndex < this.secureLogins.length)
-					) {
-						selectedIndex = aLoginIndex;
-					}
-					else {
-						var list = new Array(this.secureLogins.length);
-						for (var i = 0; i < this.secureLogins.length; i++) {
-							list[i] = this.getUsernameFromLoginObject(this.secureLogins[i].loginObject);
-							// Show form index?
-							if (this.showFormIndex) {
-								list[i] += '  (' + this.secureLogins[i].formIndex + ')';
-							}
-						}
-						var selected = {};
-
-						var selectionPrompt = this.stringBundle.getString('loginSelectionPrompt');
-						if (this.showFormIndex) {
-							selectionPrompt += '  (' + this.stringBundle.getString('formIndex') + ')';
-						}
-
-						var ok = Services.prompt.select(
-						  window,
-						  this.stringBundle.getString('loginSelectionWindowTitle'),
-						  selectionPrompt + ':',
-						  list.length,
-						  list,
-						  selected
-						);
-
-						if (!ok) {
-							return;
-						}
-
-						// Set the list index to the selected one:
-						selectedIndex = selected.value
-					}
+					// Prompt for a selection, if list contains more than one login:
+					selectedIndex = this._selectLoginAccount(aLoginIndex);
+				}
+				else {
+					selectedIndex = 0;
 				}
 
+				// Cache login data:
+				var secureLoginData = this.secureLogins[selectedIndex];
+
 				// Set the win object to the window (frame) containing the login form:
-				aWin = this.secureLogins[selectedIndex].window;
+				var window = secureLoginData.window;
 
 				// Return if the window has been closed in the meantime:
-				if (aWin.closed) {
+				if (window.closed) {
 					return;
 				}
 
 				// The document containing the form:
-				var document = this.getDoc(aWin);
+				var document = this.getDoc(window);
 				var location = document.location;
 
 				// The index for the form containing the login fields:
-				var formIndex = this.secureLogins[selectedIndex].formIndex;
+				var formIndex = secureLoginData.formIndex;
 
 				// The login form:
 				var form = document.forms[formIndex];
@@ -780,22 +747,18 @@ var secureLogin = {
 				// The form elements list:
 				var elements = form.elements;
 
-				// User + Pass fields:
-				var usernameField = this.secureLogins[selectedIndex].userField;
-				var passwordField = this.secureLogins[selectedIndex].passField;
-
 				// The charset of the given document:
 				var charset = document.characterSet;
 
 				// Get the target url from the form action value or if empty from the current document:
-				var url = this.secureLogins[selectedIndex].actionURI;
+				var actionURI = secureLoginData.actionURI;
 
 				// Ask for confirmation if we had a failed bookmark-login:
 				if (this.failedBookmarkLogin) {
-					var continueLogin = Services.prompt.confirm(
+					let continueLogin = Services.prompt.confirm(
 					  null,
 					  this.stringBundle.getString('loginConfirmTitle'),
-					  this.stringBundle.getString('loginConfirmURL') + ' ' + url
+					  this.stringBundle.getString('loginConfirmURL') + ' ' + actionURI
 					);
 					if (!continueLogin) {
 						return;
@@ -806,27 +769,22 @@ var secureLogin = {
 				this.failedBookmarkLogin = null;
 
 				// If JavaScript protection is to be used, check the exception list:
-				var useJavaScriptProtection = this.secureLoginPrefs.getBoolPref('javascriptProtection');
-				var isInExceptionArray = this.inArray(this.getExceptions(), location.protocol + '//' + location.host);
-				if (useJavaScriptProtection && isInExceptionArray) {
-					useJavaScriptProtection = false;
-				}
+				var useJavaScriptProtection = this._useJavaScriptProtection(location);
 
 				var loginInfos = {
-					elements:      elements,
-					usernameField: usernameField,
-					passwordField: passwordField,
-					form:          form,
-					location:      location,
-					selectedIndex: selectedIndex,
-					url:           url,
-					charset:       charset,
+					location       : location,
+					elements       : elements,
+					form           : form,
+					actionURI      : actionURI,
+					charset        : charset,
+					secureLoginData: secureLoginData,
 				};
 
 				// Send login data without using the form:
 				if (useJavaScriptProtection) {
 					this._loginWithJSProtection(loginInfos);
-				} else {
+				}
+				else {
 					this._loginWithNormal(loginInfos);
 				}
 
@@ -847,15 +805,66 @@ var secureLogin = {
 		this.secureLogins = null;
 	},
 
+	_selectLoginAccount: function (aLoginIndex) {
+		var selectedIndex;
+		// Check if the loginIndex contains an index to select:
+		if ((typeof aLoginIndex != "undefined")
+		    && (!isNaN(parseInt(aLoginIndex)))
+		    && (aLoginIndex < this.secureLogins.length)
+		) {
+			selectedIndex = aLoginIndex;
+		}
+		else {
+			let list = new Array(this.secureLogins.length);
+			for (let i = 0; i < this.secureLogins.length; i++) {
+				list[i] = this.getUsernameFromLoginObject(this.secureLogins[i].loginObject);
+				// Show form index?
+				if (this.showFormIndex) {
+					list[i] += '  (' + this.secureLogins[i].formIndex + ')';
+				}
+			}
+			let selected = {};
+
+			let selectionPrompt = this.stringBundle.getString('loginSelectionPrompt');
+			if (this.showFormIndex) {
+				selectionPrompt += '  (' + this.stringBundle.getString('formIndex') + ')';
+			}
+
+			let ok = Services.prompt.select(
+				window,
+				this.stringBundle.getString('loginSelectionWindowTitle'),
+				selectionPrompt + ':',
+				list.length,
+				list,
+				selected
+			);
+
+			if (!ok) {
+				return;
+			}
+
+			// Set the list index to the selected one:
+			selectedIndex = selected.value
+		}
+		return selectedIndex;
+	},
+
+	_useJavaScriptProtection: function (aLocation) {
+		var useJavaScriptProtection = this.secureLoginPrefs.getBoolPref("javascriptProtection");
+		var isInExceptionArray = this.inArray(this.getExceptions(), aLocation.protocol + "//" + aLocation.host);
+		return (useJavaScriptProtection && isInExceptionArray) ? false : true;
+	},
+
 	_loginWithJSProtection: function (aInfoObj) {
-		var elements = aInfoObj.elements;
-		var usernameField = aInfoObj.usernameField;
-		var passwordField = aInfoObj.passwordField;
-		var form = aInfoObj.form;
-		var url = aInfoObj.url;
-		var location = aInfoObj.location;
-		var charset = aInfoObj.charset;
-		var selectedIndex = aInfoObj.selectedIndex;
+		var location        = aInfoObj.location;
+		var elements        = aInfoObj.elements;
+		var form            = aInfoObj.form;
+		var url             = aInfoObj.actionURI;
+		var charset         = aInfoObj.charset;
+		var secureLoginData = aInfoObj.secureLoginData;
+		var usernameField   = secureLoginData.userField;
+		var passwordField   = secureLoginData.passField;
+		var loginObject     = secureLoginData.loginObject;
 
 		// String to save the form data:
 		var dataString = '';
@@ -876,7 +885,7 @@ var secureLogin = {
 		var submitButtonFound = false;
 
 		// Search for form elements other than user+pass fields and add them to the dataString:
-		for (var i = 0; i < elements.length; i++) {
+		for (let i = 0; i < elements.length; i++) {
 			let element = elements[i];
 
 			// Don't add disabled elements or elements without a "name":
@@ -889,11 +898,11 @@ var secureLogin = {
 					// This is the password field - use the saved password as value:
 					addToDataString(
 					  passwordField.name,
-					  this.getPasswordFromLoginObject(this.secureLogins[selectedIndex].loginObject)
+					  this.getPasswordFromLoginObject(loginObject)
 					);
 					break;
 				case 'select-multiple':
-					for (var j = 0; j < element.options.length; j++) {
+					for (let j = 0; j < element.options.length; j++) {
 						if (element.options[j].selected) {
 							addToDataString(element.name, element.options[j].value);
 						}
@@ -920,7 +929,7 @@ var secureLogin = {
 						// This is the userName field - use the saved username as value:
 						addToDataString(
 						  usernameField.name,
-						  this.getUsernameFromLoginObject(this.secureLogins[selectedIndex].loginObject)
+						  this.getUsernameFromLoginObject(loginObject)
 						);
 					}
 					break;
@@ -932,7 +941,7 @@ var secureLogin = {
 		//search for an input of type="image" which ist not in the elements list:
 		if (!submitButtonFound) {
 			var inputElements = form.getElementsByTagName('input');
-			for (var i = 0; i < inputElements.length; i++) {
+			for (let i = 0; i < inputElements.length; i++) {
 				let inputElement = inputElements[i];
 				if (inputElement.type == 'image') {
 					// Image submit buttons add the "click-coordinates" name.x and name.y
@@ -950,8 +959,8 @@ var secureLogin = {
 		// Send the data by GET or POST:
 		if (form.method && form.method.toLowerCase() == 'get') {
 			// Add the parameter list to the url, remove existing parameters:
-			var paramIndex = url.indexOf('?');
-			if(paramIndex == -1) {
+			let paramIndex = url.indexOf('?');
+			if (paramIndex == -1) {
 				url += '?' + dataString;
 			}
 			else {
@@ -962,33 +971,32 @@ var secureLogin = {
 		}
 		else {
 			// Create post data mime stream (params are aStringData, aKeyword, aEncKeyword, aType):
-			var postData = getPostDataStream(dataString, '', '', 'application/x-www-form-urlencoded');
+			let postData = getPostDataStream(dataString, '', '', 'application/x-www-form-urlencoded');
 			// Load the url in the current window (params are url, referrer and post data):
 			loadURI(url, this.makeURI(location.href, charset, null), postData);
 		}
 	},
 
 	_loginWithNormal: function (aInfoObj) {
-		var elements = aInfoObj.elements;
-		var usernameField = aInfoObj.usernameField;
-		var passwordField = aInfoObj.passwordField;
-		var form = aInfoObj.form;
-		var url = aInfoObj.url;
-		var charset = aInfoObj.charset;
-		var selectedIndex = aInfoObj.selectedIndex;
+		var elements        = aInfoObj.elements;
+		var form            = aInfoObj.form;
+		var secureLoginData = aInfoObj.secureLoginData;
+		var usernameField   = secureLoginData.userField;
+		var passwordField   = secureLoginData.passField;
+		var loginObject     = secureLoginData.loginObject;
 
 		// Fill the login fields:
 		if (usernameField) {
-			usernameField.value = this.getUsernameFromLoginObject(this.secureLogins[selectedIndex].loginObject);
+			usernameField.value = this.getUsernameFromLoginObject(loginObject);
 		}
-		passwordField.value = this.getPasswordFromLoginObject(this.secureLogins[selectedIndex].loginObject);
+		passwordField.value = this.getPasswordFromLoginObject(loginObject);
 
 		if (this.secureLoginPrefs.getBoolPref('autoSubmitForm')) {
 			// Prevent multiple submits (e.g. if submit is delayed)
 			// by setting a variable (after click on a submit button):
-			var submitted = false;
+			let submitted = false;
 			// Search for the submit button:
-			for (var i = 0; i < elements.length; i++) {
+			for (let i = 0; i < elements.length; i++) {
 				let element = elements[i];
 				// auto-login by clicking on the submit button:
 				if (element.type == "submit" || element.type == "image") {
