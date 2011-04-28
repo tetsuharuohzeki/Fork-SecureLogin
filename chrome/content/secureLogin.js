@@ -116,7 +116,6 @@ var secureLogin = {
 
 	initialize: function () {
 		// Add a preferences observer to the secureLogin preferences branch:
-		this.secureLoginPrefs.QueryInterface(Components.interfaces.nsIPrefBranch2);
 		this.secureLoginPrefs.addObserver('', this, false);
 
 		// Initialize the preferences settings:
