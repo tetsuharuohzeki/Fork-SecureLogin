@@ -14,7 +14,7 @@
 		<menu id="secureLoginToolsMenu"
 		      label="&toolsmenu.label;"
 		      class="menu-iconic secureLoginIcon"
-		      insertbefore="javascriptConsole">
+		      insertafter="webDeveloperMenu">
 			<menupopup id="secureLoginToolsMenuPopup"
 			           onpopupshowing="secureLoginOverlay.toolsMenu(event);">
 				<menu id="secureLoginToolsMenuAutofillFormsMenu"
