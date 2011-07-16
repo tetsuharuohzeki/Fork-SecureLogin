@@ -18,7 +18,7 @@ var secureLogin = {
 	// The progress listener:
 	get progressListener () {
 		delete this.progressListener;
-		var self = this;
+		let self = this;
 		// Implement the listener methods:
 		this.progressListener = {
 			QueryInterface: function (aIID) {
@@ -48,16 +48,16 @@ var secureLogin = {
 	},
 
 	updateStatus: function (aProgress, aRequest, aLocation, aFlag, aStatus) {
-		var progressWindow = aProgress.DOMWindow;
+		let progressWindow = aProgress.DOMWindow;
 
-		var isSecureLoginBookmarks = this.secureLoginPrefs.getBoolPref('secureLoginBookmarks');
+		let isSecureLoginBookmarks = this.secureLoginPrefs.getBoolPref('secureLoginBookmarks');
 		if (this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
 			// Initialize the recursive search for logins on the current window:
 			this.searchLoginsInitialize(progressWindow);
 
-			var doc = this.getDoc(progressWindow);
+			let doc = this.getDoc(progressWindow);
 
-			var isAutoLogin = this.secureLoginPrefs.getBoolPref('autoLogin');
+			let isAutoLogin = this.secureLoginPrefs.getBoolPref('autoLogin');
 			//var isInExceptionArray = this.inArray(this.getAutoLoginExceptions(), doc.location.protocol + '//' + doc.location.host);
 			if (isAutoLogin
 			    && this.secureLogins
@@ -133,7 +133,7 @@ var secureLogin = {
 	initializeSignonAutofillFormsStatus: function () {
 		// Disable the prefilling of login forms if enabled, remember status:
 		try {
-			var rootPrefBranch = Services.prefs.getBranch('');
+			let rootPrefBranch = Services.prefs.getBranch('');
 			if (rootPrefBranch.getBoolPref('signon.autofillForms')) {
 				rootPrefBranch.setBoolPref('signon.autofillForms', false);
 				this.autofillForms = true;
@@ -156,7 +156,7 @@ var secureLogin = {
 		}
 		else {
 			// Always highlight the Secure Login icons, when not searching for valid logins automatically:
-			var secureLoginButton = this.loginButton;
+			let secureLoginButton = this.loginButton;
 			if (secureLoginButton) {
 				secureLoginButton.removeAttribute("disabled");
 			}
@@ -164,8 +164,8 @@ var secureLogin = {
 	},
 
 	progressListenerUpdate: function () {
-		var isSearchLoginsOnload = this.secureLoginPrefs.getBoolPref('searchLoginsOnload');
-		var isSecureLoginBookmarks = this.secureLoginPrefs.getBoolPref('secureLoginBookmarks');
+		let isSearchLoginsOnload = this.secureLoginPrefs.getBoolPref('searchLoginsOnload');
+		let isSecureLoginBookmarks = this.secureLoginPrefs.getBoolPref('secureLoginBookmarks');
 
 		if (!isSearchLoginsOnload && !isSecureLoginBookmarks) {
 			// Remove the listener from the browser object (if added previously):
@@ -203,7 +203,7 @@ var secureLogin = {
 	highlightColorUpdate: function () {
 		if (this.secureLogins) {
 			// The outline style:
-			var outlineStyle = ''
+			let outlineStyle = ''
 			                    + this.secureLoginPrefs.getIntPref('highlightOutlineWidth')
 			                    + 'px '
 			                    + this.secureLoginPrefs.getCharPref('highlightOutlineStyle')
@@ -211,7 +211,7 @@ var secureLogin = {
 			                    + this.secureLoginPrefs.getCharPref('highlightColor');
 
 			// Update the outlined form fields:
-			for (var i = 0; i < this.secureLogins.length; i++) {
+			for (let i = 0; i < this.secureLogins.length; i++) {
 				let secureLoginsUserField = this.secureLogins[i].usernameField;
 				let secureLoginsPassField = this.secureLogins[i].passwordField;
 				// Outline the username field if existing:
@@ -227,7 +227,7 @@ var secureLogin = {
 	},
 
 	getAutoLoginExceptions: function () {
-		var autoLoginExceptions = this.autoLoginExceptions;
+		let autoLoginExceptions = this.autoLoginExceptions;
 		if (!autoLoginExceptions) {
 			// Get the exception list from the preferences:
 			autoLoginExceptions = this.secureLoginPrefs
@@ -238,11 +238,11 @@ var secureLogin = {
 	},
 
 	bookmarkLogin: function (aWin) {
-		var document = this.getDoc(aWin);
+		let document = this.getDoc(aWin);
 
-		var secureLoginBookmarkHash = this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash');
+		let secureLoginBookmarkHash = this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash');
 		// Check for first four characters of Secure Login anchor (hash):
-		var locationHash = document.location.hash;
+		let locationHash = document.location.hash;
 		if (document
 		    && document.location
 		    && locationHash
@@ -250,9 +250,9 @@ var secureLogin = {
 		) {
 
 			// Check for complete Secure Login anchor (hash):
-			var index = locationHash.indexOf(secureLoginBookmarkHash);
+			let index = locationHash.indexOf(secureLoginBookmarkHash);
 			if (index == 0) {
-				var bookmarkLoginIndex = parseInt(
+				let bookmarkLoginIndex = parseInt(
 					locationHash.substr(secureLoginBookmarkHash.length)
 				);
 				if (!isNaN(bookmarkLoginIndex)) {
@@ -278,7 +278,7 @@ var secureLogin = {
 
 		if (this.secureLogins && aWin.frameElement) {
 			// Login search initialized by a frame window - keep the logins of all remaining windows:
-			for (var i=0; i<this.secureLogins.length; i++) {
+			for (let i=0; i<this.secureLogins.length; i++) {
 				if (this.secureLogins[i].window == aWin || this.secureLogins[i].window.closed) {
 					this.secureLogins.splice(i, 1);
 				}
@@ -305,7 +305,7 @@ var secureLogin = {
 	},
 
 	updateLoginsFoundStatus: function () {
-		var secureLoginButton = this.loginButton;
+		let secureLoginButton = this.loginButton;
 		if (this.secureLogins && this.secureLogins.length > 0) {
 			if (secureLoginButton) {
 				secureLoginButton.removeAttribute("disabled");
@@ -323,9 +323,9 @@ var secureLogin = {
 	},
 
 	searchLogins: function (aWin) {
-		var document = this.getDoc(aWin);
-		var forms = document.forms;
-		var location = document.location;
+		let document = this.getDoc(aWin);
+		let forms = document.forms;
+		let location = document.location;
 
 		// Check if any web forms are available on the current window:
 		if (document
@@ -335,17 +335,17 @@ var secureLogin = {
 		) {
 
 			// document (current) host:
-			var host = location.protocol + '//' + location.host;
+			let host = location.protocol + '//' + location.host;
 
 			// Getting the number of existing logins with countLogins()
 			// instead of findLogins() to avoid a Master Password prompt:
-			var loginsCount = this.loginManager.countLogins(host, targetHost, null);
+			let loginsCount = this.loginManager.countLogins(host, undefined, null);
 			if (loginsCount > 0) {
 				let formURIs = new Array();
 				let isSkipDuplicateActionForms = this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms');
 
  				// Go through the forms:
- 				for (var i = 0; i < forms.length; i++) {
+ 				for (let i = 0; i < forms.length; i++) {
 					// Check to finish searching logins in this document:
 					if (loginsCount <= 0) {
 						break;
@@ -354,23 +354,23 @@ var secureLogin = {
  					let form = forms[i];
 
 					// Forms with no "action" attribute default to submitting to their origin URL:
-					var formAction = form.action ? form.action : document.baseURI;
+					let formAction = form.action ? form.action : document.baseURI;
 
 					// Create a nsIURI object from the formAction:
-					var formURI = this.makeURI(formAction, document.characterSet, document.baseURI);
-					var targetHost = formURI.prePath;
+					let formURI = this.makeURI(formAction, document.characterSet, document.baseURI);
+					let targetHost = formURI.prePath;
 
 					if (isSkipDuplicateActionForms) {
 						// Skip this form if the same formURI has already been added:
-						var isDuplicate = false;
-						for (var j = 0; j< formURIs.length; j++) {
+						let isDuplicate = false;
+						for (let j = 0; j< formURIs.length; j++) {
 							if (formURIs[j].equals(formURI)) {
 								isDuplicate = true;
 								break;
 							}
 						}
 /*
-						var isDuplicate = formURIs.some(function(aNsIURI){
+						let isDuplicate = formURIs.some(function(aNsIURI){
 							return aNsIURI.equals(formURI);
 						});
 */
@@ -379,9 +379,9 @@ var secureLogin = {
 						}
 					}
 
-					var loginInfos = this.loginManager.findLogins({}, host, targetHost, null);
+					let loginInfos = this.loginManager.findLogins({}, host, targetHost, null);
 					// Go through the logins:
-					for (var j = 0; j < loginInfos.length; j++) {
+					for (let j = 0; j < loginInfos.length; j++) {
 						// Get valid login fields:
 						let loginInfo = loginInfos[j];
 						let loginFields = this.getLoginFields(form, loginInfo.usernameField, loginInfo.passwordField);
@@ -415,7 +415,7 @@ var secureLogin = {
 		}
 
 		// Recursive call for all subframes:
-		for (var f=0; f < aWin.frames.length; f++) {
+		for (let f=0; f < aWin.frames.length; f++) {
 			this.searchLogins(aWin.frames[f]);
 		}
 	},
@@ -423,22 +423,22 @@ var secureLogin = {
 	getLoginFields: function (aForm, aLoginUsernameFieldName, aLoginPasswordFieldName) {
 
 		// The form fields for user+pass:
-		var usernameField = null;
-		var passwordField = null;
+		let usernameField = null;
+		let passwordField = null;
 
 		// helper var to define if the login form is a password only form:
-		var inputOtherTypeFound = false;
+		let inputOtherTypeFound = false;
 
 		// The form elements list:
-		var elements = aForm.elements;
+		let elements = aForm.elements;
 
-		var userInput = elements[aLoginUsernameFieldName];
+		let userInput = elements[aLoginUsernameFieldName];
 		if (userInput) {
 			inputOtherTypeFound = true;
 			usernameField = userInput;
 		}
 
-		var passInput = elements[aLoginPasswordFieldName];
+		let passInput = elements[aLoginPasswordFieldName];
 		if (passInput && passInput.type == "password") {
 			passwordField = passInput;
 		}
@@ -450,7 +450,7 @@ var secureLogin = {
 				return null;
 			}
 
-			var loginFields = {
+			let loginFields = {
 				usernameField: usernameField,
 				passwordField: passwordField,
 			};
@@ -469,10 +469,10 @@ var secureLogin = {
 			this.secureLogins = new Array();
 		}
 
-		var loginIndex = this.secureLogins.length;
+		let loginIndex = this.secureLogins.length;
 
 		// Test if there is only one valid login form:
-		var isInArray = this.secureLogins.some(function(aElm){
+		let isInArray = this.secureLogins.some(function(aElm){
 			return (aElm.formIndex === aFoundLogin.formIndex);
 		});
 		if (!this.showFormIndex
@@ -495,7 +495,8 @@ var secureLogin = {
 
 	highlightLoginFields: function (aUsernameField, aPasswordField) {
 		// Possible style declaration, overwriting outline settings:
-		var highlightStyle = this.secureLoginPrefs.getCharPref('highlightStyle');
+		let highlightStyle = this.secureLoginPrefs.getCharPref('highlightStyle');
+		let outlineStyle, outlineRadius;
 
 		if (!highlightStyle) {
 			if (!this.secureLoginPrefs.getIntPref('highlightOutlineWidth')) {
@@ -504,15 +505,15 @@ var secureLogin = {
 			}
 
 			// The outline style:
-			var outlineStyle = ''
-			                   + this.secureLoginPrefs.getIntPref('highlightOutlineWidth')
-			                   + 'px '
-			                   + this.secureLoginPrefs.getCharPref('highlightOutlineStyle')
-			                   + ' '
-			                   + this.secureLoginPrefs.getCharPref('highlightColor');
+			outlineStyle = ''
+			               + this.secureLoginPrefs.getIntPref('highlightOutlineWidth')
+			               + 'px '
+			               + this.secureLoginPrefs.getCharPref('highlightOutlineStyle')
+			               + ' '
+			               + this.secureLoginPrefs.getCharPref('highlightColor');
 
 			// The outline radius:
-			var outlineRadius = this.secureLoginPrefs.getIntPref('highlightOutlineRadius');
+			outlineRadius = this.secureLoginPrefs.getIntPref('highlightOutlineRadius');
 		}
 
 		// Outline usernameField:
@@ -581,7 +582,7 @@ var secureLogin = {
 		aButtons = aButtons ? aButtons : null;
 		// First remove notifications with the same id:
 		this.removeNotification(aId);
-		var notificationBox = this.getBrowser().getNotificationBox();
+		let notificationBox = this.getBrowser().getNotificationBox();
 		if (notificationBox) {
 			notificationBox.appendNotification(
 			  aLabel,
@@ -595,9 +596,9 @@ var secureLogin = {
 
 	removeNotification: function (aId) {
 		aId = aId ? aId : 'secureLoginNotification';
-		var notificationBox = this.getBrowser().getNotificationBox();
+		let notificationBox = this.getBrowser().getNotificationBox();
 		if (notificationBox) {
-			var notification = notificationBox.getNotificationWithValue(aId);
+			let notification = notificationBox.getNotificationWithValue(aId);
 			if (notification) {
 				notificationBox.removeNotification(notification);
 			}
@@ -624,12 +625,12 @@ var secureLogin = {
 		if (this.secureLogins && this.secureLogins.length > 0) {
 			if (this.secureLogins.length > 1) {
 				// Determine if no master password is set or the user has already been authenticated:
-				var masterPasswordRequired = true;
+				let masterPasswordRequired = true;
 				if (!this.masterSecurityDevice.getInternalKeyToken().needsLogin()
 				    || this.masterSecurityDevice.getInternalKeyToken().isLoggedIn()) {
 					masterPasswordRequired = false;
 				}
-				var popup = this.loginUserSelectionPopup;
+				let popup = this.loginUserSelectionPopup;
 				if (popup && typeof popup.openPopup == 'function' && !masterPasswordRequired) {
 					try {
 						this.prepareUserSelectionPopup(popup);
@@ -670,13 +671,13 @@ var secureLogin = {
 		while (aPopup.hasChildNodes()) {
 			aPopup.removeChild(aPopup.firstChild);
 		}
-		var secureLogins = this.secureLogins;
+		let secureLogins = this.secureLogins;
 		if (secureLogins) {
-			var menuitem = document.createElement('menuitem');
+			let menuitem = document.createElement('menuitem');
 			menuitem.setAttribute('class','menuitem-iconic secureLoginUserIcon');
 			// Add a menuitem for each available user login:
-			for (var i = 0; i < secureLogins.length; i++) {
-				var username = this.getUsernameFromLoginObject(secureLogins[i].loginObject);
+			for (let i = 0; i < secureLogins.length; i++) {
+				let username = this.getUsernameFromLoginObject(secureLogins[i].loginObject);
 				// Show form index?
 				if (this.showFormIndex) {
 					username += '  (' + this.secureLogins[i].formIndex + ')';
@@ -705,7 +706,7 @@ var secureLogin = {
 		}
 
 		// Search for valid logins and outline login fields if not done automatically:
-		var isSearchLoginsOnload = this.secureLoginPrefs.getBoolPref('searchLoginsOnload');
+		let isSearchLoginsOnload = this.secureLoginPrefs.getBoolPref('searchLoginsOnload');
 		if (!isSearchLoginsOnload && !aSkipLoginSearch) {
 			this.searchLoginsInitialize(aWin);
 		}
@@ -714,7 +715,7 @@ var secureLogin = {
 		if (this.secureLogins && this.secureLogins.length > 0) {
 			try {
 				// The list index of the login:
-				var selectedIndex;
+				let selectedIndex;
 				if (this.secureLogins.length > 1) {
 					// Prompt for a selection, if list contains more than one login:
 					selectedIndex = this._selectLoginAccount(aLoginIndex);
@@ -724,10 +725,10 @@ var secureLogin = {
 				}
 
 				// Cache login data:
-				var secureLoginData = this.secureLogins[selectedIndex];
+				let secureLoginData = this.secureLogins[selectedIndex];
 
 				// Set the win object to the window (frame) containing the login form:
-				var window = secureLoginData.window;
+				let window = secureLoginData.window;
 
 				// Return if the window has been closed in the meantime:
 				if (window.closed) {
@@ -735,23 +736,23 @@ var secureLogin = {
 				}
 
 				// The document containing the form:
-				var document = this.getDoc(window);
-				var location = document.location;
+				let document = this.getDoc(window);
+				let location = document.location;
 
 				// The index for the form containing the login fields:
-				var formIndex = secureLoginData.formIndex;
+				let formIndex = secureLoginData.formIndex;
 
 				// The login form:
-				var form = document.forms[formIndex];
+				let form = document.forms[formIndex];
 
 				// The form elements list:
-				var elements = form.elements;
+				let elements = form.elements;
 
 				// The charset of the given document:
-				var charset = document.characterSet;
+				let charset = document.characterSet;
 
 				// Get the target url from the form action value or if empty from the current document:
-				var actionURI = secureLoginData.actionURI;
+				let actionURI = secureLoginData.actionURI;
 
 				// Ask for confirmation if we had a failed bookmark-login:
 				if (this.failedBookmarkLogin) {
@@ -766,12 +767,12 @@ var secureLogin = {
 				}
 
 				// Reset failed bookmark-login:
-				this.failedBookmarkLogin = null;
+				let failedBookmarkLogin = null;
 
 				// If JavaScript protection is to be used, check the exception list:
-				var useJavaScriptProtection = this._useJavaScriptProtection(location);
+				let useJavaScriptProtection = this._useJavaScriptProtection(location);
 
-				var loginInfos = {
+				let loginInfos = {
 					location       : location,
 					elements       : elements,
 					form           : form,
@@ -806,7 +807,7 @@ var secureLogin = {
 	},
 
 	_selectLoginAccount: function (aLoginIndex) {
-		var selectedIndex;
+		let selectedIndex;
 		// Check if the loginIndex contains an index to select:
 		if ((typeof aLoginIndex != "undefined")
 		    && (!isNaN(parseInt(aLoginIndex)))
@@ -850,27 +851,27 @@ var secureLogin = {
 	},
 
 	_useJavaScriptProtection: function (aLocation) {
-		var useJavaScriptProtection = this.secureLoginPrefs.getBoolPref("javascriptProtection");
-		var isInExceptionArray = this.inArray(this.getExceptions(), aLocation.protocol + "//" + aLocation.host);
+		let useJavaScriptProtection = this.secureLoginPrefs.getBoolPref("javascriptProtection");
+		let isInExceptionArray = this.inArray(this.getExceptions(), aLocation.protocol + "//" + aLocation.host);
 		return (useJavaScriptProtection && isInExceptionArray) ? false : true;
 	},
 
 	_loginWithJSProtection: function (aInfoObj) {
-		var location        = aInfoObj.location;
-		var elements        = aInfoObj.elements;
-		var form            = aInfoObj.form;
-		var url             = aInfoObj.actionURI;
-		var charset         = aInfoObj.charset;
-		var secureLoginData = aInfoObj.secureLoginData;
-		var usernameField   = secureLoginData.usernameField;
-		var passwordField   = secureLoginData.passwordField;
-		var loginObject     = secureLoginData.loginObject;
+		let location        = aInfoObj.location;
+		let elements        = aInfoObj.elements;
+		let form            = aInfoObj.form;
+		let url             = aInfoObj.actionURI;
+		let charset         = aInfoObj.charset;
+		let secureLoginData = aInfoObj.secureLoginData;
+		let usernameField   = secureLoginData.usernameField;
+		let passwordField   = secureLoginData.passwordField;
+		let loginObject     = secureLoginData.loginObject;
 
 		// String to save the form data:
-		var dataString = '';
+		let dataString = '';
 
 		// Reference to the main secureLogin object:
-		var parentObject = this;
+		let parentObject = this;
 
 		// Local helper function to add name and value pairs urlEncoded to the dataString:
 		function addToDataString(aName, aValue) {
@@ -882,7 +883,7 @@ var secureLogin = {
 			              + parentObject.urlEncode(aValue, charset);
 		}
 
-		var submitButtonFound = false;
+		let submitButtonFound = false;
 
 		// Search for form elements other than user+pass fields and add them to the dataString:
 		for (let i = 0; i < elements.length; i++) {
@@ -940,7 +941,7 @@ var secureLogin = {
 		// If no submit button found,
 		//search for an input of type="image" which ist not in the elements list:
 		if (!submitButtonFound) {
-			var inputElements = form.getElementsByTagName('input');
+			let inputElements = form.getElementsByTagName('input');
 			for (let i = 0; i < inputElements.length; i++) {
 				let inputElement = inputElements[i];
 				if (inputElement.type == 'image') {
@@ -978,12 +979,12 @@ var secureLogin = {
 	},
 
 	_loginWithNormal: function (aInfoObj) {
-		var elements        = aInfoObj.elements;
-		var form            = aInfoObj.form;
-		var secureLoginData = aInfoObj.secureLoginData;
-		var usernameField   = secureLoginData.usernameField;
-		var passwordField   = secureLoginData.passwordField;
-		var loginObject     = secureLoginData.loginObject;
+		let elements        = aInfoObj.elements;
+		let form            = aInfoObj.form;
+		let secureLoginData = aInfoObj.secureLoginData;
+		let usernameField   = secureLoginData.usernameField;
+		let passwordField   = secureLoginData.passwordField;
+		let loginObject     = secureLoginData.loginObject;
 
 		// Fill the login fields:
 		if (usernameField) {
@@ -1030,7 +1031,7 @@ var secureLogin = {
 
 	getExceptions: function () {
 		// Get the exception list from the preferences:
-		var exceptions = this.secureLoginPrefs
+		let exceptions = this.secureLoginPrefs
 		                 .getComplexValue('exceptionList', Components.interfaces.nsISupportsString)
 		                 .data.split(' ');
 		return (exceptions && exceptions[0]) ? exceptions : new Array();
@@ -1060,7 +1061,7 @@ var secureLogin = {
 					if (this.modifiers.length != shortcut.modifiers.length) {
 						return false;
 					}
-					for (var i=0; i<this.modifiers.length; i++) {
+					for (let i=0; i<this.modifiers.length; i++) {
 						if (this.modifiers[i] != shortcut.modifiers[i]) {
 							return false;
 						}
@@ -1075,9 +1076,9 @@ var secureLogin = {
 
 	getShortcut: function () {
 		if (this.shortcut == null) {
-			var key = null;
-			var keycode = null;
-			var shortcutItems = this.secureLoginPrefs
+			let key = null;
+			let keycode = null;
+			let shortcutItems = this.secureLoginPrefs
 			                    .getComplexValue('shortcut', Components.interfaces.nsIPrefLocalizedString)
 			                    .data.split('+');
 			if (shortcutItems.length > 0) {
@@ -1098,10 +1099,10 @@ var secureLogin = {
 
 	getFormattedShortcut: function (aShortcutParam) {
 		// Get shortcut from param or take the object attribute:
-		var shortcut = aShortcutParam ? aShortcutParam : this.getShortcut();
-		var formattedShortcut = '';
+		let shortcut = aShortcutParam ? aShortcutParam : this.getShortcut();
+		let formattedShortcut = '';
 		// Add the modifiers:
-		for (var i = 0; i < shortcut['modifiers'].length; i++) {
+		for (let i = 0; i < shortcut['modifiers'].length; i++) {
 			try {
 				formattedShortcut += this.stringBundle.getString(shortcut['modifiers'][i]) + '+';
 			}
@@ -1135,10 +1136,10 @@ var secureLogin = {
 	playSound: function(aPrefName) {
 		try {
 			// Get the filename stored in the preferences:
-			var file = this.secureLoginPrefs.getComplexValue(aPrefName, Components.interfaces.nsILocalFile);
+			let file = this.secureLoginPrefs.getComplexValue(aPrefName, Components.interfaces.nsILocalFile);
 
 			// Get an url for the file:
-			var url = Services.io.newFileURI(file, null, null);
+			let url = Services.io.newFileURI(file, null, null);
 
 			// Play the sound:
 			this.getSound().play(url);
@@ -1150,7 +1151,7 @@ var secureLogin = {
 	},
 
 	showDialog: function (aUrl, aParams) {
-		var paramObject = aParams ? aParams : this;
+		let paramObject = aParams ? aParams : this;
 		return window.openDialog(
 		  aUrl,
 		  '',
@@ -1160,7 +1161,7 @@ var secureLogin = {
 	},
 
 	showPasswordManager: function () {
-		var params = new Object();
+		let params = new Object();
 		try {
 			// Filter the passwords list with the current host as filterString:
 			params.filterString = this.getDoc().location.host;
@@ -1175,20 +1176,20 @@ var secureLogin = {
 	},
 
 	showBookmarkDialog: function () {
-		var document = this.getDoc();
-		var location = document.location;
+		let document = this.getDoc();
+		let location = document.location;
 		if (document && document.forms && document.forms.length > 0 && location) {
-			var url;
+			let url;
 			// Create a Secure Login Bookmark out of the current URL:
 			if (location.hash) {
-				var regExp = new RegExp(location.hash + '$');
+				let regExp = new RegExp(location.hash + '$');
 				url = location.href.replace(regExp, this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash'));
 			}
 			else {
 				url = location.href + this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash');
 			}
 
-			var bookmarkArguments = {
+			let bookmarkArguments = {
 				action: 'add',
 				type: 'bookmark',
 				hiddenRows: ['location', 'description', 'load in sidebar'],
@@ -1214,7 +1215,7 @@ var secureLogin = {
 	},
 
 	makeURI: function (aURI, aOriginCharset, aBaseURI) {
-		var absoluteURI;
+		let absoluteURI;
 		try {
 			absoluteURI = Services.io.newURI(aURI, aOriginCharset, null);
 		}
@@ -1247,7 +1248,7 @@ var secureLogin = {
 
 	getUnicodeString: function (aStringData) {
 		// Create an Unicode String:
-		var str = Components.classes['@mozilla.org/supports-string;1']
+		let str = Components.classes['@mozilla.org/supports-string;1']
 		          .createInstance(Components.interfaces.nsISupportsString);
 		// Set the String value:
 		str.data = aStringData;
@@ -1312,8 +1313,8 @@ var secureLogin = {
 	},
 
 	inArray: function (aArray, aItem) {
-		var item = aItem;
-		var isInArray = aArray.some(function(aElm, aElmIndex, aTraversedArray){
+		let item = aItem;
+		let isInArray = aArray.some(function(aElm, aElmIndex, aTraversedArray){
 			return (aElm === item);
 		});
 		return isInArray;
@@ -1323,12 +1324,12 @@ var secureLogin = {
 		if (!aTopic) {
 			aTopic = '';
 		}
-		var url = this.secureLoginPrefs.getCharPref('helpURL').replace(/\[TOPIC\]$/, aTopic);
+		let url = this.secureLoginPrefs.getCharPref('helpURL').replace(/\[TOPIC\]$/, aTopic);
 		this.openNewTab(url, true);
 	},
 
 	openNewTab: function (aUrl, aFocus) {
-		var helpTab = this.getBrowser().addTab(aUrl);
+		let helpTab = this.getBrowser().addTab(aUrl);
 		if (aFocus) {
 			this.getBrowser().selectedTab = helpTab;
 			Services.wm.getMostRecentWindow('navigator:browser').focus();
@@ -1337,7 +1338,7 @@ var secureLogin = {
 
 	log: function (aMessage, aSourceName, aSourceLine, aLineNumber, aColumnNumber, aFlags, aCategory) {
 		if (aSourceName != 'undefined') {
-			var scriptError = Components.classes["@mozilla.org/scripterror;1"]
+			let scriptError = Components.classes["@mozilla.org/scripterror;1"]
 			                  .createInstance(Components.interfaces.nsIScriptError);
 			scriptError.init(
 				aMessage,
