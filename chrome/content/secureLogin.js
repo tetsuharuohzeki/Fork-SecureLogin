@@ -362,18 +362,10 @@ var secureLogin = {
 
 					if (isSkipDuplicateActionForms) {
 						// Skip this form if the same formURI has already been added:
-						let isDuplicate = false;
-						for (let j = 0; j< formURIs.length; j++) {
-							if (formURIs[j].equals(formURI)) {
-								isDuplicate = true;
-								break;
-							}
-						}
-/*
 						let isDuplicate = formURIs.some(function(aNsIURI){
 							return aNsIURI.equals(formURI);
 						});
-*/
+
 						if (isDuplicate) {
 							continue;
 						}
