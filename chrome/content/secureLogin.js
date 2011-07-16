@@ -11,7 +11,8 @@ var secureLogin = {
 	// Secure Logins preferences branch:
 	get secureLoginPrefs () {
 		delete this.secureLoginPrefs;
-		return this.secureLoginPrefs = Services.prefs.getBranch('extensions.secureLogin@blueimp.net.');
+		return this.secureLoginPrefs = Services.prefs.getBranch('extensions.secureLogin@blueimp.net.')
+		                               .QueryInterface(Components.interfaces.nsIPrefBranch2);
 	},
 
 	// The progress listener:
