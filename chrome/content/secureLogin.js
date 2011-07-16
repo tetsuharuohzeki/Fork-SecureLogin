@@ -339,7 +339,7 @@ var secureLogin = {
 
 			// Getting the number of existing logins with countLogins()
 			// instead of findLogins() to avoid a Master Password prompt:
-			let loginsCount = this.loginManager.countLogins(host, undefined, null);
+			let loginsCount = Services.logins.countLogins(host, undefined, null);
 			if (loginsCount > 0) {
 				let formURIs = new Array();
 				let isSkipDuplicateActionForms = this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms');
@@ -379,7 +379,7 @@ var secureLogin = {
 						}
 					}
 
-					let loginInfos = this.loginManager.findLogins({}, host, targetHost, null);
+					let loginInfos = Services.logins.findLogins({}, host, targetHost, null);
 					// Go through the logins:
 					for (let j = 0; j < loginInfos.length; j++) {
 						// Get valid login fields:
@@ -1293,12 +1293,6 @@ var secureLogin = {
 			// gBrowser is not available, so make use of the WindowMediator service instead:
 			return Services.wm.getMostRecentWindow('navigator:browser').gBrowser;
 		}
-	},
-
-	get loginManager () {
-		delete this.loginManager;
-		return this.loginManager = Components.classes['@mozilla.org/login-manager;1']
-		                           .getService(Components.interfaces.nsILoginManager);
 	},
 
 	get securityManager () {
