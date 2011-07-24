@@ -6,6 +6,7 @@
  * @link https://blueimp.net/mozilla/
  */
 Components.utils.import("resource://gre/modules/Services.jsm");
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 var secureLogin = {
 
 	// Secure Logins preferences branch:
@@ -21,14 +22,9 @@ var secureLogin = {
 		let self = this;
 		// Implement the listener methods:
 		this.progressListener = {
-			QueryInterface: function (aIID) {
-				if(aIID.equals(Components.interfaces.nsIWebProgressListener) ||
-				   aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
-				   aIID.equals(Components.interfaces.nsISupports)) {
-					return this;
-				}
-				throw Components.results.NS_NOINTERFACE;
-			},
+			QueryInterface: XPCOMUtils.generateQI([Components.interfaces.nsIWebProgressListener,
+			                                       Components.interfaces.nsISupportsWeakReference,
+			                                       Components.interfaces.nsISupports]),
 			onStateChange: function (aProgress, aRequest, aFlag, aStatus) {
 				// Update status when load finishes:
 				if (aFlag & Components.interfaces.nsIWebProgressListener.STATE_STOP) {
