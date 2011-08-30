@@ -5,8 +5,7 @@
             id="secureLoginPrefs"
             title="&options.title;"
             buttons="accept,cancel,help"
-            ondialoghelp="secureLogin.openHelp(event.target.currentPane.helpTopic);"
-            persist="screenX screenY">
+            ondialoghelp="secureLogin.openHelp(event.target.currentPane.helpTopic);">
 	<prefpane id="secureLoginPrefPaneMain"
 	          label="&prefpanemainlabel;"
 	          helpTopic="Settings">
