@@ -860,6 +860,7 @@ var secureLogin = {
 		// Check if the url is an allowed one (throws an exception if not):
 		this.urlSecurityCheck(url, location.href);
 
+		let referrerURI = this.makeURI(location.href, charset, null);
 		// Send the data by GET or POST:
 		if (form.method && form.method.toLowerCase() == 'get') {
 			// Add the parameter list to the url, remove existing parameters:
@@ -871,13 +872,13 @@ var secureLogin = {
 				url = url.substring(0, paramIndex+1) + dataString;
 			}
 			// Load the url in the current window (params are url, referrer and post data):
-			loadURI(url, this.makeURI(location.href, charset, null), null);
+			loadURI(url, referrerURI, null);
 		}
 		else {
 			// Create post data mime stream (params are aStringData, aKeyword, aEncKeyword, aType):
 			let postData = getPostDataStream(dataString, '', '', 'application/x-www-form-urlencoded');
 			// Load the url in the current window (params are url, referrer and post data):
-			loadURI(url, this.makeURI(location.href, charset, null), postData);
+			loadURI(url, referrerURI, postData);
 		}
 	},
 
