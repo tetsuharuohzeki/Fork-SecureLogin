@@ -45,8 +45,6 @@ var secureLogin = {
 
 	updateStatus: function (aProgress, aRequest, aLocation, aFlag, aStatus) {
 		let progressWindow = aProgress.DOMWindow;
-
-		let isSecureLoginBookmarks = this.secureLoginPrefs.getBoolPref('secureLoginBookmarks');
 		if (this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
 			// Initialize the recursive search for logins on the current window:
 			this.searchLoginsInitialize(progressWindow);
@@ -58,19 +56,12 @@ var secureLogin = {
 			if (isAutoLogin
 			    && this.secureLogins
 			    && (this.secureLogins.length > 0)
-			    && (!isSecureLoginBookmarks
-			       || (doc.location.hash.indexOf(this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash')) != 0))
 			    && !this.inArray(this.getAutoLoginExceptions(), doc.location.protocol + '//' + doc.location.host)
 			) {
-				// Auto-Login if enabled, logins have been found, URL is not a Secure Login bookmark
-				// and the current website is not in the autoLoginExceptions list:
+				// Auto-Login if enabled, logins have been found,
+				// URL is not the current website is not in the autoLoginExceptions list:
 				this.login(progressWindow);
 			}
-		}
-
-		if (isSecureLoginBookmarks) {
-			// Auto-Login if the current URL is a Secure Login Bookmark:
-			this.bookmarkLogin(progressWindow);
 		}
 	},
 
@@ -84,8 +75,6 @@ var secureLogin = {
 	showFormIndex: null,
 	// Object containing the shortcut information (modifiers, key or keycode):
 	shortcut: null,
-	// Helper var to remember a failed bookmark-login attempt:
-	failedBookmarkLogin: null,
 
 	// autoLogin exceptions list:
 	autoLoginExceptions: null,
@@ -98,9 +87,6 @@ var secureLogin = {
 		switch (aData) {
 			case 'searchLoginsOnload':
 				this.searchLoginsOnloadUpdate();
-				break;
-			case 'secureLoginBookmarks':
-				this.secureLoginBookmarksUpdate();
 				break;
 			case 'highlightColor':
 				this.highlightColorUpdate();
@@ -161,9 +147,8 @@ var secureLogin = {
 
 	progressListenerUpdate: function () {
 		let isSearchLoginsOnload = this.secureLoginPrefs.getBoolPref('searchLoginsOnload');
-		let isSecureLoginBookmarks = this.secureLoginPrefs.getBoolPref('secureLoginBookmarks');
 
-		if (!isSearchLoginsOnload && !isSecureLoginBookmarks) {
+		if (!isSearchLoginsOnload) {
 			// Remove the listener from the browser object (if added previously):
 			try {
 				this.getBrowser().removeProgressListener(this.progressListener);
@@ -172,8 +157,7 @@ var secureLogin = {
 				this.log(e);
 			}
 		}
-		else if (!this.isProgressListenerRegistered && 
-		         (isSearchLoginsOnload || isSecureLoginBookmarks)) {
+		else if (!this.isProgressListenerRegistered && isSearchLoginsOnload) {
 			// Add the progress listener to the browser object (if not added previously):
 			try {
 				let nsIWebProgress = Components.interfaces.nsIWebProgress;
@@ -184,16 +168,6 @@ var secureLogin = {
 				this.log(e);
 			}
 		}
-	},
-
-	secureLoginBookmarksUpdate: function () {
-		if (this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash') == '#secureLoginBookmark') {
-			// Create a random Secure Login Bookmark hash (anchor) if the default is still set:
-			// This slightly increases security and avoids unwanted auto-logins
-			this.secureLoginPrefs.setCharPref('secureLoginBookmarkHash', '#slb'+Math.ceil(Math.random()*1000000000));
-		}
-
-		this.progressListenerUpdate();
 	},
 
 	highlightColorUpdate: function () {
@@ -231,40 +205,6 @@ var secureLogin = {
 			                      .data.split(' ');
 		}
 		return autoLoginExceptions;
-	},
-
-	bookmarkLogin: function (aWin) {
-		let document = this.getDoc(aWin);
-
-		let secureLoginBookmarkHash = this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash');
-		// Check for first four characters of Secure Login anchor (hash):
-		let locationHash = document.location.hash;
-		if (document
-		    && document.location
-		    && locationHash
-		    && (locationHash.substr(0, 4) == secureLoginBookmarkHash.substr(0, 4))
-		) {
-
-			// Check for complete Secure Login anchor (hash):
-			let index = locationHash.indexOf(secureLoginBookmarkHash);
-			if (index == 0) {
-				let bookmarkLoginIndex = parseInt(
-					locationHash.substr(secureLoginBookmarkHash.length)
-				);
-				if (!isNaN(bookmarkLoginIndex)) {
-					// Auto-Login using the bookmarkLoginIndex:
-					this.login(aWin, bookmarkLoginIndex);
-				}
-				else {
-					// Auto-Login:
-					this.login(aWin);
-				}
-			}
-			else {
-				// Remember failed bookmark-login attempt:
-				this.failedBookmarkLogin = true;
-			}
-		}
 	},
 
 	searchLoginsInitialize: function (aWin) {
@@ -742,21 +682,6 @@ var secureLogin = {
 				// Get the target url from the form action value or if empty from the current document:
 				let actionURI = secureLoginData.actionURI;
 
-				// Ask for confirmation if we had a failed bookmark-login:
-				if (this.failedBookmarkLogin) {
-					let continueLogin = Services.prompt.confirm(
-					  null,
-					  this.stringBundle.getString('loginConfirmTitle'),
-					  this.stringBundle.getString('loginConfirmURL') + ' ' + actionURI
-					);
-					if (!continueLogin) {
-						return;
-					}
-				}
-
-				// Reset failed bookmark-login:
-				let failedBookmarkLogin = null;
-
 				// If JavaScript protection is to be used, check the exception list:
 				let useJavaScriptProtection = this._useJavaScriptProtection(location);
 
@@ -1161,36 +1086,6 @@ var secureLogin = {
 		  'chrome://passwordmgr/content/passwordManager.xul',
 		  params
 		);
-	},
-
-	showBookmarkDialog: function () {
-		let document = this.getDoc();
-		let location = document.location;
-		if (document && document.forms && document.forms.length > 0 && location) {
-			let url;
-			// Create a Secure Login Bookmark out of the current URL:
-			if (location.hash) {
-				let regExp = new RegExp(location.hash + '$');
-				url = location.href.replace(regExp, this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash'));
-			}
-			else {
-				url = location.href + this.secureLoginPrefs.getCharPref('secureLoginBookmarkHash');
-			}
-
-			let bookmarkArguments = {
-				action: 'add',
-				type: 'bookmark',
-				hiddenRows: ['location', 'description', 'load in sidebar'],
-				uri: this.makeURI(url, document.characterSet, null),
-				title: document.title
-			};
-			window.openDialog(
-			  'chrome://browser/content/places/bookmarkProperties2.xul',
-			  '', 
-			  'centerscreen=yes,chrome=yes,dialog=yes,resizable=yes,dependent=yes',
-			  bookmarkArguments
-			);
-		}
 	},
 
 	urlSecurityCheck: function (aUrl, aSourceURL) {

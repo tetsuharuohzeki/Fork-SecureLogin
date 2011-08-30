@@ -15,8 +15,6 @@ pref('extensions.secureLogin@blueimp.net.playLoginFoundSound',false);
 pref('extensions.secureLogin@blueimp.net.playLoginSound',false);
 pref('extensions.secureLogin@blueimp.net.exceptionList','');
 pref('extensions.secureLogin@blueimp.net.autofillFormsOnLogin',false);
-pref('extensions.secureLogin@blueimp.net.secureLoginBookmarks',false);
-pref('extensions.secureLogin@blueimp.net.secureLoginBookmarkHash','#secureLoginBookmark');
 pref('extensions.secureLogin@blueimp.net.autoLogin',false);
 pref('extensions.secureLogin@blueimp.net.autoLoginExceptions','');
 pref('extensions.secureLogin@blueimp.net.defaultNotificationTimeout',3000);

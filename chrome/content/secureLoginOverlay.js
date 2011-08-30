@@ -355,28 +355,19 @@ var secureLoginOverlay = {
 	},
 
 	contextMenu: function (aEvent) {
-		this.menuPreparation('secureLoginBookmarkContextItem', 'secureLoginContextAutofillFormsMenu');
+		this.menuPreparation('secureLoginContextAutofillFormsMenu');
 	},
 
 	toolsMenu: function (aEvent) {
-		this.menuPreparation('secureLoginBookmarkToolsMenuItem', 'secureLoginToolsMenuAutofillFormsMenu');
+		this.menuPreparation('secureLoginToolsMenuAutofillFormsMenu');
 	},
 
 	buttonMenu: function (aEvent) {
-		this.menuPreparation('secureLoginBookmarkButtonMenuItem', 'secureLoginButtonMenuAutofillFormsMenu');
+		this.menuPreparation('secureLoginButtonMenuAutofillFormsMenu');
 	},
 
-	menuPreparation: function (aBookmarkItemID, aAutofillFormsMenuID) {
+	menuPreparation: function (aAutofillFormsMenuID) {
 		let doc = this.service.getDoc();
-		let bookmarkItem = document.getElementById(aBookmarkItemID);
-		if (bookmarkItem) {
-			if (this.service.secureLoginPrefs.getBoolPref('secureLoginBookmarks') &&
-				doc && doc.forms && doc.forms.length > 0) {
-				bookmarkItem.setAttribute('disabled', 'false');
-			} else {
-				bookmarkItem.setAttribute('disabled', 'true');
-			}
-		}
 		let autofillFormsPopupMenu = this.autofillFormsPopupMenu;
 		let autofillFormsMenu = document.getElementById(aAutofillFormsMenuID);
 		let autofillFormsMenuSeparator = document.getElementById(aAutofillFormsMenuID + 'Separator');
