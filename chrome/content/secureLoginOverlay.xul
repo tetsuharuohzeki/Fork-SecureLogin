@@ -141,28 +141,4 @@
 		               onclick="secureLoginOverlay.clickHandler(event);"
 		               context="secureLoginContextmenu"/>
 	</toolbarpalette>
-	<popup id="contentAreaContextMenu">
-		<menuseparator id="secureLoginContextMenuSeparator2"
-		               insertafter="context-selectall"
-		               hidden="true"/>
-		<menuitem id="secureLoginContextMenuItem"
-		          label="&logincontextmenuitem.label;"
-		          accesskey="&logincontextmenuitem.accesskey;"
-		          insertafter="context-selectall"
-		          oncommand="secureLogin.login();"
-		          class="menuitem-iconic secureLoginIcon"
-		          hidden="true"/>
-		<menu id="secureLoginContextMenuMenu"
-		      label="&logincontextmenuitem.label;"
-		      accesskey="&logincontextmenuitem.accesskey;"
-		      insertafter="context-selectall"
-		      class="menu-iconic secureLoginIcon"
-		      hidden="true">
-			<menupopup onpopupshowing="secureLoginOverlay.contextMenuSelectionLogin(this);"
-			           onpopuphiding="while(this.hasChildNodes()){this.removeChild(this.firstChild);}"/>
-		</menu>
-		<menuseparator id="secureLoginContextMenuSeparator1"
-		               insertafter="context-selectall"
-		               hidden="true"/>
-	</popup>
 </overlay>

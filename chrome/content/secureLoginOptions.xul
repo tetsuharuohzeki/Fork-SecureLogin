@@ -123,9 +123,6 @@
 			<preference id="showToolsMenu"
 			            name="extensions.secureLogin@blueimp.net.showToolsMenu"
 			            type="bool"/>
-			<preference id="showContextMenuItem"
-			            name="extensions.secureLogin@blueimp.net.showContextMenuItem"
-			            type="bool"/>
 		</preferences>
 		<vbox>
 			<groupbox>
@@ -147,8 +144,6 @@
 				<caption label="&viewcaption.label;"/>
 				<checkbox label="&showtoolsmenu.label;"
 				          preference="showToolsMenu"/>
-				<checkbox label="&showcontextmenuitem.label;"
-				          preference="showContextMenuItem"/>
 			</groupbox>
 			<separator class="thin"/>
 		</vbox>
