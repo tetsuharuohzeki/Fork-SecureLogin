@@ -96,7 +96,7 @@ var secureLoginExceprions = {
 
 	exceptionsInitialize: function () {
 		// Copy the secureLogin exception array into the local list:
-		this.exceptions = this.service.getExceptions().slice();
+		this.exceptions = this.service.getJSProtectExceptions().slice();
 
 		// Set the tree length using the exception list length:
 		this.exceptionsTreeView.rowCount = this.exceptions.length;

@@ -765,7 +765,7 @@ var secureLogin = {
 
 	_useJavaScriptProtection: function (aLocation) {
 		let useJavaScriptProtection = this.secureLoginPrefs.getBoolPref("javascriptProtection");
-		let isInExceptionArray = this.inArray(this.getExceptions(), aLocation.protocol + "//" + aLocation.host);
+		let isInExceptionArray = this.inArray(this.getJSProtectExceptions(), aLocation.protocol + "//" + aLocation.host);
 		return (useJavaScriptProtection && isInExceptionArray) ? false : true;
 	},
 
@@ -942,7 +942,7 @@ var secureLogin = {
 		return aLoginObject.password;
 	},
 
-	getExceptions: function () {
+	getJSProtectExceptions: function () {
 		// Get the exception list from the preferences:
 		let exceptions = this.secureLoginPrefs
 		                 .getComplexValue('exceptionList', Components.interfaces.nsISupportsString)
