@@ -213,9 +213,10 @@ var secureLogin = {
 
 		if (this.secureLogins && aWin.frameElement) {
 			// Login search initialized by a frame window - keep the logins of all remaining windows:
-			for (let i=0; i<this.secureLogins.length; i++) {
-				if (this.secureLogins[i].window == aWin || this.secureLogins[i].window.closed) {
-					this.secureLogins.splice(i, 1);
+			for (let i = 0, secureLogins = this.secureLogins; i < secureLogins.length; ++i) {
+				let window = secureLogins[i].window;
+				if (window === aWin || window.closed) {
+					secureLogins(i, 1);
 				}
 			}
 		} else {
@@ -235,7 +236,8 @@ var secureLogin = {
 	},
 
 	updateLoginsFoundStatus: function () {
-		if (this.secureLogins && this.secureLogins.length > 0) {
+		let secureLogins = this.secureLogins;
+		if (secureLogins && secureLogins.length > 0) {
 			Services.obs.notifyObservers(null, this.obsTopic, "enableLoginButton");
 			// Play sound notification:
 			if (this.secureLoginPrefs.getBoolPref('playLoginFoundSound')) {
