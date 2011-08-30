@@ -765,8 +765,9 @@ var secureLogin = {
 
 	_useJavaScriptProtection: function (aLocation) {
 		let useJavaScriptProtection = this.secureLoginPrefs.getBoolPref("javascriptProtection");
-		let isInExceptionArray = this.inArray(this.getJSProtectExceptions(), aLocation.protocol + "//" + aLocation.host);
-		return (useJavaScriptProtection && isInExceptionArray) ? false : true;
+		let jsProtectExceptionArray = this.getJSProtectExceptions();
+		let isInException = this.inArray(jsProtectExceptionArray, aLocation.protocol + "//" + aLocation.host);
+		return (useJavaScriptProtection && !isInException) ? true : false;
 	},
 
 	_loginWithJSProtection: function (aInfoObj) {
