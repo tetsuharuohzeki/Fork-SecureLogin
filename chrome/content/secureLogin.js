@@ -778,12 +778,12 @@ var secureLogin = {
 
 		// Local helper function to add name and value pairs urlEncoded to the dataString:
 		function addToDataString(aName, aValue) {
-			if (dataString) {
+			if (dataString.length !== 0) {
 				dataString += '&';
 			}
-			dataString += parentObject.urlEncode(aName, charset)
-			              + '='
-			              + parentObject.urlEncode(aValue, charset);
+			dataString += (parentObject.urlEncode(aName, charset) + 
+			               "=" + 
+			               parentObject.urlEncode(aValue, charset));
 		}
 
 		let submitButtonFound = false;
