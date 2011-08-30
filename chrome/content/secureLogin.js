@@ -49,7 +49,7 @@ var secureLogin = {
 		let progressWindow = aProgress.DOMWindow;
 		if (this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
 			// Initialize the recursive search for logins on the current window:
-			this.searchLoginsInitialize(progressWindow);
+			this.searchLoginsInitialize(progressWindow, true);
 
 			let doc = this.getDoc(progressWindow);
 
@@ -136,7 +136,7 @@ var secureLogin = {
 
 		if (this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
 			// Search for valid logins and outline login fields:
-			this.searchLoginsInitialize();
+			this.searchLoginsInitialize(null, true);
 		}
 		else {
 			// Always highlight the Secure Login icons, when not searching for valid logins automatically:
@@ -206,7 +206,7 @@ var secureLogin = {
 		return autoLoginExceptions;
 	},
 
-	searchLoginsInitialize: function (aWin) {
+	searchLoginsInitialize: function (aWin, aUpdateStatus) {
 		if (!aWin) {
 			aWin = this.getWin();
 		}
@@ -230,7 +230,7 @@ var secureLogin = {
 		// Search for valid logins on the given window:
 		this.searchLogins(aWin);
 
-		if (this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
+		if (aUpdateStatus) {
 			this.updateLoginsFoundStatus();
 		}
 	},
@@ -537,7 +537,7 @@ var secureLogin = {
 
 		// Search for valid logins and outline login fields if not done automatically:
 		if (!this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
-			this.searchLoginsInitialize();
+			this.searchLoginsInitialize(null, false);
 		}
 
 		// Check for valid logins:
@@ -627,7 +627,7 @@ var secureLogin = {
 		// Search for valid logins and outline login fields if not done automatically:
 		let isSearchLoginsOnload = this.secureLoginPrefs.getBoolPref('searchLoginsOnload');
 		if (!isSearchLoginsOnload && !aSkipLoginSearch) {
-			this.searchLoginsInitialize(aWin);
+			this.searchLoginsInitialize(aWin, false);
 		}
 
 		// Check for valid logins:

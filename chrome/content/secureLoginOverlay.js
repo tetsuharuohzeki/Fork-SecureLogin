@@ -231,7 +231,7 @@ var secureLoginOverlay = {
 			} else {
 				// Search for valid logins and outline login fields if not done automatically:
 				if (!this.service.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
-					this.service.searchLoginsInitialize();
+					this.service.searchLoginsInitialize(null, false);
 				}
 				if (!this.service.secureLogins || !this.service.secureLogins.length) {
 					cm0.hidden = true;
@@ -463,7 +463,7 @@ var secureLoginOverlay = {
 
 		// Search for valid logins and outline login fields if not done automatically:
 		if (!this.service.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
-			this.service.searchLoginsInitialize();
+			this.service.searchLoginsInitialize(null, false);
 		}
 
 		// hidden both boxes in tooltip:
