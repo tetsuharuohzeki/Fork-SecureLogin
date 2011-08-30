@@ -37,8 +37,6 @@
 <!ENTITY addexception.label "追加">
 <!ENTITY removeselected.label "削除">
 <!ENTITY removeall.label "すべて削除">
-<!ENTITY secureloginbookmarks.label "Secure Login ブックマークを有効">
-<!ENTITY addsecureloginbookmark.label "Secure Login ブックマークを追加...">
 <!ENTITY help.label "Secure Login のヘルプ...">
 <!ENTITY tooltip.login "ログイン">
 <!ENTITY tooltip.loginUrl "URL">

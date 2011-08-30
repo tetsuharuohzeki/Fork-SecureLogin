@@ -43,10 +43,6 @@
 				          label="&menupassexceptions.label;"
 				          oncommand="secureLogin.showDialog('chrome://passwordmgr/content/passwordManagerExceptions.xul');"/>
 				<menuseparator/>
-				<menuitem id="secureLoginBookmarkToolsMenuItem"
-				          label="&addsecureloginbookmark.label;"
-				          oncommand="secureLogin.showBookmarkDialog();"/>
-				<menuseparator/>
 				<menuitem id="secureLoginHelpToolsMenuItem"
 				          label="&help.label;"
 				          class="menuitem-iconic secureLoginHelpIcon"
@@ -112,10 +108,6 @@
 				          class="minVersion2"
 				          label="&menupassexceptions.label;"
 				          oncommand="secureLogin.showDialog('chrome://passwordmgr/content/passwordManagerExceptions.xul');"/>
-				<menuseparator/>
-				<menuitem id="secureLoginBookmarkContextItem"
-				          label="&addsecureloginbookmark.label;"
-				          oncommand="secureLogin.showBookmarkDialog();"/>
 				<menuseparator/>
 				<menuitem id="secureLoginHelpContextItem"
 				          label="&help.label;"
