@@ -207,7 +207,7 @@ var secureLogin = {
 	},
 
 	searchLoginsInitialize: function (aWin) {
-		if (!aWin || !aWin.document) {
+		if (!aWin) {
 			aWin = this.getWin();
 		}
 
