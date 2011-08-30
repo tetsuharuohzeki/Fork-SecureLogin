@@ -9,6 +9,8 @@ Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 var secureLogin = {
 
+	obsTopic: "securelogin",
+
 	// Secure Logins preferences branch:
 	get secureLoginPrefs () {
 		delete this.secureLoginPrefs;
@@ -138,10 +140,7 @@ var secureLogin = {
 		}
 		else {
 			// Always highlight the Secure Login icons, when not searching for valid logins automatically:
-			let secureLoginButton = this.loginButton;
-			if (secureLoginButton) {
-				secureLoginButton.removeAttribute("disabled");
-			}
+			Services.obs.notifyObservers(null, this.obsTopic, "enableLoginButton");
 		}
 	},
 
@@ -235,26 +234,16 @@ var secureLogin = {
 		}
 	},
 
-	get loginButton () {
-		delete this.loginButton;
-		return this.loginButton = document.getElementById('secureLoginButton');
-	},
-
 	updateLoginsFoundStatus: function () {
-		let secureLoginButton = this.loginButton;
 		if (this.secureLogins && this.secureLogins.length > 0) {
-			if (secureLoginButton) {
-				secureLoginButton.removeAttribute("disabled");
-			}
+			Services.obs.notifyObservers(null, this.obsTopic, "enableLoginButton");
 			// Play sound notification:
 			if (this.secureLoginPrefs.getBoolPref('playLoginFoundSound')) {
 				this.playSound('loginFoundSoundFileName');
 			}
 		}
 		else {
-			if (secureLoginButton) {
-				secureLoginButton.setAttribute("disabled", "true");
-			}
+			Services.obs.notifyObservers(null, this.obsTopic, "disableLoginButton");
 		}
 	},
 
