@@ -5,7 +5,12 @@
  * @license GNU General Public License
  * @link https://blueimp.net/mozilla/
  */
+ Components.utils.import("resource://gre/modules/Services.jsm");
+ Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 var secureLoginOverlay = {
+
+	QueryInterface: XPCOMUtils.generateQI([Components.interfaces.nsIObserver,
+	                                       Components.interfaces.nsISupportsWeakReference]),
 
 	// Event listener for the content area context menu:
 	contentAreaContextMenuEventListener: null,
@@ -16,7 +21,6 @@ var secureLoginOverlay = {
 	},
 
 	get secureLoginButton () {
-		delete this.secureLoginButton;
 		return this.secureLoginButton = document.getElementById('secureLoginButton');
 	},
 
@@ -143,23 +147,32 @@ var secureLoginOverlay = {
 
 	observe: function (aSubject, aTopic, aData) {
 		// Only observe preferences changes:
-		if (aTopic != 'nsPref:changed') {
-			return;
+		if (aTopic === 'nsPref:changed') {
+			switch (aData) {
+				case 'shortcut':
+					this.updateShortcut();
+					this.initializeTooltip();
+					break;
+				case 'hideContextMenuItem':
+					this.hideContextMenuItemUpdate();
+					break;
+				case 'hideToolsMenu':
+					this.hideToolsMenuUpdate();
+					break;
+				case 'javascriptProtection':
+					this.javascriptProtectionUpdate();
+					break;
+			}
 		}
-		switch (aData) {
-			case 'shortcut':
-				this.updateShortcut();
-				this.initializeTooltip();
-				break;
-			case 'hideContextMenuItem':
-				this.hideContextMenuItemUpdate();
-				break;
-			case 'hideToolsMenu':
-				this.hideToolsMenuUpdate();
-				break;
-			case 'javascriptProtection':
-				this.javascriptProtectionUpdate();
-				break;
+		else if (aTopic === this.service.obsTopic) {
+			switch (aData) {
+				case "enableLoginButton":
+					this.enableLoginButton();
+					break;
+				case "disableLoginButton":
+					this.disableLoginButton();
+					break;
+			}
 		}
 	},
 
@@ -172,6 +185,9 @@ var secureLoginOverlay = {
 		}
 
 		this.initializePrefs();
+
+		//add observer:
+		Services.obs.addObserver(this, this.service.obsTopic, true);
 	},
 
 	initializePrefs: function () {
@@ -183,6 +199,14 @@ var secureLoginOverlay = {
 		this.hideToolsMenuUpdate();
 		this.hideContextMenuItemUpdate();
 		this.javascriptProtectionUpdate();
+	},
+
+	enableLoginButton: function () {
+		this.secureLoginButton.removeAttribute("disabled");
+	},
+
+	disableLoginButton: function () {
+		this.secureLoginButton.setAttribute("disabled", "true");
 	},
 
 	initContentAreaContextMenu: function (aEvent) {
@@ -545,6 +569,8 @@ var secureLoginOverlay = {
 
 		// Remove the preferences Observer:
 		this.service.secureLoginPrefs.removeObserver('', this);
+		// remove observer:
+		Services.obs.removeObserver(this, this.service.obsTopic);
 	},
 
 };
