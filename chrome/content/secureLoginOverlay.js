@@ -186,10 +186,10 @@ var secureLoginOverlay = {
 	},
 
 	initContentAreaContextMenu: function (aEvent) {
-		var cm0 = this.secureLoginContextMenuItem;
-		var cm1 = this.secureLoginContextMenuMenu;
-		var cm2 = this.secureLoginContextMenuSeparator1;
-		var cm3 = this.secureLoginContextMenuSeparator2;
+		let cm0 = this.secureLoginContextMenuItem;
+		let cm1 = this.secureLoginContextMenuMenu;
+		let cm2 = this.secureLoginContextMenuSeparator1;
+		let cm3 = this.secureLoginContextMenuSeparator2;
 		if (cm0 && gContextMenu) {
 			if (this.service.secureLoginPrefs.getBoolPref('hideContextMenuItem')
 				|| gContextMenu.isContentSelected
@@ -216,7 +216,7 @@ var secureLoginOverlay = {
 					cm3.hidden = true;
 				} else {
 					// Determine if no master password is set or the user has already been authenticated:
-					var masterPasswordRequired = true;
+					let masterPasswordRequired = true;
 					if (!this.service.masterSecurityDevice.getInternalKeyToken().needsLogin()
 					    || this.service.masterSecurityDevice.getInternalKeyToken().isLoggedIn()) {
 						masterPasswordRequired = false;
@@ -279,12 +279,12 @@ var secureLoginOverlay = {
 		// Setting the shortcut object to "null" will update it on the next getShortcut() call:
 		this.service.shortcut = null;
 		// Get the keyboard shortcut elements:
-		var modifiers = this.service.getShortcut()['modifiers'].join(' ');
-		var key = this.service.getShortcut()['key'];
-		var keycode = this.service.getShortcut()['keycode'];
+		let modifiers = this.service.getShortcut()['modifiers'].join(' ');
+		let key = this.service.getShortcut()['key'];
+		let keycode = this.service.getShortcut()['keycode'];
 
 		// Remove current key if existing:
-		var secureLoginShortCut = this.secureLoginShortCut;
+		let secureLoginShortCut = this.secureLoginShortCut;
 		if (secureLoginShortCut) {
 			this.mainKeyset.removeChild(secureLoginShortCut);
 		}
@@ -292,7 +292,7 @@ var secureLoginOverlay = {
 		// Check if keyboard shortcut is enabled (either key or keycode set):
 		if (key || keycode) {
 			// Create a key element:
-			var keyNode = document.createElement('key');
+			let keyNode = document.createElement('key');
 
 			keyNode.setAttribute('id', 'secureLoginShortCut');
 			keyNode.setAttribute('command', 'secureLogin');
@@ -312,7 +312,7 @@ var secureLoginOverlay = {
 
 	hideToolsMenuUpdate: function () {
 		// Change the tools menu visibility:
-		var secureLoginToolsMenu = this.secureLoginToolsMenu;
+		let secureLoginToolsMenu = this.secureLoginToolsMenu;
 		if (secureLoginToolsMenu) {
 			secureLoginToolsMenu.setAttribute(
 				'hidden',
@@ -322,9 +322,9 @@ var secureLoginOverlay = {
 	},
 
 	hideContextMenuItemUpdate: function () {
-		var contentAreaContextMenu = this.contentAreaContextMenu;
+		let contentAreaContextMenu = this.contentAreaContextMenu;
 		if (contentAreaContextMenu) {
-			var isHideContextMenuItem = this.service.secureLoginPrefs.getBoolPref('hideContextMenuItem');
+			let isHideContextMenuItem = this.service.secureLoginPrefs.getBoolPref('hideContextMenuItem');
 			if (!isHideContextMenuItem) {
 				// Add the content area context menu listener:
 				contentAreaContextMenu.addEventListener(
@@ -335,10 +335,10 @@ var secureLoginOverlay = {
 			} else {
 				// Hide the SL contentare context menu entries
 				// and remove the content area context menu listener:
-				var cm0 = this.secureLoginContextMenuItem;
-				var cm1 = this.secureLoginContextMenuMenu;
-				var cm2 = this.secureLoginContextMenuSeparator1;
-				var cm3 = this.secureLoginContextMenuSeparator2;
+				let cm0 = this.secureLoginContextMenuItem;
+				let cm1 = this.secureLoginContextMenuMenu;
+				let cm2 = this.secureLoginContextMenuSeparator1;
+				let cm3 = this.secureLoginContextMenuSeparator2;
 				if (cm0) {
 					cm0.hidden = true;
 					cm1.hidden = true;
@@ -367,8 +367,8 @@ var secureLoginOverlay = {
 	},
 
 	menuPreparation: function (aBookmarkItemID, aAutofillFormsMenuID) {
-		var doc = this.service.getDoc();
-		var bookmarkItem = document.getElementById(aBookmarkItemID);
+		let doc = this.service.getDoc();
+		let bookmarkItem = document.getElementById(aBookmarkItemID);
 		if (bookmarkItem) {
 			if (this.service.secureLoginPrefs.getBoolPref('secureLoginBookmarks') &&
 				doc && doc.forms && doc.forms.length > 0) {
@@ -377,9 +377,9 @@ var secureLoginOverlay = {
 				bookmarkItem.setAttribute('disabled', 'true');
 			}
 		}
-		var autofillFormsPopupMenu = this.autofillFormsPopupMenu;
-		var autofillFormsMenu = document.getElementById(aAutofillFormsMenuID);
-		var autofillFormsMenuSeparator = document.getElementById(aAutofillFormsMenuID + 'Separator');
+		let autofillFormsPopupMenu = this.autofillFormsPopupMenu;
+		let autofillFormsMenu = document.getElementById(aAutofillFormsMenuID);
+		let autofillFormsMenuSeparator = document.getElementById(aAutofillFormsMenuID + 'Separator');
 		if (this.service.secureLoginPrefs.getBoolPref('autofillFormsOnLogin') && autofillFormsPopupMenu) {
 			if (autofillFormsMenu && !autofillFormsMenu.hasChildNodes()) {
 				autofillFormsPopupMenu = autofillFormsPopupMenu.cloneNode(true);
@@ -456,8 +456,8 @@ var secureLoginOverlay = {
 		this.tooltipNoLoginBox.hidden = true;
 
 		// Get the tooltip node:
-		var isLoginExist = false;
-		var tooltip = this.tooltipLoginUrlsList;
+		let isLoginExist = false;
+		let tooltip = this.tooltipLoginUrlsList;
 		if (tooltip) {
 			// Remove all children nodes:
 			while (tooltip.hasChildNodes()) {
@@ -467,16 +467,14 @@ var secureLoginOverlay = {
 			if (this.service.secureLogins && this.service.secureLogins.length > 0) {
 
 				// Hash list of unique action urls and number of logins:
-				var urlsArray = new Array();
+				let urlsArray = new Array();
 
 				// Go through the forms and find the unique action urls:
-				var url;
-				var foundInList;
-				for (var i = 0; i < this.service.secureLogins.length; i++) {
-					url = this.service.secureLogins[i].actionURI;
-					foundInList = false;
+				for (let i = 0; i < this.service.secureLogins.length; i++) {
+					let url = this.service.secureLogins[i].actionURI;
+					let foundInList = false;
 					// Check if the form action url is already in the list:
-					for (var j = 0; j < urlsArray.length; j++) {
+					for (let j = 0; j < urlsArray.length; j++) {
 						if (urlsArray[j].url == url) {
 							// url already in the list, increase the counter:
 							foundInList = true;
@@ -492,22 +490,22 @@ var secureLoginOverlay = {
 
 				if (urlsArray.length) {
 					// Add the url list:
-					var tooltipLoginURL = document.createElement('description');
+					let tooltipLoginURL = document.createElement('description');
 					tooltipLoginURL.setAttribute(
 					  'class',
 					  'secureLoginTooltipUrl'
 					);
-					var spacer = document.createElement("spacer");
+					let spacer = document.createElement("spacer");
 					spacer.setAttribute("flex", "1");
-					var tooltipUrlCount = document.createElement('label');
+					let tooltipUrlCount = document.createElement('label');
 					tooltipUrlCount.setAttribute(
 					  'class',
 					  'secureLoginTooltipUrlCount'
 					);
-					for (var i = 0; i < urlsArray.length; i++) {
+					for (let i = 0; i < urlsArray.length; i++) {
 						let hbox = document.createElement("hbox");
 						let descr = tooltipLoginURL.cloneNode(false);
-						var action = urlsArray[i];
+						let action = urlsArray[i];
 						descr.setAttribute(
 						  'value',
 						  action.url
@@ -534,7 +532,7 @@ var secureLoginOverlay = {
 
 	initializeTooltip: function () {
 		// Add the login label plus shortcut, if not empty:
-		var formattedShortcut = this.service.getFormattedShortcut();
+		let formattedShortcut = this.service.getFormattedShortcut();
 		if (formattedShortcut) {
 			this.tooltipKeyboardShortcut.setAttribute(
 			  'value',
@@ -545,7 +543,7 @@ var secureLoginOverlay = {
 
 	finalize: function () {
 		// Remove the content area context menu listener:
-		var contentAreaContextMenu = this.contentAreaContextMenu;
+		let contentAreaContextMenu = this.contentAreaContextMenu;
 		if(contentAreaContextMenu) {
 			contentAreaContextMenu.removeEventListener(
 				'popupshowing',
