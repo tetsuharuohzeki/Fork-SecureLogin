@@ -42,7 +42,7 @@ var secureLoginExceprions = {
 	get exceptionsTreeView () {
 		delete this.exceptionsTreeView;
 		// Implement the TreeView interface:
-		var self = this;
+		let self = this;
 		this.exceptionsTreeView = {
 			rowCount: 0,
 			setTree: function (aTree) {},
@@ -107,9 +107,9 @@ var secureLoginExceprions = {
 		}
 
 		try {
-			var doc = this.service.getDoc();
+			let doc = this.service.getDoc();
 			// Set the textbox to the current host:
-			var textbox = this.addExceptionTextbox;
+			let textbox = this.addExceptionTextbox;
 			textbox.value = doc.location.protocol + '//' + doc.location.host;
 		} catch(e) {
 			// Invalid location.host, e.g. about:config
@@ -141,7 +141,7 @@ var secureLoginExceprions = {
 	},
 
 	exceptionsAdd: function (aEvent) {
-		var url = this.addExceptionTextbox.value;
+		let url = this.addExceptionTextbox.value;
 		// Get the prePath information from the given URL:
 		try {
 			url = this.service.makeURI(url, 'UTF-8', null).prePath;
@@ -229,35 +229,35 @@ var secureLoginExceprions = {
 		}
 
 		// List of ranges:
-		var ranges = new Array();
+		let ranges = new Array();
 
 		// Get the number of ranges:
-		var numRanges = this.exceptionsTreeSelection.getRangeCount();
+		let numRanges = this.exceptionsTreeSelection.getRangeCount();
 
 		// Helper vars to store the range end points:
-		var start = new Object();
-		var end = new Object();
+		let start = new Object();
+		let end = new Object();
 
 		// We store the list of ranges first, as calling
 		// this.exceptionsTreeBox.rowCountChanged()
 		// seems to invalidate the current selection
 
-		for (var i = 0; i < numRanges; i++) {
+		for (let i = 0; i < numRanges; i++) {
 			// Get the current range end points:
 			this.exceptionsTreeSelection.getRangeAt(i,start,end);
 			// Store them as a Range object in the ranges list:
 			ranges[i] = new Range(start, end);
 		}
 
-		for (var i = 0; i < numRanges; i++) {
+		for (let i = 0; i < numRanges; i++) {
 			// Go through the stored ranges:
-			for (var j = ranges[i].start; j <= ranges[i].end; j++) {
+			for (let j = ranges[i].start; j <= ranges[i].end; j++) {
 				// Set the selected exceptions to null:
 				this.exceptions[j] = null;
 			}
 
 			// Calculate the new tree count:
-			var count = ranges[i].end - ranges[i].start + 1;
+			let count = ranges[i].end - ranges[i].start + 1;
 
 			// Update the tree count and notify the tree:
 			this.exceptionsTreeView.rowCount -= count;
@@ -265,9 +265,9 @@ var secureLoginExceprions = {
 		}
 
 		// Collapse list by removing all the null entries
-		for (var i = 0; i < this.exceptions.length; i++) {
+		for (let i = 0; i < this.exceptions.length; i++) {
 			if (!this.exceptions[i]) {
-				var j = i;
+				let j = i;
 				while (j < this.exceptions.length && !this.exceptions[j]) {
 					j++;
 				}
@@ -293,7 +293,7 @@ var secureLoginExceprions = {
 
 	exceptionsRemoveAll: function () {
 		// The number of currently stored exceptions:
-		var count = this.exceptions.length;
+		let count = this.exceptions.length;
 	
 		// Empty the list:
 		this.exceptions = new Array();

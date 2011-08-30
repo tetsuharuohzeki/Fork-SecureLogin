@@ -41,15 +41,14 @@ var secureLoginOptions = {
 		document.getElementById('keyboardShortcut').value = this.service.getFormattedShortcut();
 
 		// Display the filenames stored in the preferences:
-		var file;
 		try {
-			file = this.service.secureLoginPrefs.getComplexValue('loginFoundSoundFileName', Components.interfaces.nsILocalFile);
+			let file = this.service.secureLoginPrefs.getComplexValue('loginFoundSoundFileName', Components.interfaces.nsILocalFile);
 			document.getElementById('loginFoundSoundFileName').value = file.path;
 		} catch (e) {
 			// No file found, which is the default, so we do not log an error
 		}
 		try {
-			file = this.service.secureLoginPrefs.getComplexValue('loginSoundFileName', Components.interfaces.nsILocalFile);
+			let file = this.service.secureLoginPrefs.getComplexValue('loginSoundFileName', Components.interfaces.nsILocalFile);
 			document.getElementById('loginSoundFileName').value = file.path;
 		} catch (e) {
 			// No file found, which is the default, so we do not log an error
@@ -65,7 +64,7 @@ var secureLoginOptions = {
 
 		try {
 			// Create a file picker instance:
-			var fp = Components.classes['@mozilla.org/filepicker;1']
+			let fp = Components.classes['@mozilla.org/filepicker;1']
 			         .createInstance(Components.interfaces.nsIFilePicker);
 
 			// Initialize the file picker window:
@@ -80,10 +79,10 @@ var secureLoginOptions = {
 			fp.filterIndex=0;
 
 			// Show the file picker window:
-			var rv = fp.show();
+			let rv = fp.show();
 
 			if (rv == Components.interfaces.nsIFilePicker.returnOK) {
-				var file = fp.file;
+				let file = fp.file;
 				// Save the selected file in the preferences:
 				this.service.secureLoginPrefs.setComplexValue(aPrefName, Components.interfaces.nsILocalFile, file);
 				// Save the selected file in the associated textbox:
@@ -96,23 +95,23 @@ var secureLoginOptions = {
 
 	applyShortcut: function (aEvent, aId) {
 		// Recognize the pressed keys:
-		var shortcut = this.recognizeKeys(aEvent);
+		let shortcut = this.recognizeKeys(aEvent);
 		if (!shortcut) {
 			return;
 		}
 		// Save the new shortcut:
 		this.setShortcut(shortcut);
 		// Update the shortcut textbox:
-		var eventViewDocument = aEvent.view.document;
+		let eventViewDocument = aEvent.view.document;
 		if (eventViewDocument && eventViewDocument.getElementById(aId)) {
 			eventViewDocument.getElementById(aId).value = this.service.getFormattedShortcut(shortcut);
 		}
 	},
 
 	recognizeKeys: function (aEvent) {
-		var modifiers = new Array();
-		var key = '';
-		var keycode = '';
+		let modifiers = new Array();
+		let key = '';
+		let keycode = '';
 
 		// Get the modifiers:
 		if (aEvent.altKey) {
@@ -148,7 +147,7 @@ var secureLoginOptions = {
 	},
 
 	setShortcut: function (aShortcut) {
-		var stringData;
+		let stringData;
 		if (aShortcut) {
 			stringData = aShortcut.toString();
 		} else {
@@ -163,9 +162,9 @@ var secureLoginOptions = {
 	},
 
 	getKeyCodes: function () {
-		var keycodes = new Array();
+		let keycodes = new Array();
 		// Get the list of keycodes from the KeyEvent object:
-		for (var property in KeyEvent) {
+		for (let property in KeyEvent) {
 			keycodes[KeyEvent[property]] = property.replace('DOM_','');
 		}
 		// VK_BACK_SPACE (index 8) must be VK_BACK:
@@ -177,7 +176,7 @@ var secureLoginOptions = {
 		// Disable the shortcut:
 		this.setShortcut(null);
 		// Update the shortcut textbox:
-		var eventViewDocument = aEvent.view.document;
+		let eventViewDocument = aEvent.view.document;
 		if (eventViewDocument && eventViewDocument.getElementById(aId)) {
 			eventViewDocument.getElementById(aId).value = '';
 		}
