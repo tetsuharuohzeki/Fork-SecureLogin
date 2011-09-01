@@ -216,7 +216,7 @@ var secureLogin = {
 			for (let i = 0, secureLogins = this.secureLogins; i < secureLogins.length; ++i) {
 				let window = secureLogins[i].window;
 				if (window === aWin || window.closed) {
-					secureLogins(i, 1);
+					secureLogins.splice(i, 1);
 				}
 			}
 		} else {
