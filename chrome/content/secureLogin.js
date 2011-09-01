@@ -119,7 +119,7 @@ var secureLogin = {
 		// set internal variable:
 		this.searchLoginsOnload = isSearchLoginsOnload;
 
-		this.progressListenerUpdate();
+		this.progressListenerUpdate(isSearchLoginsOnload);
 
 		if (isSearchLoginsOnload) {
 			// Search for valid logins and outline login fields:
@@ -131,10 +131,8 @@ var secureLogin = {
 		}
 	},
 
-	progressListenerUpdate: function () {
-		let isSearchLoginsOnload = this.secureLoginPrefs.getBoolPref('searchLoginsOnload');
-
-		if (!isSearchLoginsOnload) {
+	progressListenerUpdate: function (aIsSearchLoginsOnload) {
+		if (!aIsSearchLoginsOnload) {
 			// Remove the listener from the browser object (if added previously):
 			try {
 				this.getBrowser().removeProgressListener(this.progressListener);
@@ -143,7 +141,7 @@ var secureLogin = {
 				this.log(e);
 			}
 		}
-		else if (!this.isProgressListenerRegistered && isSearchLoginsOnload) {
+		else if (!this.isProgressListenerRegistered && aIsSearchLoginsOnload) {
 			// Add the progress listener to the browser object (if not added previously):
 			try {
 				let nsIWebProgress = Components.interfaces.nsIWebProgress;
