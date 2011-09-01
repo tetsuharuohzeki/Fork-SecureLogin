@@ -46,23 +46,9 @@ var secureLogin = {
 	},
 
 	updateStatus: function (aProgress, aRequest, aLocation, aFlag, aStatus) {
-		let progressWindow = aProgress.DOMWindow;
 		if (this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
 			// Initialize the recursive search for logins on the current window:
-			this.searchLoginsInitialize(progressWindow, true);
-
-			let doc = this.getDoc(progressWindow);
-
-			let isAutoLogin = this.secureLoginPrefs.getBoolPref('autoLogin');
-			if (isAutoLogin
-			    && this.secureLogins
-			    && (this.secureLogins.length > 0)
-			    && !this.inArray(this.getAutoLoginExceptions(), doc.location.protocol + '//' + doc.location.host)
-			) {
-				// Auto-Login if enabled, logins have been found,
-				// URL is not the current website is not in the autoLoginExceptions list:
-				this.login(progressWindow);
-			}
+			this.searchLoginsInitialize(aProgress.DOMWindow, true);
 		}
 	},
 
@@ -77,9 +63,6 @@ var secureLogin = {
 	// Object containing the shortcut information (modifiers, key or keycode):
 	shortcut: null,
 
-	// autoLogin exceptions list:
-	autoLoginExceptions: null,
-
 	observe: function (aSubject, aTopic, aData) {
 		// Only observe preferences changes:
 		if (aTopic != 'nsPref:changed') {
@@ -91,9 +74,6 @@ var secureLogin = {
 				break;
 			case 'highlightColor':
 				this.highlightColorUpdate();
-				break;
-			case 'autoLoginExceptions':
-				this.autoLoginExceptions = null;
 				break;
 		}
 	},
@@ -192,17 +172,6 @@ var secureLogin = {
 				}
 			}
 		}
-	},
-
-	getAutoLoginExceptions: function () {
-		let autoLoginExceptions = this.autoLoginExceptions;
-		if (!autoLoginExceptions) {
-			// Get the exception list from the preferences:
-			autoLoginExceptions = this.secureLoginPrefs
-			                      .getComplexValue('autoLoginExceptions', Components.interfaces.nsISupportsString)
-			                      .data.split(' ');
-		}
-		return autoLoginExceptions;
 	},
 
 	searchLoginsInitialize: function (aWin, aUpdateStatus) {
