@@ -54,7 +54,6 @@ var secureLogin = {
 			let doc = this.getDoc(progressWindow);
 
 			let isAutoLogin = this.secureLoginPrefs.getBoolPref('autoLogin');
-			//var isInExceptionArray = this.inArray(this.getAutoLoginExceptions(), doc.location.protocol + '//' + doc.location.host);
 			if (isAutoLogin
 			    && this.secureLogins
 			    && (this.secureLogins.length > 0)
