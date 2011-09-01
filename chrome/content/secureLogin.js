@@ -46,7 +46,7 @@ var secureLogin = {
 	},
 
 	updateStatus: function (aProgress, aRequest, aLocation, aFlag, aStatus) {
-		if (this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
+		if (this.searchLoginsOnload) {
 			// Initialize the recursive search for logins on the current window:
 			this.searchLoginsInitialize(aProgress.DOMWindow, true);
 		}
@@ -62,6 +62,9 @@ var secureLogin = {
 	showFormIndex: null,
 	// Object containing the shortcut information (modifiers, key or keycode):
 	shortcut: null,
+
+	// Variable to define if searching login form on load.
+	searchLoginsOnload: null,
 
 	observe: function (aSubject, aTopic, aData) {
 		// Only observe preferences changes:
@@ -111,9 +114,14 @@ var secureLogin = {
 	},
 
 	searchLoginsOnloadUpdate: function () {
+		let isSearchLoginsOnload = this.secureLoginPrefs.getBoolPref("searchLoginsOnload");
+
+		// set internal variable:
+		this.searchLoginsOnload = isSearchLoginsOnload;
+
 		this.progressListenerUpdate();
 
-		if (this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
+		if (isSearchLoginsOnload) {
 			// Search for valid logins and outline login fields:
 			this.searchLoginsInitialize(null, true);
 		}
@@ -504,7 +512,7 @@ var secureLogin = {
 		}
 
 		// Search for valid logins and outline login fields if not done automatically:
-		if (!this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
+		if (!this.searchLoginsOnload) {
 			this.searchLoginsInitialize(null, false);
 		}
 
@@ -593,7 +601,7 @@ var secureLogin = {
 		}
 
 		// Search for valid logins and outline login fields if not done automatically:
-		let isSearchLoginsOnload = this.secureLoginPrefs.getBoolPref('searchLoginsOnload');
+		let isSearchLoginsOnload = this.searchLoginsOnload;
 		if (!isSearchLoginsOnload && !aSkipLoginSearch) {
 			this.searchLoginsInitialize(aWin, false);
 		}
