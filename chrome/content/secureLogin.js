@@ -46,7 +46,7 @@ var secureLogin = {
 	},
 
 	updateStatus: function (aProgress, aRequest, aLocation, aFlag, aStatus) {
-		if (this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
+		if (this.searchLoginsOnload) {
 			// Initialize the recursive search for logins on the current window:
 			this.searchLoginsInitialize(aProgress.DOMWindow, true);
 		}
@@ -62,6 +62,9 @@ var secureLogin = {
 	showFormIndex: null,
 	// Object containing the shortcut information (modifiers, key or keycode):
 	shortcut: null,
+
+	// Variable to define if searching login form on load.
+	searchLoginsOnload: null,
 
 	observe: function (aSubject, aTopic, aData) {
 		// Only observe preferences changes:
@@ -111,9 +114,14 @@ var secureLogin = {
 	},
 
 	searchLoginsOnloadUpdate: function () {
-		this.progressListenerUpdate();
+		let isSearchLoginsOnload = this.secureLoginPrefs.getBoolPref("searchLoginsOnload");
 
-		if (this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
+		// set internal variable:
+		this.searchLoginsOnload = isSearchLoginsOnload;
+
+		this.progressListenerUpdate(isSearchLoginsOnload);
+
+		if (isSearchLoginsOnload) {
 			// Search for valid logins and outline login fields:
 			this.searchLoginsInitialize(null, true);
 		}
@@ -123,10 +131,8 @@ var secureLogin = {
 		}
 	},
 
-	progressListenerUpdate: function () {
-		let isSearchLoginsOnload = this.secureLoginPrefs.getBoolPref('searchLoginsOnload');
-
-		if (!isSearchLoginsOnload) {
+	progressListenerUpdate: function (aIsSearchLoginsOnload) {
+		if (!aIsSearchLoginsOnload) {
 			// Remove the listener from the browser object (if added previously):
 			try {
 				this.getBrowser().removeProgressListener(this.progressListener);
@@ -135,7 +141,7 @@ var secureLogin = {
 				this.log(e);
 			}
 		}
-		else if (!this.isProgressListenerRegistered && isSearchLoginsOnload) {
+		else if (!this.isProgressListenerRegistered && aIsSearchLoginsOnload) {
 			// Add the progress listener to the browser object (if not added previously):
 			try {
 				let nsIWebProgress = Components.interfaces.nsIWebProgress;
@@ -504,7 +510,7 @@ var secureLogin = {
 		}
 
 		// Search for valid logins and outline login fields if not done automatically:
-		if (!this.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
+		if (!this.searchLoginsOnload) {
 			this.searchLoginsInitialize(null, false);
 		}
 
@@ -593,7 +599,7 @@ var secureLogin = {
 		}
 
 		// Search for valid logins and outline login fields if not done automatically:
-		let isSearchLoginsOnload = this.secureLoginPrefs.getBoolPref('searchLoginsOnload');
+		let isSearchLoginsOnload = this.searchLoginsOnload;
 		if (!isSearchLoginsOnload && !aSkipLoginSearch) {
 			this.searchLoginsInitialize(aWin, false);
 		}
