@@ -63,6 +63,8 @@ var secureLogin = {
 	// Object containing the shortcut information (modifiers, key or keycode):
 	shortcut: null,
 
+	JSPExceptionsList: null,
+
 	// Variable to define if searching login form on load.
 	searchLoginsOnload: null,
 
@@ -77,6 +79,9 @@ var secureLogin = {
 				break;
 			case 'highlightColor':
 				this.highlightColorUpdate();
+				break;
+			case "exceptionList":
+				this.updateJSPExceptionsList();
 				break;
 		}
 	},
@@ -914,11 +919,18 @@ var secureLogin = {
 	},
 
 	getJSProtectExceptions: function () {
+		if (!this.JSPExceptionsList) {
+			this.updateJSPExceptionsList();
+		}
+		return this.JSPExceptionsList;
+	},
+
+	updateJSPExceptionsList: function () {
 		// Get the exception list from the preferences:
 		let exceptions = this.secureLoginPrefs
-		                 .getComplexValue('exceptionList', Components.interfaces.nsISupportsString)
-		                 .data.split(' ');
-		return (exceptions && exceptions[0]) ? exceptions : new Array();
+		                 .getComplexValue("exceptionList", Components.interfaces.nsISupportsString)
+		                 .data.split(" ");
+		return this.JSPExceptionsList = ((exceptions && exceptions[0]) ? exceptions : []);
 	},
 
 	shortcutFactory: function (aModifiers, aKey, aKeycode) {
