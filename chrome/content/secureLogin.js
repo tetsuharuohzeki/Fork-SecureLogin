@@ -234,12 +234,7 @@ var secureLogin = {
 		let location = document.location;
 
 		// Check if any web forms are available on the current window:
-		if (document
-			&& location
-		    && forms
-		    && (forms.length > 0)
-		) {
-
+		if (document && location && forms && (forms.length > 0)) {
 			// document (current) host:
 			let host = location.protocol + '//' + location.host;
 
