@@ -266,7 +266,7 @@ var secureLogin = {
 
 			// Getting the number of existing logins with countLogins()
 			// instead of findLogins() to avoid a Master Password prompt:
-			let loginsCount = Services.logins.countLogins(host, undefined, null);
+			let loginsCount = Services.logins.countLogins(host, "", null);
 			if (loginsCount > 0) {
 				let formURIs = new Array();
 				let isSkipDuplicateActionForms = this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms');
