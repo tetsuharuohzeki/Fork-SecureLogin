@@ -548,16 +548,21 @@ var secureLogin = {
 		}
 		else {
 			// Autofill Forms integration (requires extension autofillForms@blueimp.net):
-			if (this.secureLoginPrefs.getBoolPref('autofillFormsOnLogin')) {
-				try {
-					autofillForms.fillForms();
-				}
-				catch(e) {
-					this.log(e);
-				}
+			this.callAutoFillForms();
+		}
+	},
+
+	callAutoFillForms: function () {
+		if (this.secureLoginPrefs.getBoolPref('autofillFormsOnLogin')) {
+			try {
+				autofillForms.fillForms();
+			}
+			catch(e) {
+				this.log(e);
 			}
 		}
 	},
+
 
 	prepareUserSelectionPopup: function (aPopup) {
 		// Remove the old child nodes (should be already removed by the popuphiding event):
@@ -589,14 +594,7 @@ var secureLogin = {
 		}
 
 		// Autofill Forms integration (requires extension autofillForms@blueimp.net):
-		if (this.secureLoginPrefs.getBoolPref('autofillFormsOnLogin')) {
-			try {
-				autofillForms.fillForms(aWin);
-			}
-			catch (e) {
-				this.log(e);
-			}
-		}
+		this.callAutoFillForms();
 
 		// Search for valid logins and outline login fields if not done automatically:
 		let isSearchLoginsOnload = this.searchLoginsOnload;
