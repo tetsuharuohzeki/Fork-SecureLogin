@@ -21,7 +21,7 @@ var secureLoginOverlay = {
 	},
 
 	get secureLoginButton () {
-		return this.secureLoginButton = document.getElementById('secureLoginButton');
+		return document.getElementById('secureLoginButton');
 	},
 
 	get contentAreaContextMenu () {
