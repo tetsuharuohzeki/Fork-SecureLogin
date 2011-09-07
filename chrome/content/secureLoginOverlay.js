@@ -134,15 +134,15 @@ var secureLoginOverlay = {
 		window.removeEventListener("load", this, false);
 		window.addEventListener("unload", this, false);
 
-		this.service.initialize();
 		this.initialize();
+		this.service.initialize();
 	},
 
 	onUnLoad: function() {
 		window.removeEventListener("unload", this, false);
 
-		this.finalize();
 		this.service.finalize();
+		this.finalize();
 	},
 
 	observe: function (aSubject, aTopic, aData) {
