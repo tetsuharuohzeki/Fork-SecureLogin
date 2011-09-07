@@ -140,7 +140,7 @@ var secureLogin = {
 		if (!aIsSearchLoginsOnload) {
 			// Remove the listener from the browser object (if added previously):
 			try {
-				this.getBrowser().removeProgressListener(this.progressListener);
+				gBrowser.removeProgressListener(this.progressListener);
 				this.isProgressListenerRegistered = false;
 			} catch (e) {
 				this.log(e);
@@ -150,7 +150,7 @@ var secureLogin = {
 			// Add the progress listener to the browser object (if not added previously):
 			try {
 				let nsIWebProgress = Components.interfaces.nsIWebProgress;
-				this.getBrowser().addProgressListener(this.progressListener);
+				gBrowser.addProgressListener(this.progressListener);
 				this.isProgressListenerRegistered = true;
 			}
 			catch (e) {
@@ -1230,7 +1230,7 @@ var secureLogin = {
 
 		// Remove the listener from the browser object:
 		try {
-			this.getBrowser().removeProgressListener(this.progressListener);
+			gBrowser.removeProgressListener(this.progressListener);
 		}
 		catch(e) {
 			this.log(e);
