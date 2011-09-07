@@ -190,7 +190,7 @@ var secureLogin = {
 			aWin = this.getWin();
 		}
 
-		if (this.secureLogins && aWin.frameElement) {
+		if (aWin.frameElement && this.secureLogins) {
 			// If aWin is embedded window into an element,
 			// this part removes the embeded or closed window from logins of all remaining windows:
 			for (let i = 0, secureLogins = this.secureLogins; i < secureLogins.length; ++i) {
