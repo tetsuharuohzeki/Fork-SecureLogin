@@ -486,8 +486,8 @@ var secureLogin = {
 			if (this.secureLogins.length > 1) {
 				// Determine if no master password is set or the user has already been authenticated:
 				let masterPasswordRequired = true;
-				if (!this.masterSecurityDevice.getInternalKeyToken().needsLogin()
-				    || this.masterSecurityDevice.getInternalKeyToken().isLoggedIn()) {
+				let token = this.masterSecurityDevice.getInternalKeyToken();
+				if (!token.needsLogin() || token.isLoggedIn()) {
 					masterPasswordRequired = false;
 				}
 				let popup = this.loginUserSelectionPopup;
