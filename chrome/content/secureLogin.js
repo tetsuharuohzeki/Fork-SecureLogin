@@ -454,8 +454,9 @@ var secureLogin = {
 	},
 
 	masterSecurityDeviceLogout: function (aEvent) {
-		if (this.masterSecurityDevice.getInternalKeyToken().isLoggedIn()) {
-			this.masterSecurityDevice.findTokenByName('').logoutAndDropAuthenticatedResources();
+		let masterSecurityDevice = this.masterSecurityDevice;
+		if (masterSecurityDevice.getInternalKeyToken().isLoggedIn()) {
+			masterSecurityDevice.findTokenByName('').logoutAndDropAuthenticatedResources();
 		}
 		let label = this.stringBundle.GetStringFromName("masterSecurityDeviceLogout");
 		let subject = {
