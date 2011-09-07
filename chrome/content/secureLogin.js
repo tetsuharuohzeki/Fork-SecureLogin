@@ -191,9 +191,12 @@ var secureLogin = {
 		}
 
 		if (this.secureLogins && aWin.frameElement) {
-			// Login search initialized by a frame window - keep the logins of all remaining windows:
+			// If aWin is embedded window into an element,
+			// this part removes the embeded or closed window from logins of all remaining windows:
 			for (let i = 0, secureLogins = this.secureLogins; i < secureLogins.length; ++i) {
 				let window = secureLogins[i].window;
+				// Remove the window from list
+				// if the window is this frame window or has closed already:
 				if (window === aWin || window.closed) {
 					secureLogins.splice(i, 1);
 				}
