@@ -457,48 +457,11 @@ var secureLogin = {
 		if (this.masterSecurityDevice.getInternalKeyToken().isLoggedIn()) {
 			this.masterSecurityDevice.findTokenByName('').logoutAndDropAuthenticatedResources();
 		}
-		this.showAndRemoveNotification(this.stringBundle.GetStringFromName('masterSecurityDeviceLogout'));
-	},
-
-	showAndRemoveNotification: function (aLabel, aTimeout, aId, aImage, aPriority, aButtons) {
-		aTimeout = aTimeout ? aTimeout : this.secureLoginPrefs.getIntPref('defaultNotificationTimeout');
-		aId = aId ? aId : 'secureLoginNotification';
-		aImage = aImage ? aImage : this.secureLoginPrefs.getCharPref('defaultNotificationImage');
-		aPriority = aPriority ? aPriority : 'PRIORITY_INFO_HIGH';
-		aButtons = aButtons ? aButtons : null;
-		this.showNotification(aLabel, aId, aImage, aPriority, aButtons);
-		// Automatically remove the notification after the timeout:
-		window.setTimeout(function() { secureLogin.removeNotification() }, aTimeout);
-	},
-
-	showNotification: function (aLabel, aId, aImage, aPriority, aButtons) {
-		aId = aId ? aId : 'secureLoginNotification';
-		aImage = aImage ? aImage : this.secureLoginPrefs.getCharPref('defaultNotificationImage');
-		aPriority = aPriority ? aPriority : 'PRIORITY_INFO_HIGH';
-		aButtons = aButtons ? aButtons : null;
-		// First remove notifications with the same id:
-		this.removeNotification(aId);
-		let notificationBox = this.getBrowser().getNotificationBox();
-		if (notificationBox) {
-			notificationBox.appendNotification(
-			  aLabel,
-			  aId,
-			  aImage,
-			  aPriority,
-			  aButtons
-			);
-		}
-	},
-
-	removeNotification: function (aId) {
-		aId = aId ? aId : 'secureLoginNotification';
-		let notificationBox = this.getBrowser().getNotificationBox();
-		if (notificationBox) {
-			let notification = notificationBox.getNotificationWithValue(aId);
-			if (notification) {
-				notificationBox.removeNotification(notification);
-			}
-		}
+		let label = this.stringBundle.GetStringFromName("masterSecurityDeviceLogout");
+		let subject = {
+			label: label,
+		};
+		Services.obs.notifyObservers({ wrappedJSObject: subject, }, this.obsTopic, "showAndRemoveNotification");
 	},
 
 	get loginUserSelectionPopup () {
