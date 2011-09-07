@@ -187,7 +187,7 @@ var secureLogin = {
 
 	searchLoginsInitialize: function (aWin, aUpdateStatus) {
 		if (!aWin) {
-			aWin = this.getWin();
+			aWin = this.getContentWindow();
 		}
 
 		if (aWin.frameElement && this.secureLogins) {
@@ -593,7 +593,7 @@ var secureLogin = {
 
 	login: function(aWin, aLoginIndex, aSkipLoginSearch) {
 		if (!aWin || !aWin.document) {
-			aWin = this.getWin();
+			aWin = this.getContentWindow();
 		}
 
 		// Autofill Forms integration (requires extension autofillForms@blueimp.net):
@@ -1136,7 +1136,7 @@ var secureLogin = {
 		}
 	},
 
-	getWin: function () {
+	getContentWindow: function () {
 		if (window.content) {
 			// Existing window.content
 			return content;
