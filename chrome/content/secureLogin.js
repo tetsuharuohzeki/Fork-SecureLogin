@@ -457,7 +457,7 @@ var secureLogin = {
 		if (this.masterSecurityDevice.getInternalKeyToken().isLoggedIn()) {
 			this.masterSecurityDevice.findTokenByName('').logoutAndDropAuthenticatedResources();
 		}
-		this.showAndRemoveNotification(this.stringBundle.getString('masterSecurityDeviceLogout'));
+		this.showAndRemoveNotification(this.stringBundle.GetStringFromName('masterSecurityDeviceLogout'));
 	},
 
 	showAndRemoveNotification: function (aLabel, aTimeout, aId, aImage, aPriority, aButtons) {
@@ -705,14 +705,14 @@ var secureLogin = {
 			}
 			let selected = {};
 
-			let selectionPrompt = this.stringBundle.getString('loginSelectionPrompt');
+			let selectionPrompt = this.stringBundle.GetStringFromName('loginSelectionPrompt');
 			if (this.showFormIndex) {
-				selectionPrompt += '  (' + this.stringBundle.getString('formIndex') + ')';
+				selectionPrompt += '  (' + this.stringBundle.GetStringFromName('formIndex') + ')';
 			}
 
 			let ok = Services.prompt.select(
 				window,
-				this.stringBundle.getString('loginSelectionWindowTitle'),
+				this.stringBundle.GetStringFromName('loginSelectionWindowTitle'),
 				selectionPrompt + ':',
 				list.length,
 				list,
@@ -996,7 +996,7 @@ var secureLogin = {
 		// Add the modifiers:
 		for (let i = 0; i < shortcut['modifiers'].length; i++) {
 			try {
-				formattedShortcut += this.stringBundle.getString(shortcut['modifiers'][i]) + '+';
+				formattedShortcut += this.stringBundle.GetStringFromName(shortcut['modifiers'][i]) + '+';
 			}
 			catch (e) {
 				this.log(e);
@@ -1007,7 +1007,7 @@ var secureLogin = {
 		if (shortcut['key']) {
 			// Add the key:
 			if (shortcut['key'] == ' ') {
-				formattedShortcut += this.stringBundle.getString('VK_SPACE');
+				formattedShortcut += this.stringBundle.GetStringFromName('VK_SPACE');
 			}
 			else {
 				formattedShortcut += shortcut['key'];
@@ -1016,7 +1016,7 @@ var secureLogin = {
 		else if (shortcut['keycode']) {
 			// Add the keycode (instead of the key):
 			try {
-				formattedShortcut += this.stringBundle.getString(shortcut['keycode']);
+				formattedShortcut += this.stringBundle.GetStringFromName(shortcut['keycode']);
 			} catch (e) {
 				// If no localization is available just use the plain keycode:
 				formattedShortcut += shortcut['keycode'].replace('VK_', '');
@@ -1120,7 +1120,7 @@ var secureLogin = {
 
 	get stringBundle () {
 		delete this.stringBundle;
-		return this.stringBundle = document.getElementById('secureLoginStringBundle');
+		return this.stringBundle = Services.strings.createBundle("chrome://secureLogin/locale/secureLogin.properties");
 	},
 
 	getDoc: function(aWin) {

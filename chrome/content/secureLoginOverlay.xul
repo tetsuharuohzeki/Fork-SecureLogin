@@ -6,10 +6,6 @@
 	        src="chrome://secureLogin/content/secureLogin.js"></script>
 	<script type="application/x-javascript"
 	        src="chrome://secureLogin/content/secureLoginOverlay.js"></script>
-	<stringbundleset id="stringbundleset">
-		<stringbundle id="secureLoginStringBundle"
-		              src="chrome://secureLogin/locale/secureLogin.properties"/>
-	</stringbundleset>
 	<menupopup id="menu_ToolsPopup">
 		<menu id="secureLoginToolsMenu"
 		      label="&toolsmenu.label;"
