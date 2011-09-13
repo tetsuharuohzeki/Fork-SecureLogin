@@ -2,7 +2,7 @@ pref('extensions.secureLogin@blueimp.net.description', 'chrome://secureLogin/loc
 pref('extensions.secureLogin@blueimp.net.shortcut', 'chrome://secureLogin/locale/secureLogin.properties');
 pref('extensions.secureLogin@blueimp.net.showToolsMenu',true);
 pref('extensions.secureLogin@blueimp.net.showContextMenuItem',false);
-pref('extensions.secureLogin@blueimp.net.hideUrlBarIcon',true);
+pref('extensions.secureLogin@blueimp.net.showUrlBarIcon',false);
 pref('extensions.secureLogin@blueimp.net.searchLoginsOnload',true);
 pref('extensions.secureLogin@blueimp.net.skipDuplicateActionForms',true);
 pref('extensions.secureLogin@blueimp.net.highlightColor','#FF9900');

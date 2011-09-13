@@ -166,7 +166,7 @@ var secureLoginOverlay = {
 				case 'showToolsMenu':
 					this.showToolsMenuUpdate();
 					break;
-				case "hideUrlBarIcon":
+				case "showUrlBarIcon":
 					this.updateShowURLBarIcon();
 					break;
 				case 'javascriptProtection':
@@ -417,7 +417,7 @@ var secureLoginOverlay = {
 
 	updateShowURLBarIcon: function () {
 		let service = this.service;
-		let prefValue = !(service.secureLoginPrefs.getBoolPref("hideUrlBarIcon"));
+		let prefValue = service.secureLoginPrefs.getBoolPref("showUrlBarIcon");
 		let urlbarIcon = this.secureLoginUrlbarIcon;
 		if (urlbarIcon) {
 			if (prefValue) {

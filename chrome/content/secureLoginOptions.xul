@@ -126,8 +126,8 @@
 			<preference id="showContextMenuItem"
 			            name="extensions.secureLogin@blueimp.net.showContextMenuItem"
 			            type="bool"/>
-			<preference id="hideUrlBarIcon"
-			            name="extensions.secureLogin@blueimp.net.hideUrlBarIcon"
+			<preference id="showUrlBarIcon"
+			            name="extensions.secureLogin@blueimp.net.showUrlBarIcon"
 			            type="bool"/>
 		</preferences>
 		<vbox>
@@ -152,8 +152,8 @@
 				          preference="showToolsMenu"/>
 				<checkbox label="&showcontextmenuitem.label;"
 				          preference="showContextMenuItem"/>
-				<checkbox label="&hideurlbaricon.label;"
-				          preference="hideUrlBarIcon"/>
+				<checkbox label="&showurlbaricon.label;"
+				          preference="showUrlBarIcon"/>
 			</groupbox>
 			<separator class="thin"/>
 		</vbox>
