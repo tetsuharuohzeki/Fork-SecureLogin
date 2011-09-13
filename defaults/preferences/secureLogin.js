@@ -1,7 +1,7 @@
 pref('extensions.secureLogin@blueimp.net.description', 'chrome://secureLogin/locale/secureLogin.properties');
 pref('extensions.secureLogin@blueimp.net.shortcut', 'chrome://secureLogin/locale/secureLogin.properties');
-pref('extensions.secureLogin@blueimp.net.hideToolsMenu',false);
-pref('extensions.secureLogin@blueimp.net.hideContextMenuItem',true);
+pref('extensions.secureLogin@blueimp.net.showToolsMenu',true);
+pref('extensions.secureLogin@blueimp.net.showContextMenuItem',false);
 pref('extensions.secureLogin@blueimp.net.hideUrlBarIcon',true);
 pref('extensions.secureLogin@blueimp.net.searchLoginsOnload',true);
 pref('extensions.secureLogin@blueimp.net.skipDuplicateActionForms',true);

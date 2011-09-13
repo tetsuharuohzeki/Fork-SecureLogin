@@ -160,11 +160,11 @@ var secureLoginOverlay = {
 					this.updateShortcut();
 					this.initializeTooltip();
 					break;
-				case 'hideContextMenuItem':
-					this.hideContextMenuItemUpdate();
+				case 'showContextMenuItem':
+					this.showContextMenuItemUpdate();
 					break;
-				case 'hideToolsMenu':
-					this.hideToolsMenuUpdate();
+				case 'showToolsMenu':
+					this.showToolsMenuUpdate();
 					break;
 				case "hideUrlBarIcon":
 					this.updateShowURLBarIcon();
@@ -212,8 +212,8 @@ var secureLoginOverlay = {
 		this.initializeTooltip();
 
 		// Initialize toolbar and statusbar icons and tools and context menus:
-		this.hideToolsMenuUpdate();
-		this.hideContextMenuItemUpdate();
+		this.showToolsMenuUpdate();
+		this.showContextMenuItemUpdate();
 		this.updateShowURLBarIcon();
 		this.javascriptProtectionUpdate();
 	},
@@ -371,21 +371,21 @@ var secureLoginOverlay = {
 		}
 	},
 
-	hideToolsMenuUpdate: function () {
+	showToolsMenuUpdate: function () {
 		// Change the tools menu visibility:
 		let secureLoginToolsMenu = this.secureLoginToolsMenu;
 		if (secureLoginToolsMenu) {
 			secureLoginToolsMenu.setAttribute(
 				'hidden',
-				this.service.secureLoginPrefs.getBoolPref('hideToolsMenu')
+				this.service.secureLoginPrefs.getBoolPref('showToolsMenu')
 			);
 		}
 	},
 
-	hideContextMenuItemUpdate: function () {
+	showContextMenuItemUpdate: function () {
 		let contentAreaContextMenu = this.contentAreaContextMenu;
 		if (contentAreaContextMenu) {
-			let isHideContextMenuItem = this.service.secureLoginPrefs.getBoolPref('hideContextMenuItem');
+			let isHideContextMenuItem = this.service.secureLoginPrefs.getBoolPref('showContextMenuItem');
 			if (!isHideContextMenuItem) {
 				// Add the content area context menu listener:
 				contentAreaContextMenu.addEventListener(

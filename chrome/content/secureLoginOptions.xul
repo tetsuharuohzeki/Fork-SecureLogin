@@ -120,11 +120,11 @@
 	          flex="1"
 	          helpTopic="Interface">
 		<preferences>
-			<preference id="hideToolsMenu"
-			            name="extensions.secureLogin@blueimp.net.hideToolsMenu"
+			<preference id="showToolsMenu"
+			            name="extensions.secureLogin@blueimp.net.showToolsMenu"
 			            type="bool"/>
-			<preference id="hideContextMenuItem"
-			            name="extensions.secureLogin@blueimp.net.hideContextMenuItem"
+			<preference id="showContextMenuItem"
+			            name="extensions.secureLogin@blueimp.net.showContextMenuItem"
 			            type="bool"/>
 			<preference id="hideUrlBarIcon"
 			            name="extensions.secureLogin@blueimp.net.hideUrlBarIcon"
@@ -148,10 +148,10 @@
 			<separator class="thin"/>
 			<groupbox>
 				<caption label="&viewcaption.label;"/>
-				<checkbox label="&hidetoolsmenu.label;"
-				          preference="hideToolsMenu"/>
-				<checkbox label="&hidecontextmenuitem.label;"
-				          preference="hideContextMenuItem"/>
+				<checkbox label="&showtoolsmenu.label;"
+				          preference="showToolsMenu"/>
+				<checkbox label="&showcontextmenuitem.label;"
+				          preference="showContextMenuItem"/>
 				<checkbox label="&hideurlbaricon.label;"
 				          preference="hideUrlBarIcon"/>
 			</groupbox>

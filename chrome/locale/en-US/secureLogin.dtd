@@ -15,8 +15,8 @@
 <!ENTITY shortcutdisable.label "Disable">
 <!ENTITY shortcutinfo.label "Keyboard shortcut changes only take effect in a new Firefox window.">
 <!ENTITY viewcaption.label "View">
-<!ENTITY hidetoolsmenu.label "Hide entry in Tools menu">
-<!ENTITY hidecontextmenuitem.label "Hide context menu item">
+<!ENTITY showtoolsmenu.label "Show entry in Tools menu">
+<!ENTITY showcontextmenuitem.label "Show context menu item">
 <!ENTITY hideurlbaricon.label "Hide Url bar icon">
 <!ENTITY generalcaption.label "General">
 <!ENTITY searchloginsonload.label "Automatically search for login data and highlight form fields">
