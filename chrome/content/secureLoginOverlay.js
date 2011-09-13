@@ -24,6 +24,10 @@ var secureLoginOverlay = {
 		return document.getElementById('secureLoginButton');
 	},
 
+	get secureLoginUrlbarIcon () {
+		return document.getElementById("secureLogin-urlbar-button");
+	},
+
 	get contentAreaContextMenu () {
 		delete this.contentAreaContextMenu;
 		return this.contentAreaContextMenu = document.getElementById('contentAreaContextMenu');
@@ -168,9 +172,11 @@ var secureLoginOverlay = {
 			switch (aData) {
 				case "enableLoginButton":
 					this.enableLoginButton();
+					this.enableLoginUrlbarIcon();
 					break;
 				case "disableLoginButton":
 					this.disableLoginButton();
+					this.disableLoginUrlbarIcon();
 					break;
 				case "showAndRemoveNotification":
 					let subject = aSubject.wrappedJSObject;
@@ -211,6 +217,14 @@ var secureLoginOverlay = {
 
 	disableLoginButton: function () {
 		this.secureLoginButton.setAttribute("disabled", "true");
+	},
+
+	enableLoginUrlbarIcon: function () {
+		this.secureLoginUrlbarIcon.removeAttribute("hidden");
+	},
+
+	disableLoginUrlbarIcon: function () {
+		this.secureLoginUrlbarIcon.setAttribute("hidden", "true");
 	},
 
 	initContentAreaContextMenu: function (aEvent) {
