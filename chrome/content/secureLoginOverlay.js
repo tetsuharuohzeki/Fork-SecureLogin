@@ -206,11 +206,17 @@ var secureLoginOverlay = {
 	},
 
 	enableLoginButton: function () {
-		this.secureLoginButton.removeAttribute("disabled");
+		let loginButton = this.secureLoginButton;
+		if (loginButton) {
+			loginButton.removeAttribute("disabled");
+		}
 	},
 
 	disableLoginButton: function () {
-		this.secureLoginButton.setAttribute("disabled", "true");
+		let loginButton = this.secureLoginButton;
+		if (loginButton) {
+			loginButton.setAttribute("disabled", "true");
+		}
 	},
 
 	initContentAreaContextMenu: function (aEvent) {
