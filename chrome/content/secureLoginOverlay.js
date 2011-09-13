@@ -149,6 +149,9 @@ var secureLoginOverlay = {
 		this.finalize();
 	},
 
+	// Defines if show url bar icon:
+	isShowUrlBarIcon: null,
+
 	observe: function (aSubject, aTopic, aData) {
 		// Only observe preferences changes:
 		if (aTopic === 'nsPref:changed') {
@@ -162,6 +165,9 @@ var secureLoginOverlay = {
 					break;
 				case 'hideToolsMenu':
 					this.hideToolsMenuUpdate();
+					break;
+				case "hideUrlBarIcon":
+					this.updateShowURLBarIcon();
 					break;
 				case 'javascriptProtection':
 					this.javascriptProtectionUpdate();
@@ -208,6 +214,7 @@ var secureLoginOverlay = {
 		// Initialize toolbar and statusbar icons and tools and context menus:
 		this.hideToolsMenuUpdate();
 		this.hideContextMenuItemUpdate();
+		this.updateShowURLBarIcon();
 		this.javascriptProtectionUpdate();
 	},
 
@@ -220,11 +227,15 @@ var secureLoginOverlay = {
 	},
 
 	enableLoginUrlbarIcon: function () {
-		this.secureLoginUrlbarIcon.removeAttribute("hidden");
+		if (this.isShowUrlBarIcon) {
+			this.secureLoginUrlbarIcon.removeAttribute("hidden");
+		}
 	},
 
 	disableLoginUrlbarIcon: function () {
-		this.secureLoginUrlbarIcon.setAttribute("hidden", "true");
+		if (this.isShowUrlBarIcon) {
+			this.secureLoginUrlbarIcon.setAttribute("hidden", "true");
+		}
 	},
 
 	initContentAreaContextMenu: function (aEvent) {
@@ -394,6 +405,28 @@ var secureLoginOverlay = {
 				);
 			}
 		}
+	},
+
+	updateShowURLBarIcon: function () {
+		let service = this.service;
+		let prefValue = !(service.secureLoginPrefs.getBoolPref("hideUrlBarIcon"));
+		let urlbarIcon = this.secureLoginUrlbarIcon;
+		if (urlbarIcon) {
+			if (prefValue) {
+				let hasLogin = ( service.secureLogins && (service.secureLogins.length > 0) ) ?
+				               true : false;
+				if (hasLogin) {
+					urlbarIcon.removeAttribute("hidden");
+				}
+				else {
+					urlbarIcon.setAttribute("hidden", prefValue);
+				}
+			}
+			else {
+				urlbarIcon.setAttribute("hidden", !prefValue);
+			}
+		}
+		this.isShowUrlBarIcon = prefValue;
 	},
 
 	contextMenu: function (aEvent) {

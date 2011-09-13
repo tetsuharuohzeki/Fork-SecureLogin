@@ -17,6 +17,7 @@
 <!ENTITY viewcaption.label "View">
 <!ENTITY hidetoolsmenu.label "Hide entry in Tools menu">
 <!ENTITY hidecontextmenuitem.label "Hide context menu item">
+<!ENTITY hideurlbaricon.label "Hide Url bar icon">
 <!ENTITY generalcaption.label "General">
 <!ENTITY searchloginsonload.label "Automatically search for login data and highlight form fields">
 <!ENTITY skipduplicateactionforms.label "Skip duplicate login forms">

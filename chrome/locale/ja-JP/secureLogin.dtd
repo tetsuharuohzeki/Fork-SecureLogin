@@ -17,6 +17,7 @@
 <!ENTITY viewcaption.label "表示">
 <!ENTITY hidetoolsmenu.label "Secure Login を [ツール] メニューに非表示">
 <!ENTITY hidecontextmenuitem.label "コンテキストメニューに非表示">
+<!ENTITY hideurlbaricon.label "URL バーのアイコンを非表示">
 <!ENTITY generalcaption.label "一般">
 <!ENTITY searchloginsonload.label "ログイン情報を入力するためのボックスを自動的に探し強調表示する">
 <!ENTITY skipduplicateactionforms.label "重複しているログインフォームを無視する">
