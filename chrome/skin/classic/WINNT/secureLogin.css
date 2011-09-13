@@ -1,8 +1,15 @@
 #secureLoginButton {
 	list-style-image: url("login.png");
 }
+
 #secureLogin-urlbar-button {
-	list-style-image: url("login.png");
+	list-style-image: url("urlbar/urlbar.png");
+}
+#secureLogin-urlbar-button:hover {
+	list-style-image: url("urlbar/hover.png");
+}
+#secureLogin-urlbar-button:active {
+	list-style-image: url("urlbar/active.png");
 }
 
 .secureLoginSettingsIcon {
