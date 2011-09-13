@@ -10,6 +10,10 @@ toolbar[iconsize="small"] #secureLoginButton {
 toolbar[iconsize="small"] #secureLoginButton[disabled="true"] {
 	list-style-image: url("login-small-disabled.png");
 }
+#secureLogin-urlbar-button {
+	list-style-image: url("login-small.png");
+}
+
 
 .secureLoginSettingsIcon {
 	list-style-image: url("settings-small.png");

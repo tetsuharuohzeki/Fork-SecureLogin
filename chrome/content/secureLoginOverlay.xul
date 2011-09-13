@@ -165,4 +165,9 @@
 		               insertafter="context-selectall"
 		               hidden="true"/>
 	</popup>
+	<hbox id="urlbar-icons">
+		<image id="secureLogin-urlbar-button"
+		       class="urlbar-icon"
+		       insertbefore="page-report-button"/>
+	</hbox>
 </overlay>
