@@ -233,14 +233,16 @@ var secureLoginOverlay = {
 	},
 
 	enableLoginUrlbarIcon: function () {
-		if (this.isShowUrlBarIcon) {
-			this.secureLoginUrlbarIcon.removeAttribute("hidden");
+		let urlbarIcon = this.secureLoginUrlbarIcon;
+		if (this.isShowUrlBarIcon && urlbarIcon) {
+			urlbarIcon.removeAttribute("hidden");
 		}
 	},
 
 	disableLoginUrlbarIcon: function () {
-		if (this.isShowUrlBarIcon) {
-			this.secureLoginUrlbarIcon.setAttribute("hidden", "true");
+		let urlbarIcon = this.secureLoginUrlbarIcon;
+		if (this.isShowUrlBarIcon && urlbarIcon) {
+			urlbarIcon.setAttribute("hidden", "true");
 		}
 	},
 
