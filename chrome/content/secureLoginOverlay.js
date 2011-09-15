@@ -12,9 +12,6 @@ var secureLoginOverlay = {
 	QueryInterface: XPCOMUtils.generateQI([Components.interfaces.nsIObserver,
 	                                       Components.interfaces.nsISupportsWeakReference]),
 
-	// Event listener for the content area context menu:
-	contentAreaContextMenuEventListener: null,
-
 	get service() {
 		delete this.service;
 		return this.service = secureLogin;
@@ -26,31 +23,6 @@ var secureLoginOverlay = {
 
 	get secureLoginUrlbarIcon () {
 		return document.getElementById("secureLogin-urlbar-button");
-	},
-
-	get contentAreaContextMenu () {
-		delete this.contentAreaContextMenu;
-		return this.contentAreaContextMenu = document.getElementById('contentAreaContextMenu');
-	},
-
-	get secureLoginContextMenuItem () {
-		delete this.secureLoginContextMenuItem;
-		return this.secureLoginContextMenuItem = document.getElementById('secureLoginContextMenuItem');
-	},
-
-	get secureLoginContextMenuMenu () {
-		delete this.secureLoginContextMenuMenu;
-		return this.secureLoginContextMenuMenu = document.getElementById('secureLoginContextMenuMenu');
-	},
-
-	get secureLoginContextMenuSeparator1 () {
-		delete this.secureLoginContextMenuSeparator1;
-		return this.secureLoginContextMenuSeparator1 = document.getElementById('secureLoginContextMenuSeparator1');
-	},
-
-	get secureLoginContextMenuSeparator2 () {
-		delete this.secureLoginContextMenuSeparator2;
-		return this.secureLoginContextMenuSeparator2 = document.getElementById('secureLoginContextMenuSeparator2');
 	},
 
 	get mainKeyset () {
@@ -160,9 +132,6 @@ var secureLoginOverlay = {
 					this.updateShortcut();
 					this.initializeTooltip();
 					break;
-				case 'showContextMenuItem':
-					this.showContextMenuItemUpdate();
-					break;
 				case 'showToolsMenu':
 					this.showToolsMenuUpdate();
 					break;
@@ -195,11 +164,6 @@ var secureLoginOverlay = {
 	initialize: function () {
 		this.service.secureLoginPrefs.addObserver('', this, false);// add this to observer.
 
-		// Implement the event listener for the content area context menu:
-		this.contentAreaContextMenuEventListener = function (event) {
-			secureLoginOverlay.initContentAreaContextMenu(event);
-		}
-
 		this.initializePrefs();
 
 		//add observer:
@@ -213,7 +177,6 @@ var secureLoginOverlay = {
 
 		// Initialize toolbar and statusbar icons and tools and context menus:
 		this.showToolsMenuUpdate();
-		this.showContextMenuItemUpdate();
 		this.updateShowURLBarIcon();
 		this.javascriptProtectionUpdate();
 	},
@@ -244,96 +207,6 @@ var secureLoginOverlay = {
 		if (this.isShowUrlBarIcon && urlbarIcon) {
 			urlbarIcon.setAttribute("hidden", "true");
 		}
-	},
-
-	initContentAreaContextMenu: function (aEvent) {
-		let cm0 = this.secureLoginContextMenuItem;
-		let cm1 = this.secureLoginContextMenuMenu;
-		let cm2 = this.secureLoginContextMenuSeparator1;
-		let cm3 = this.secureLoginContextMenuSeparator2;
-		if (cm0 && gContextMenu) {
-			if (this.service.secureLoginPrefs.getBoolPref('hideContextMenuItem')
-				|| gContextMenu.isContentSelected
-				|| gContextMenu.onTextInput
-				|| gContextMenu.onImage
-				|| gContextMenu.onLink
-				|| gContextMenu.onCanvas
-				|| gContextMenu.onMathML
-				|| !this.service.getDoc().forms
-				|| !this.service.getDoc().forms.length) {
-				cm0.hidden = true;
-				cm1.hidden = true;
-				cm2.hidden = true;
-				cm3.hidden = true;
-			} else {
-				// Search for valid logins and outline login fields if not done automatically:
-				if (!this.service.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
-					this.service.searchLoginsInitialize(null, false);
-				}
-				if (!this.service.secureLogins || !this.service.secureLogins.length) {
-					cm0.hidden = true;
-					cm1.hidden = true;
-					cm2.hidden = true;
-					cm3.hidden = true;
-				} else {
-					// Determine if no master password is set or the user has already been authenticated:
-					let masterPasswordRequired = true;
-					if (!this.service.masterSecurityDevice.getInternalKeyToken().needsLogin()
-					    || this.service.masterSecurityDevice.getInternalKeyToken().isLoggedIn()) {
-						masterPasswordRequired = false;
-					}
-					// Show the menu or the menu item depending on the numer of logins and the MSD status:
-					if (this.service.secureLogins.length > 1 && !masterPasswordRequired) {
-						cm0.hidden = true;
-						cm1.hidden = false;
-					} else {
-						cm0.hidden = false;
-						cm1.hidden = true;
-					}
-					// Show menuseparators if not already separated:
-					if (this.isPreviousNodeSeparated(cm2)) {
-						cm2.hidden = true;
-					} else {
-						cm2.hidden = false;
-					}
-					if (this.isNextNodeSeparated(cm3)) {
-						cm3.hidden = true;
-					} else {
-						cm3.hidden = false;
-					}
-				}
-			}
-		}
-	},
-
-	isNextNodeSeparated: function (aNode) {
-		while (aNode) {
-			aNode = aNode.nextSibling
-			if (aNode.hidden) {
-				continue;
-			}
-			if (aNode.nodeName == 'menuseparator') {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		return true;
-	},
-
-	isPreviousNodeSeparated: function (aNode) {
-		while (aNode) {
-			aNode = aNode.previousSibling;
-			if (aNode.hidden) {
-				continue;
-			}
-			if (aNode.nodeName == 'menuseparator') {
-				return true;
-			} else {
-				return false;
-			}
-		}
-		return true;
 	},
 
 	updateShortcut: function () {
@@ -382,39 +255,6 @@ var secureLoginOverlay = {
 		}
 	},
 
-	showContextMenuItemUpdate: function () {
-		let contentAreaContextMenu = this.contentAreaContextMenu;
-		if (contentAreaContextMenu) {
-			let isHideContextMenuItem = this.service.secureLoginPrefs.getBoolPref('showContextMenuItem');
-			if (!isHideContextMenuItem) {
-				// Add the content area context menu listener:
-				contentAreaContextMenu.addEventListener(
-					'popupshowing',
-					this.contentAreaContextMenuEventListener,
-					false
-				);
-			} else {
-				// Hide the SL contentare context menu entries
-				// and remove the content area context menu listener:
-				let cm0 = this.secureLoginContextMenuItem;
-				let cm1 = this.secureLoginContextMenuMenu;
-				let cm2 = this.secureLoginContextMenuSeparator1;
-				let cm3 = this.secureLoginContextMenuSeparator2;
-				if (cm0) {
-					cm0.hidden = true;
-					cm1.hidden = true;
-					cm2.hidden = true;
-					cm3.hidden = true;
-				}
-				contentAreaContextMenu.removeEventListener(
-					'popupshowing',
-					this.contentAreaContextMenuEventListener,
-					false
-				);
-			}
-		}
-	},
-
 	updateShowURLBarIcon: function () {
 		let service = this.service;
 		let prefValue = service.secureLoginPrefs.getBoolPref("showUrlBarIcon");
@@ -435,10 +275,6 @@ var secureLoginOverlay = {
 			}
 		}
 		this.isShowUrlBarIcon = prefValue;
-	},
-
-	contextMenu: function (aEvent) {
-		this.menuPreparation('secureLoginContextAutofillFormsMenu');
 	},
 
 	toolsMenu: function (aEvent) {
@@ -490,16 +326,6 @@ var secureLoginOverlay = {
 			aPref,
 			!!aEvent.target.getAttribute('checked')
 		);
-	},
-
-	contextMenuSelectionLogin: function (aPopup) {
-		try {
-			this.service.prepareUserSelectionPopup(aPopup);
-		} catch (e) {
-			this.service.log(e);
-			// Decrypting failed
-			return false;
-		}
 	},
 
 	javascriptProtectionUpdate: function () {
@@ -659,16 +485,6 @@ var secureLoginOverlay = {
 	},
 
 	finalize: function () {
-		// Remove the content area context menu listener:
-		let contentAreaContextMenu = this.contentAreaContextMenu;
-		if(contentAreaContextMenu) {
-			contentAreaContextMenu.removeEventListener(
-				'popupshowing',
-				this.contentAreaContextMenuEventListener,
-				false
-			);
-		}
-
 		// Remove the preferences Observer:
 		this.service.secureLoginPrefs.removeObserver('', this);
 		// remove observer:
