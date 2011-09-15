@@ -12,13 +12,16 @@ toolbar[iconsize="small"] #secureLoginButton[disabled="true"] {
 }
 
 #secureLogin-urlbar-button {
-	list-style-image: url("urlbar/urlbar.png");
+	list-style-image: url("urlbar.png");
+	-moz-image-region: rect(0px, 16px, 16px, 0px);
 }
 #secureLogin-urlbar-button:hover {
-	list-style-image: url("urlbar/hover.png");
+	list-style-image: url("urlbar.png");
+	-moz-image-region: rect(0px, 32px, 16px, 16px);
 }
 #secureLogin-urlbar-button:active {
-	list-style-image: url("urlbar/active.png");
+	list-style-image: url("urlbar.png");
+	-moz-image-region: rect(0px, 48px, 16px, 32px);
 }
 
 .secureLoginSettingsIcon {
