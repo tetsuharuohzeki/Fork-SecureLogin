@@ -1,6 +1,12 @@
 #secureLoginButton {
 	list-style-image: url("login.png");
 }
+#TabsToolbar > #secureLoginButton:-moz-system-metric(windows-compositor):not(:-moz-lwtheme),
+#TabsToolbar > toolbarpaletteitem > #secureLoginButton:-moz-system-metric(windows-compositor):not(:-moz-lwtheme),
+#secureLoginButton:-moz-lwtheme-brighttext {
+  list-style-image: url("login-inverted.png");
+}
+
 
 .secureLoginSettingsIcon {
 	list-style-image: url("settings-small.png");
