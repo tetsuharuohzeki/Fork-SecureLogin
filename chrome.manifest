@@ -1,11 +1,11 @@
-content     securelogin                     chrome/content/
+content     securelogin                     content/
 
-locale      securelogin     en-US           chrome/locale/en-US/
-locale      securelogin     ja-JP           chrome/locale/ja-JP/
+locale      securelogin     en-US           locale/en-US/
+locale      securelogin     ja-JP           locale/ja-JP/
 
-skin        securelogin     classic/1.0     chrome/skin/classic/WINNT/ os=WINNT
-skin        securelogin     classic/1.0     chrome/skin/classic/Darwin/ os=Darwin
-skin        securelogin     classic/1.0     chrome/skin/classic/Linux/ os=Linux
+skin        securelogin     classic/1.0     skin/classic/WINNT/ os=WINNT
+skin        securelogin     classic/1.0     skin/classic/Darwin/ os=Darwin
+skin        securelogin     classic/1.0     skin/classic/Linux/ os=Linux
 
 
 overlay     chrome://browser/content/browser.xul                    chrome://securelogin/content/secureLoginOverlay.xul
