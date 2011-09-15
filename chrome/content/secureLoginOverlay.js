@@ -221,10 +221,13 @@ var secureLoginOverlay = {
 		// Change the tools menu visibility:
 		let secureLoginToolsMenu = this.secureLoginToolsMenu;
 		if (secureLoginToolsMenu) {
-			secureLoginToolsMenu.setAttribute(
-				'hidden',
-				this.service.secureLoginPrefs.getBoolPref('showToolsMenu')
-			);
+			let prefValue = this.service.secureLoginPrefs.getBoolPref("showToolsMenu");
+			if (prefValue) {
+				secureLoginToolsMenu.removeAttribute("hidden");
+			}
+			else {
+				secureLoginToolsMenu.setAttribute("hidden", "true");
+			}
 		}
 	},
 
