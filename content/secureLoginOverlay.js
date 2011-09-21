@@ -148,6 +148,7 @@ var secureLoginOverlay = {
 				case "enableLoginButton":
 					this.enableLoginButton();
 					this.enableLoginUrlbarIcon();
+					this.showDoorHangerLogin();
 					break;
 				case "disableLoginButton":
 					this.disableLoginButton();
@@ -179,6 +180,24 @@ var secureLoginOverlay = {
 		this.showToolsMenuUpdate();
 		this.updateShowURLBarIcon();
 		this.javascriptProtectionUpdate();
+	},
+
+	showDoorHangerLogin: function () {
+		PopupNotifications.show(
+			gBrowser.selectedBrowser,
+			"securelogin-foundlogin",
+			"",
+			null,
+			{
+				label    : "Login",
+				accessKey: "L",
+				callback : function () {
+					secureLogin.login();
+				},
+			},
+			null,
+			{ dismissed: true }
+		);
 	},
 
 	enableLoginButton: function () {
