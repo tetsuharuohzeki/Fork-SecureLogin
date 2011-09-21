@@ -187,7 +187,7 @@ var secureLoginOverlay = {
 			gBrowser.selectedBrowser,
 			"securelogin-foundlogin",
 			"",
-			null,
+			"password-notification-icon",
 			{
 				label    : "Login",
 				accessKey: "L",
