@@ -124,6 +124,10 @@ var secureLoginOverlay = {
 	// Defines if show url bar icon:
 	isShowUrlBarIcon: null,
 
+	// cache to preferences:
+	showDoorHanger: null,
+	showDoorHangerDismissed: null,
+
 	observe: function (aSubject, aTopic, aData) {
 		// Only observe preferences changes:
 		if (aTopic === 'nsPref:changed') {
@@ -137,6 +141,10 @@ var secureLoginOverlay = {
 					break;
 				case "showUrlBarIcon":
 					this.updateShowURLBarIcon();
+					break;
+				case "showDoorHanger":
+				case "showDoorHanger.dismissed":
+					this.updateShowDoorhanger();
 					break;
 				case 'javascriptProtection':
 					this.javascriptProtectionUpdate();
@@ -179,12 +187,12 @@ var secureLoginOverlay = {
 		// Initialize toolbar and statusbar icons and tools and context menus:
 		this.showToolsMenuUpdate();
 		this.updateShowURLBarIcon();
+		this.updateShowDoorhanger();
 		this.javascriptProtectionUpdate();
 	},
 
 	showDoorHangerLogin: function () {
-		let pref = this.service.secureLoginPrefs;
-		if ( !(pref.getBoolPref("showDoorHanger")) ) {
+		if ( !this.showDoorHanger ) {
 			return;
 		}
 
@@ -192,7 +200,7 @@ var secureLoginOverlay = {
 		let description = GetStringFromName("doorhangerDescription");
 		let label       = GetStringFromName("doorhangerLabel");
 		let accessKey   = GetStringFromName("doorhangerAccessKey");
-		let dismissed   = pref.getBoolPref("showDoorHanger.dismissed");
+		let dismissed   = this.showDoorHangerDismissed;
 
 		PopupNotifications.show(
 			gBrowser.selectedBrowser,
@@ -237,6 +245,12 @@ var secureLoginOverlay = {
 		if (this.isShowUrlBarIcon && urlbarIcon) {
 			urlbarIcon.setAttribute("hidden", "true");
 		}
+	},
+
+	updateShowDoorhanger: function () {
+		let pref = this.service.secureLoginPrefs;
+		this.showDoorHanger = pref.getBoolPref("showDoorHanger");
+		this.showDoorHangerDismissed = pref.getBoolPref("showDoorHanger.dismissed");
 	},
 
 	updateShortcut: function () {
