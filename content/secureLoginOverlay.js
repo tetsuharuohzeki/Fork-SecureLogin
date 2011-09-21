@@ -5,8 +5,8 @@
  * @license GNU General Public License
  * @link https://blueimp.net/mozilla/
  */
- Components.utils.import("resource://gre/modules/Services.jsm");
- Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
+Components.utils.import("resource://gre/modules/Services.jsm");
+Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 var secureLoginOverlay = {
 
 	QueryInterface: XPCOMUtils.generateQI([Components.interfaces.nsIObserver,
