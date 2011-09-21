@@ -17,6 +17,7 @@
 <!ENTITY viewcaption.label "View">
 <!ENTITY showtoolsmenu.label "Show entry in Tools menu">
 <!ENTITY showurlbaricon.label "Show Url bar icon">
+<!ENTITY showDoorHanger.label "Show Popup Notification">
 <!ENTITY generalcaption.label "General">
 <!ENTITY searchloginsonload.label "Automatically search for login data and highlight form fields">
 <!ENTITY skipduplicateactionforms.label "Skip duplicate login forms">

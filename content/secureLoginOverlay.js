@@ -183,10 +183,17 @@ var secureLoginOverlay = {
 	},
 
 	showDoorHangerLogin: function () {
+		let pref = this.service.secureLoginPrefs;
+		if ( !(pref.getBoolPref("showDoorHanger")) ) {
+			return;
+		}
+
 		let GetStringFromName = this.service.stringBundle.GetStringFromName;
 		let description = GetStringFromName("doorhangerDescription");
 		let label       = GetStringFromName("doorhangerLabel");
 		let accessKey   = GetStringFromName("doorhangerAccessKey");
+		let dismissed   = pref.getBoolPref("showDoorHanger.dismissed");
+
 		PopupNotifications.show(
 			gBrowser.selectedBrowser,
 			"securelogin-foundlogin",
@@ -200,7 +207,7 @@ var secureLoginOverlay = {
 				},
 			},
 			null,
-			{ dismissed: true }
+			{ dismissed: dismissed }
 		);
 	},
 

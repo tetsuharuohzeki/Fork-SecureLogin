@@ -126,6 +126,9 @@
 			<preference id="showUrlBarIcon"
 			            name="extensions.secureLogin@blueimp.net.showUrlBarIcon"
 			            type="bool"/>
+			<preference id="showPopupNotification"
+			            name="extensions.secureLogin@blueimp.net.showDoorHanger"
+			            type="bool"/>
 		</preferences>
 		<vbox>
 			<groupbox>
@@ -149,6 +152,8 @@
 				          preference="showToolsMenu"/>
 				<checkbox label="&showurlbaricon.label;"
 				          preference="showUrlBarIcon"/>
+				<checkbox label="&showDoorHanger.label;"
+				          preference="showDoorHanger"/>
 			</groupbox>
 			<separator class="thin"/>
 		</vbox>
