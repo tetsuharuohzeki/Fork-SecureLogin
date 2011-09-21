@@ -7,20 +7,6 @@
   list-style-image: url("login-inverted.png");
 }
 
-
-#secureLogin-urlbar-button {
-	list-style-image: url("urlbar.png");
-	-moz-image-region: rect(0px, 16px, 16px, 0px);
-}
-#secureLogin-urlbar-button:hover {
-	list-style-image: url("urlbar.png");
-	-moz-image-region: rect(0px, 32px, 16px, 16px);
-}
-#secureLogin-urlbar-button:active {
-	list-style-image: url("urlbar.png");
-	-moz-image-region: rect(0px, 48px, 16px, 32px);
-}
-
 .popup-notification-icon[popupid="securelogin-foundlogin"] {
 	list-style-image: url("chrome://mozapps/skin/passwordmgr/key-64.png");
 }

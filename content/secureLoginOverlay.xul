@@ -142,11 +142,4 @@
 		               context="secureLoginContextmenu"/>
 	</toolbarpalette>
 
-	<hbox id="urlbar-icons">
-		<image id="secureLogin-urlbar-button"
-		       class="urlbar-icon"
-		       insertbefore="page-report-button"
-		       onclick="secureLogin.login();"/>
-	</hbox>
-
 </overlay>

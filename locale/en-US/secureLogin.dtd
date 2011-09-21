@@ -16,7 +16,6 @@
 <!ENTITY shortcutinfo.label "Keyboard shortcut changes only take effect in a new Firefox window.">
 <!ENTITY viewcaption.label "View">
 <!ENTITY showtoolsmenu.label "Show entry in Tools menu">
-<!ENTITY showurlbaricon.label "Show Url bar icon">
 <!ENTITY showDoorHanger.label "Show Popup Notification">
 <!ENTITY generalcaption.label "General">
 <!ENTITY searchloginsonload.label "Automatically search for login data and highlight form fields">
