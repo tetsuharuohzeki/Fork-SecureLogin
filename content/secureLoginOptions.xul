@@ -126,7 +126,7 @@
 			<preference id="showUrlBarIcon"
 			            name="extensions.secureLogin@blueimp.net.showUrlBarIcon"
 			            type="bool"/>
-			<preference id="showPopupNotification"
+			<preference id="showDoorHanger"
 			            name="extensions.secureLogin@blueimp.net.showDoorHanger"
 			            type="bool"/>
 		</preferences>
