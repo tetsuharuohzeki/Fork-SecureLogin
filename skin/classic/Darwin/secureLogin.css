@@ -18,6 +18,10 @@
 	-moz-image-region: rect(0px, 48px, 16px, 32px);
 }
 
+.popup-notification-icon[popupid="securelogin-foundlogin"] {
+	list-style-image: url("chrome://mozapps/skin/passwordmgr/key-64.png");
+}
+
 .secureLoginSettingsIcon {
 	list-style-image: url("settings-small.png");
 }

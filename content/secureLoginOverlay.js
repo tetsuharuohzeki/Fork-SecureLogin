@@ -183,14 +183,18 @@ var secureLoginOverlay = {
 	},
 
 	showDoorHangerLogin: function () {
+		let GetStringFromName = this.service.stringBundle.GetStringFromName;
+		let description = GetStringFromName("doorhangerDescription");
+		let label       = GetStringFromName("doorhangerLabel");
+		let accessKey   = GetStringFromName("doorhangerAccessKey");
 		PopupNotifications.show(
 			gBrowser.selectedBrowser,
 			"securelogin-foundlogin",
-			"",
+			description,
 			"password-notification-icon",
 			{
-				label    : "Login",
-				accessKey: "L",
+				label    : label,
+				accessKey: accessKey,
 				callback : function () {
 					secureLogin.login();
 				},
