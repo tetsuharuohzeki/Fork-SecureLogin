@@ -63,7 +63,8 @@ var secureLogin = {
 	// Object containing the shortcut information (modifiers, key or keycode):
 	shortcut: null,
 	// cache css text for highlight form:
-	hightlightStyle: null,
+	hightlightOutlineStyle: null,
+	highlightOutlineRadius: null,
 
 	JSPExceptionsList: null,
 
@@ -80,7 +81,6 @@ var secureLogin = {
 				this.searchLoginsOnloadUpdate();
 				break;
 			case 'highlightColor':
-			case "highlightStyle":
 			case "highlightOutlineWidth":
 			case "highlightOutlineStyle":
 			case "highlightOutlineRadius":
@@ -174,24 +174,15 @@ var secureLogin = {
 	},
 
 	updateHighlightStyle: function () {
-		let highlightStyle = this.prefs.getCharPref("highlightStyle");
-		if (highlightStyle) {
-			this.hightlightStyle = highlightStyle;
-		}
-		else {
-			let getCharPref = this.prefs.getCharPref;
-			//create outline-style string:
-			let outlineStyle = ("outline: " +
-			                    getCharPref("highlightOutlineWidth") + //outline-width
-			                    " " +
-			                    getCharPref("highlightOutlineStyle") + //outline-style
-			                    " " +
-			                    getCharPref("highlightColor") + //outline-color
-			                    "; -moz-outline-radius: " +
-			                    getCharPref("highlightOutlineRadius") + //-moz-outline-radius
-			                    ";");
-			this.hightlightStyle = outlineStyle;
-		}
+		let getCharPref = this.prefs.getCharPref;
+		//create outline-style string:
+		let outlineStyle = getCharPref("highlightOutlineWidth") + //outline-width
+		                   " " +
+		                   getCharPref("highlightOutlineStyle") + //outline-style
+		                   " " +
+		                   getCharPref("highlightColor"); //outline-color
+		this.highlightOutlineStyle = outlineStyle;
+		this.highlightOutlineRadius = getCharPref("highlightOutlineRadius");
 
 		if (this.secureLogins) {
 			// Update the outlined form fields:
@@ -201,13 +192,11 @@ var secureLogin = {
 				let passField = secureLogins[i].passwordField;
 				// Outline the username field if existing:
 				if (userField) {
-					let style = userField.getAttribute("style") + ";" + this.hightlightStyle;
-					userField.setAttribute("style", style);
+					this.highlightElement(userField);
 				}
 				// Outline the password field if existing:
 				if (passField) {
-					let style = passField.getAttribute("style") + ";" + this.hightlightStyle;
-					passField.setAttribute("style", style);
+					this.highlightElement(passField);
 				}
 			}
 		}
@@ -420,14 +409,19 @@ var secureLogin = {
 
 	highlightLoginFields: function (aUsernameField, aPasswordField) {
 		if (aUsernameField) {
-			let style = aUsernameField.getAttribute("style") + ";" + this.hightlightStyle;
-			aUsernameField.setAttribute("style", style);
+			this.highlightElement(aUsernameField);
 		}
 
 		if (aPasswordField) {
-			let style = aPasswordField.getAttribute("style") + ";" + this.hightlightStyle;
-			aPasswordField.setAttribute("style", style);
+			this.highlightElement(aPasswordField);
 		}
+	},
+
+	highlightElement: function (aElement) {
+		let style = aElement.style;
+		style.outline          = this.highlightOutlineStyle;
+		style.outlineRadius    = this.highlightOutlineRadius;
+		style.MozOutlineRadius = this.highlightOutlineRadius;
 	},
 
 	get masterSecurityDevice () {

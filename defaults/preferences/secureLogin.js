@@ -8,7 +8,6 @@ pref('extensions.secureLogin@blueimp.net.highlightColor','#FF9900');
 pref('extensions.secureLogin@blueimp.net.highlightOutlineStyle','solid');
 pref('extensions.secureLogin@blueimp.net.highlightOutlineWidth',"1px");
 pref('extensions.secureLogin@blueimp.net.highlightOutlineRadius',"5px");
-pref('extensions.secureLogin@blueimp.net.highlightStyle','');
 pref('extensions.secureLogin@blueimp.net.autoSubmitForm',false);
 pref('extensions.secureLogin@blueimp.net.javascriptProtection',true);
 pref('extensions.secureLogin@blueimp.net.playLoginFoundSound',false);
