@@ -68,6 +68,10 @@ var secureLogin = {
 	// Variable to define if searching login form on load.
 	searchLoginsOnload: null,
 
+	// cache to preferences about doorhanger notification:
+	showDoorHanger: null,
+	showDoorHangerDismissed: null,
+
 	observe: function (aSubject, aTopic, aData) {
 		// Only observe preferences changes:
 		if (aTopic != 'nsPref:changed') {
@@ -83,6 +87,10 @@ var secureLogin = {
 			case "exceptionList":
 				this.updateJSPExceptionsList();
 				break;
+			case "showDoorHanger":
+			case "showDoorHanger.dismissed":
+				this.updateShowDoorhanger();
+				break;
 		}
 	},
 
@@ -96,6 +104,9 @@ var secureLogin = {
 
 	initializePrefs: function () {
 		this.initializeSignonAutofillFormsStatus();
+
+		// cache preferences about doorhanger notification:
+		this.updateShowDoorhanger();
 
 		// Add the progress listener to the browser, set the Secure Login icons:
 		this.searchLoginsOnloadUpdate();
@@ -166,12 +177,20 @@ var secureLogin = {
 	},
 
 	notifyShowDoorHangerLogin: function () {
-		this._notifyUpdateLoginIcon("showDoorHangerLogin");
+		if (this.showDoorHanger) {
+			this._notifyUpdateLoginIcon("showDoorHangerLogin");
+		}
 	},
 
 	_notifyUpdateLoginIcon: function (aData) {
 		let subject   = { wrappedJSObject: window };
 		Services.obs.notifyObservers(subject, this.obsTopic, aData);
+	},
+
+	updateShowDoorhanger: function () {
+		let pref = this.secureLoginPrefs;
+		this.showDoorHanger = pref.getBoolPref("showDoorHanger");
+		this.showDoorHangerDismissed = pref.getBoolPref("showDoorHanger.dismissed");
 	},
 
 	highlightColorUpdate: function () {
