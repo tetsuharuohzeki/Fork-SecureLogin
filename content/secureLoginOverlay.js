@@ -215,7 +215,14 @@ var secureLoginOverlay = {
 				},
 			},
 			null,
-			{ dismissed: dismissed }
+			{
+				persistence        : 0,
+				timeout            : null,
+				persistWhileVisible: false,
+				dismissed          : dismissed,
+				eventCallback      : null,
+				neverShow          : false,
+			 }
 		);
 	},
 
