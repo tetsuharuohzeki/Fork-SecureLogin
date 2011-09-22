@@ -133,6 +133,7 @@ var secureLogin = {
 		else {
 			// Always highlight the Secure Login icons, when not searching for valid logins automatically:
 			this.notifyUpdateLoginButton(true);
+			this.notifyShowDoorHangerLogin();
 		}
 	},
 
@@ -161,8 +162,16 @@ var secureLogin = {
 
 	notifyUpdateLoginButton: function (aIsBtnEnable) {
 		let btnStatus = aIsBtnEnable ? "enableLoginButton" : "disableLoginButton";
+		this._notifyUpdateLoginIcon(btnStatus);
+	},
+
+	notifyShowDoorHangerLogin: function () {
+		this._notifyUpdateLoginIcon("showDoorHangerLogin");
+	},
+
+	_notifyUpdateLoginIcon: function (aData) {
 		let subject   = { wrappedJSObject: window };
-		Services.obs.notifyObservers(subject, this.obsTopic, btnStatus);
+		Services.obs.notifyObservers(subject, this.obsTopic, aData);
 	},
 
 	highlightColorUpdate: function () {
@@ -228,6 +237,7 @@ var secureLogin = {
 		let subject = { wrappedJSObject: window };
 		if (secureLogins && secureLogins.length > 0) {
 			this.notifyUpdateLoginButton(true);
+			this.notifyShowDoorHangerLogin();
 			// Play sound notification:
 			if (this.secureLoginPrefs.getBoolPref('playLoginFoundSound')) {
 				this.playSound('loginFoundSoundFileName');

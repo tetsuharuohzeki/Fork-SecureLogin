@@ -153,11 +153,15 @@ var secureLoginOverlay = {
 		}
 		else if (aTopic === this.service.obsTopic) {
 			switch (aData) {
+				case "showDoorHangerLogin":
+					if (aSubject.wrappedJSObject === window) {
+						this.showDoorHangerLogin();
+					}
+					break;
 				case "enableLoginButton":
 					if (aSubject.wrappedJSObject === window) {
 						this.enableLoginButton();
 						this.enableLoginUrlbarIcon();
-						this.showDoorHangerLogin();
 					}
 					break;
 				case "disableLoginButton":
