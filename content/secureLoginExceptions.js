@@ -151,7 +151,7 @@ var secureLoginExceprions = {
 				url = this.service.makeURI('http://'+url, 'UTF-8', null).prePath;
 			} catch (e) {
 				// The given URL is not a valid one, log and return:
-				this.service.log('Invalid URL: '+url);
+				Components.utils.reportError('Invalid URL: '+url);
 				return;
 			}
 		}
@@ -185,7 +185,7 @@ var secureLoginExceprions = {
 					// Select all rows:
 					this.exceptionsTreeSelection.selectAll();
 				} catch (e) {
-					this.service.log(e);
+					Components.utils.reportError(e);
 				}
 			}
 		}

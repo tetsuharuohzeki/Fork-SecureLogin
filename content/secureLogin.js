@@ -122,7 +122,7 @@ var secureLogin = {
 			}
 		}
 		catch (e) {
-			this.log(e);
+			Components.utils.reportError(e);
 		}
 	},
 
@@ -151,7 +151,7 @@ var secureLogin = {
 				gBrowser.removeProgressListener(this.progressListener);
 				this.isProgressListenerRegistered = false;
 			} catch (e) {
-				this.log(e);
+				Components.utils.reportError(e);
 			}
 		}
 		else if (!this.isProgressListenerRegistered && aIsSearchLoginsOnload) {
@@ -161,7 +161,7 @@ var secureLogin = {
 				this.isProgressListenerRegistered = true;
 			}
 			catch (e) {
-				this.log(e);
+				Components.utils.reportError(e);
 			}
 		}
 	},
@@ -474,7 +474,7 @@ var secureLogin = {
 						popup.openPopup(aEvent.target, null, 0, 0, false, true);
 					}
 					catch (e) {
-						this.log(e);
+						Components.utils.reportError(e);
 						// Decrypting failed
 						return;
 					}
@@ -501,7 +501,7 @@ var secureLogin = {
 				autofillForms.fillForms();
 			}
 			catch(e) {
-				this.log(e);
+				Components.utils.reportError(e);
 			}
 		}
 	},
@@ -616,7 +616,7 @@ var secureLogin = {
 			}
 			catch (e) {
 				// Decrypting failed or url is not allowed
-				this.log(e);
+				Components.utils.reportError(e);
 				return;
 			}
 		}
@@ -939,7 +939,7 @@ var secureLogin = {
 				formattedShortcut += this.stringBundle.GetStringFromName(shortcut['modifiers'][i]) + '+';
 			}
 			catch (e) {
-				this.log(e);
+				Components.utils.reportError(e);
 				// Error in shortcut string, return empty String;
 				return '';
 			}
@@ -977,7 +977,7 @@ var secureLogin = {
 			this.getSound().play(url);
 		}
 		catch (e) {
-			this.log(e);
+			Components.utils.reportError(e);
 			// No file found
 		}
 	},
@@ -1122,27 +1122,6 @@ var secureLogin = {
 		}
 	},
 
-	log: function (aMessage, aSourceName, aSourceLine, aLineNumber, aColumnNumber, aFlags, aCategory) {
-		if (aSourceName != 'undefined') {
-			let scriptError = Components.classes["@mozilla.org/scripterror;1"]
-			                  .createInstance(Components.interfaces.nsIScriptError);
-			scriptError.init(
-				aMessage,
-				aSourceName,
-				aSourceLine,
-				aLineNumber,
-				aColumnNumber,
-				aFlags,
-				aCategory
-			);
-			Services.console.logMessage(scriptError);
-		}
-		else {
-			Services.console.logStringMessage(aMessage);
-		}
-	},
-
-
 	finalizeSignonAutofillFormsStatus: function () {
 		// Re-enable the prefilling of login forms if setting has been true:
 		try {
@@ -1151,7 +1130,7 @@ var secureLogin = {
 			}
 		}
 		catch(e) {
-			this.log(e);
+			Components.utils.reportError(e);
 		}
 	},
 
@@ -1163,7 +1142,7 @@ var secureLogin = {
 			gBrowser.removeProgressListener(this.progressListener);
 		}
 		catch(e) {
-			this.log(e);
+			Components.utils.reportError(e);
 		}
 
 		// Remove the preferences Observer:

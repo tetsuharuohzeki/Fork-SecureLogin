@@ -89,7 +89,7 @@ var secureLoginOptions = {
 				aDoc.getElementById(aPrefName).value = file.path;
 			}
 		} catch (e) {
-			this.service.log(e);
+			Components.utils.reportError(e);
 		}
 	},
 
