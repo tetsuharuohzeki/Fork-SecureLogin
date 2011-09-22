@@ -284,6 +284,10 @@ var secureLoginOverlay = {
 		this.isShowUrlBarIcon = prefValue;
 	},
 
+	contextMenu: function (aEvent) {
+		this.menuPreparation('secureLoginContextAutofillFormsMenu');
+	},
+
 	toolsMenu: function (aEvent) {
 		this.menuPreparation('secureLoginToolsMenuAutofillFormsMenu');
 	},
