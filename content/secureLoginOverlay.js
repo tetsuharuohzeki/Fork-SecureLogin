@@ -288,6 +288,10 @@ var secureLoginOverlay = {
 		}
 	},
 
+	contextMenu: function (aEvent) {
+		this.menuPreparation('secureLoginContextAutofillFormsMenu');
+	},
+
 	toolsMenu: function (aEvent) {
 		this.menuPreparation('secureLoginToolsMenuAutofillFormsMenu');
 	},
@@ -347,13 +351,8 @@ var secureLoginOverlay = {
 	},
 
 	showAndRemoveNotification: function (aLabel, aTimeout, aId, aImage, aPriority, aButtons) {
-		let pref     = this.service.prefs;
-		let timeout  = aTimeout  ? aTimeout  : pref.getIntPref("defaultNotificationTimeout");
-		let id       = aId       ? aId       : "secureLoginNotification";
-		let image    = aImage    ? aImage    : pref.getCharPref("defaultNotificationImage");
-		let priority = aPriority ? aPriority : "PRIORITY_INFO_HIGH";
-		let buttons  = aButtons  ? aButtons  : null;
-		this.showNotification(aLabel, id, image, priority, buttons);
+		let timeout  = aTimeout  ? aTimeout  : this.service.prefs.getIntPref("defaultNotificationTimeout");
+		this.showNotification(aLabel, aId, aImage, aPriority, aButtons);
 		// Automatically remove the notification after the timeout:
 		window.setTimeout(function() { secureLoginOverlay.removeNotification() }, timeout);
 	},
@@ -391,18 +390,18 @@ var secureLoginOverlay = {
 
 	tooltip: function (aEvent) {
 		// Check if document.tooltipNode exists and if it is shown above a valid node:
-		if (!document.tooltipNode
-		    || !document.tooltipNode.hasAttribute('tooltip')
-		    || !(document.tooltipNode.id == 'secureLoginButton')
-		) {
+		let tooltipNode = document.tooltipNode;
+		if (!tooltipNode || !tooltipNode.hasAttribute('tooltip') ||
+		    !(tooltipNode.getAttribute("id") === "secureLoginButton") ) {
 			// Don't show any tooltip:
 			aEvent.preventDefault();
 			return;
 		}
 
+		let service = this.service;
 		// Search for valid logins and outline login fields if not done automatically:
-		if (!this.service.prefs.getBoolPref('searchLoginsOnload')) {
-			this.service.searchLoginsInitialize(null, false);
+		if (!service.searchLoginsOnload) {
+			service.searchLoginsInitialize(null, false);
 		}
 
 		// hidden both boxes in tooltip:
@@ -418,24 +417,22 @@ var secureLoginOverlay = {
 				tooltip.removeChild(tooltip.firstChild);
 			}
 
-			if (this.service.secureLogins && this.service.secureLogins.length > 0) {
+			let secureLogins = service.secureLogins;
+			if (secureLogins && secureLogins.length > 0) {
 
 				// Hash list of unique action urls and number of logins:
-				let urlsArray = new Array();
+				let urlsArray = [];
 
 				// Go through the forms and find the unique action urls:
-				for (let i = 0; i < this.service.secureLogins.length; i++) {
-					let url = this.service.secureLogins[i].actionURI;
-					let foundInList = false;
+				for (let i = 0, l = secureLogins.length; i < l; i++) {
+					let url = secureLogins[i].actionURI;
 					// Check if the form action url is already in the list:
-					for (let j = 0; j < urlsArray.length; j++) {
-						if (urlsArray[j].url == url) {
-							// url already in the list, increase the counter:
-							foundInList = true;
-							urlsArray[j].count++;
-							break;
+					let foundInList = urlsArray.some(function(aElm){
+						if (aElm.url === url) {
+							aElm.count++;
+							return true
 						}
-					}
+					});
 					if (!foundInList) {
 						// Not in list, add the current url:
 						urlsArray.push({ url: url, count: 1,});
@@ -445,31 +442,24 @@ var secureLoginOverlay = {
 				if (urlsArray.length) {
 					// Add the url list:
 					let tooltipLoginURL = document.createElement('description');
-					tooltipLoginURL.setAttribute(
-					  'class',
-					  'secureLoginTooltipUrl'
-					);
+					tooltipLoginURL.setAttribute("class", "secureLoginTooltipUrl");
+
 					let spacer = document.createElement("spacer");
 					spacer.setAttribute("flex", "1");
-					let tooltipUrlCount = document.createElement('label');
-					tooltipUrlCount.setAttribute(
-					  'class',
-					  'secureLoginTooltipUrlCount'
-					);
-					for (let i = 0; i < urlsArray.length; i++) {
-						let hbox = document.createElement("hbox");
-						let descr = tooltipLoginURL.cloneNode(false);
-						let action = urlsArray[i];
-						descr.setAttribute(
-						  'value',
-						  action.url
-						);
-						let label = tooltipUrlCount.cloneNode(false);
-						label.setAttribute(
-						  'value',
-						  '('+ action.count +')'
-						);
 
+					let tooltipUrlCount = document.createElement('label');
+					tooltipUrlCount.setAttribute("class", "secureLoginTooltipUrlCount");
+
+					for (let i = 0, l = urlsArray.length; i < l; i++) {
+						let action = urlsArray[i];
+
+						let descr = tooltipLoginURL.cloneNode(false);
+						descr.setAttribute("value", action.url);
+
+						let label = tooltipUrlCount.cloneNode(false);
+						label.setAttribute("value", "("+ action.count +")");
+
+						let hbox = document.createElement("hbox");
 						hbox.appendChild(descr);
 						hbox.appendChild(spacer.cloneNode(false));
 						hbox.appendChild(label);
@@ -490,7 +480,7 @@ var secureLoginOverlay = {
 		if (formattedShortcut) {
 			this.tooltipKeyboardShortcut.setAttribute(
 			  'value',
-			  '('+this.service.getFormattedShortcut()+')'
+			  '('+ formattedShortcut +')'
 			);
 		}
 	},
