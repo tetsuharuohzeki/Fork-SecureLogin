@@ -1068,23 +1068,13 @@ var secureLogin = {
 		if (aWin) {
 			return aWin.document;
 		}
-		else if (window.content) {
-			// Existing window.content
-			return content.document;
-		}
 		else {
 			return this.getBrowser().contentDocument;
 		}
 	},
 
 	getContentWindow: function () {
-		if (window.content) {
-			// Existing window.content
-			return content;
-		}
-		else {
-			return this.getBrowser().contentWindow;
-		}
+		return this.getBrowser().contentWindow;
 	},
 
 	getBrowser: function () {
