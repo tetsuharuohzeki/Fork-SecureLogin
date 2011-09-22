@@ -1,4 +1,3 @@
-pref('extensions.secureLogin@blueimp.net.description', 'chrome://secureLogin/locale/secureLogin.properties');
 pref('extensions.secureLogin@blueimp.net.shortcut', 'chrome://secureLogin/locale/secureLogin.properties');
 pref('extensions.secureLogin@blueimp.net.showToolsMenu',true);
 pref('extensions.secureLogin@blueimp.net.showUrlBarIcon',false);
