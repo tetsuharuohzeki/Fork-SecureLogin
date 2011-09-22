@@ -174,21 +174,21 @@ var secureLogin = {
 	},
 
 	updateHighlightStyle: function () {
-		let prefs = this.prefs;
-		let highlightStyle = prefs.getCharPref("highlightStyle");
+		let highlightStyle = this.prefs.getCharPref("highlightStyle");
 		if (highlightStyle) {
 			this.hightlightStyle = highlightStyle;
 		}
 		else {
+			let getCharPref = this.prefs.getCharPref;
 			//create outline-style string:
 			let outlineStyle = ("outline: " +
-			                    prefs.getCharPref("highlightOutlineWidth") + //outline-width
+			                    getCharPref("highlightOutlineWidth") + //outline-width
 			                    " " +
-			                    prefs.getCharPref("highlightOutlineStyle") + //outline-style
+			                    getCharPref("highlightOutlineStyle") + //outline-style
 			                    " " +
-			                    prefs.getCharPref("highlightColor") + //outline-color
+			                    getCharPref("highlightColor") + //outline-color
 			                    "; -moz-outline-radius: " +
-			                    prefs.getCharPref("highlightOutlineRadius") + //-moz-outline-radius
+			                    getCharPref("highlightOutlineRadius") + //-moz-outline-radius
 			                    ";");
 			this.hightlightStyle = outlineStyle;
 		}
