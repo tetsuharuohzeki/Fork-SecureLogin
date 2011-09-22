@@ -132,7 +132,7 @@ var secureLogin = {
 		}
 		else {
 			// Always highlight the Secure Login icons, when not searching for valid logins automatically:
-			Services.obs.notifyObservers(null, this.obsTopic, "enableLoginButton");
+			this.notifyUpdateLoginButton(true);
 		}
 	},
 
@@ -157,6 +157,12 @@ var secureLogin = {
 				this.log(e);
 			}
 		}
+	},
+
+	notifyUpdateLoginButton: function (aIsBtnEnable) {
+		let btnStatus = aIsBtnEnable ? "enableLoginButton" : "disableLoginButton";
+		let subject   = { wrappedJSObject: window };
+		Services.obs.notifyObservers(subject, this.obsTopic, btnStatus);
 	},
 
 	highlightColorUpdate: function () {
@@ -219,15 +225,16 @@ var secureLogin = {
 
 	updateLoginsFoundStatus: function () {
 		let secureLogins = this.secureLogins;
+		let subject = { wrappedJSObject: window };
 		if (secureLogins && secureLogins.length > 0) {
-			Services.obs.notifyObservers(null, this.obsTopic, "enableLoginButton");
+			this.notifyUpdateLoginButton(true);
 			// Play sound notification:
 			if (this.secureLoginPrefs.getBoolPref('playLoginFoundSound')) {
 				this.playSound('loginFoundSoundFileName');
 			}
 		}
 		else {
-			Services.obs.notifyObservers(null, this.obsTopic, "disableLoginButton");
+			this.notifyUpdateLoginButton(false);
 		}
 	},
 
