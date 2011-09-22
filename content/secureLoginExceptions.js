@@ -133,7 +133,7 @@ var secureLoginExceprions = {
 
 	setExceptions: function (aExceptions) {
 		// Store the exceptions separated by spaces as unicode string in the preferences:
-		this.service.secureLoginPrefs.setComplexValue(
+		this.service.prefs.setComplexValue(
 			'exceptionList',
 			Components.interfaces.nsISupportsString,
 			this.service.getUnicodeString(aExceptions.join(' '))

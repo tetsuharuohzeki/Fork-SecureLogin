@@ -12,10 +12,10 @@ var secureLogin = {
 	obsTopic: "securelogin",
 
 	// Secure Logins preferences branch:
-	get secureLoginPrefs () {
-		delete this.secureLoginPrefs;
-		return this.secureLoginPrefs = Services.prefs.getBranch('extensions.secureLogin@blueimp.net.')
-		                               .QueryInterface(Components.interfaces.nsIPrefBranch2);
+	get prefs () {
+		delete this.prefs;
+		return this.prefs = Services.prefs.getBranch('extensions.secureLogin@blueimp.net.')
+		                    .QueryInterface(Components.interfaces.nsIPrefBranch2);
 	},
 
 	// The progress listener:
@@ -88,7 +88,7 @@ var secureLogin = {
 
 	initialize: function () {
 		// Add a preferences observer to the secureLogin preferences branch:
-		this.secureLoginPrefs.addObserver('', this, false);
+		this.prefs.addObserver('', this, false);
 
 		// Initialize the preferences settings:
 		this.initializePrefs();
@@ -119,7 +119,7 @@ var secureLogin = {
 	},
 
 	searchLoginsOnloadUpdate: function () {
-		let isSearchLoginsOnload = this.secureLoginPrefs.getBoolPref("searchLoginsOnload");
+		let isSearchLoginsOnload = this.prefs.getBoolPref("searchLoginsOnload");
 
 		// set internal variable:
 		this.searchLoginsOnload = isSearchLoginsOnload;
@@ -169,11 +169,11 @@ var secureLogin = {
 		if (this.secureLogins) {
 			// The outline style:
 			let outlineStyle = ''
-			                    + this.secureLoginPrefs.getIntPref('highlightOutlineWidth')
+			                    + this.prefs.getIntPref('highlightOutlineWidth')
 			                    + 'px '
-			                    + this.secureLoginPrefs.getCharPref('highlightOutlineStyle')
+			                    + this.prefs.getCharPref('highlightOutlineStyle')
 			                    + ' '
-			                    + this.secureLoginPrefs.getCharPref('highlightColor');
+			                    + this.prefs.getCharPref('highlightColor');
 
 			// Update the outlined form fields:
 			for (let i = 0; i < this.secureLogins.length; i++) {
@@ -229,7 +229,7 @@ var secureLogin = {
 		if (secureLogins && secureLogins.length > 0) {
 			this.notifyUpdateLoginButton(true);
 			// Play sound notification:
-			if (this.secureLoginPrefs.getBoolPref('playLoginFoundSound')) {
+			if (this.prefs.getBoolPref('playLoginFoundSound')) {
 				this.playSound('loginFoundSoundFileName');
 			}
 		}
@@ -253,7 +253,7 @@ var secureLogin = {
 			let loginsCount = Services.logins.countLogins(host, "", null);
 			if (loginsCount > 0) {
 				let formURIs = new Array();
-				let isSkipDuplicateActionForms = this.secureLoginPrefs.getBoolPref('skipDuplicateActionForms');
+				let isSkipDuplicateActionForms = this.prefs.getBoolPref('skipDuplicateActionForms');
 
  				// Go through the forms:
  				for (let i = 0; i < forms.length; i++) {
@@ -398,25 +398,25 @@ var secureLogin = {
 
 	highlightLoginFields: function (aUsernameField, aPasswordField) {
 		// Possible style declaration, overwriting outline settings:
-		let highlightStyle = this.secureLoginPrefs.getCharPref('highlightStyle');
+		let highlightStyle = this.prefs.getCharPref('highlightStyle');
 		let outlineStyle, outlineRadius;
 
 		if (!highlightStyle) {
-			if (!this.secureLoginPrefs.getIntPref('highlightOutlineWidth')) {
+			if (!this.prefs.getIntPref('highlightOutlineWidth')) {
 				// No visible style set, return:
 				return;
 			}
 
 			// The outline style:
 			outlineStyle = ''
-			               + this.secureLoginPrefs.getIntPref('highlightOutlineWidth')
+			               + this.prefs.getIntPref('highlightOutlineWidth')
 			               + 'px '
-			               + this.secureLoginPrefs.getCharPref('highlightOutlineStyle')
+			               + this.prefs.getCharPref('highlightOutlineStyle')
 			               + ' '
-			               + this.secureLoginPrefs.getCharPref('highlightColor');
+			               + this.prefs.getCharPref('highlightColor');
 
 			// The outline radius:
-			outlineRadius = this.secureLoginPrefs.getIntPref('highlightOutlineRadius');
+			outlineRadius = this.prefs.getIntPref('highlightOutlineRadius');
 		}
 
 		// Outline usernameField:
@@ -527,7 +527,7 @@ var secureLogin = {
 	},
 
 	callAutoFillForms: function () {
-		if (this.secureLoginPrefs.getBoolPref('autofillFormsOnLogin')) {
+		if (this.prefs.getBoolPref('autofillFormsOnLogin')) {
 			try {
 				autofillForms.fillForms();
 			}
@@ -640,7 +640,7 @@ var secureLogin = {
 				}
 
 				// Play sound notification:
-				if (this.secureLoginPrefs.getBoolPref('playLoginSound')) {
+				if (this.prefs.getBoolPref('playLoginSound')) {
 					this.playSound('loginSoundFileName');
 				}
 
@@ -701,7 +701,7 @@ var secureLogin = {
 	},
 
 	_useJavaScriptProtection: function (aLocation) {
-		let useJavaScriptProtection = this.secureLoginPrefs.getBoolPref("javascriptProtection");
+		let useJavaScriptProtection = this.prefs.getBoolPref("javascriptProtection");
 		let jsProtectExceptionArray = this.getJSProtectExceptions();
 		let isInException = this.inArray(jsProtectExceptionArray, aLocation.protocol + "//" + aLocation.host);
 		return (useJavaScriptProtection && !isInException) ? true : false;
@@ -848,7 +848,7 @@ var secureLogin = {
 		}
 		passwordField.value = this.getPasswordFromLoginObject(loginObject);
 
-		if (this.secureLoginPrefs.getBoolPref('autoSubmitForm')) {
+		if (this.prefs.getBoolPref('autoSubmitForm')) {
 			// Prevent multiple submits (e.g. if submit is delayed)
 			// by setting a variable (after click on a submit button):
 			let submitted = false;
@@ -894,7 +894,7 @@ var secureLogin = {
 
 	updateJSPExceptionsList: function () {
 		// Get the exception list from the preferences:
-		let exceptions = this.secureLoginPrefs
+		let exceptions = this.prefs
 		                 .getComplexValue("exceptionList", Components.interfaces.nsISupportsString)
 		                 .data.split(" ");
 		return this.JSPExceptionsList = ((exceptions && exceptions[0]) ? exceptions : []);
@@ -941,7 +941,7 @@ var secureLogin = {
 		if (this.shortcut == null) {
 			let key = null;
 			let keycode = null;
-			let shortcutItems = this.secureLoginPrefs
+			let shortcutItems = this.prefs
 			                    .getComplexValue('shortcut', Components.interfaces.nsIPrefLocalizedString)
 			                    .data.split('+');
 			if (shortcutItems.length > 0) {
@@ -999,7 +999,7 @@ var secureLogin = {
 	playSound: function(aPrefName) {
 		try {
 			// Get the filename stored in the preferences:
-			let file = this.secureLoginPrefs.getComplexValue(aPrefName, Components.interfaces.nsILocalFile);
+			let file = this.prefs.getComplexValue(aPrefName, Components.interfaces.nsILocalFile);
 
 			// Get an url for the file:
 			let url = Services.io.newFileURI(file, null, null);
@@ -1151,7 +1151,7 @@ var secureLogin = {
 		if (!aTopic) {
 			aTopic = '';
 		}
-		let url = this.secureLoginPrefs.getCharPref('helpURL').replace(/\[TOPIC\]$/, aTopic);
+		let url = this.prefs.getCharPref('helpURL').replace(/\[TOPIC\]$/, aTopic);
 		this.openNewTab(url, true);
 	},
 
@@ -1208,6 +1208,6 @@ var secureLogin = {
 		}
 
 		// Remove the preferences Observer:
-		this.secureLoginPrefs.removeObserver('', this);
+		this.prefs.removeObserver('', this);
 	},
 };

@@ -166,7 +166,7 @@ var secureLoginOverlay = {
 	},
 
 	initialize: function () {
-		this.service.secureLoginPrefs.addObserver('', this, false);// add this to observer.
+		this.service.prefs.addObserver('', this, false);// add this to observer.
 
 		this.initializePrefs();
 
@@ -252,7 +252,7 @@ var secureLoginOverlay = {
 		// Change the tools menu visibility:
 		let secureLoginToolsMenu = this.secureLoginToolsMenu;
 		if (secureLoginToolsMenu) {
-			let prefValue = this.service.secureLoginPrefs.getBoolPref("showToolsMenu");
+			let prefValue = this.service.prefs.getBoolPref("showToolsMenu");
 			if (prefValue) {
 				secureLoginToolsMenu.removeAttribute("hidden");
 			}
@@ -264,7 +264,7 @@ var secureLoginOverlay = {
 
 	updateShowURLBarIcon: function () {
 		let service = this.service;
-		let prefValue = service.secureLoginPrefs.getBoolPref("showUrlBarIcon");
+		let prefValue = service.prefs.getBoolPref("showUrlBarIcon");
 		let urlbarIcon = this.secureLoginUrlbarIcon;
 		if (urlbarIcon) {
 			if (prefValue) {
@@ -297,7 +297,7 @@ var secureLoginOverlay = {
 		let autofillFormsPopupMenu = this.autofillFormsPopupMenu;
 		let autofillFormsMenu = document.getElementById(aAutofillFormsMenuID);
 		let autofillFormsMenuSeparator = document.getElementById(aAutofillFormsMenuID + 'Separator');
-		if (this.service.secureLoginPrefs.getBoolPref('autofillFormsOnLogin') && autofillFormsPopupMenu) {
+		if (this.service.prefs.getBoolPref('autofillFormsOnLogin') && autofillFormsPopupMenu) {
 			if (autofillFormsMenu && !autofillFormsMenu.hasChildNodes()) {
 				autofillFormsPopupMenu = autofillFormsPopupMenu.cloneNode(true);
 				autofillFormsPopupMenu.removeAttribute('position');
@@ -329,7 +329,7 @@ var secureLoginOverlay = {
 
 	changePref: function (aEvent, aPref) {
 		// Attribute 'checked' is empty or true, setting must be false or true:
-		this.service.secureLoginPrefs.setBoolPref(
+		this.service.prefs.setBoolPref(
 			aPref,
 			!!aEvent.target.getAttribute('checked')
 		);
@@ -338,12 +338,12 @@ var secureLoginOverlay = {
 	javascriptProtectionUpdate: function () {
 		this.secureLoginJavascriptProtection.setAttribute(
 				'checked',
-				this.service.secureLoginPrefs.getBoolPref('javascriptProtection')
+				this.service.prefs.getBoolPref('javascriptProtection')
 		);
 	},
 
 	showAndRemoveNotification: function (aLabel, aTimeout, aId, aImage, aPriority, aButtons) {
-		let pref     = this.service.secureLoginPrefs;
+		let pref     = this.service.prefs;
 		let timeout  = aTimeout  ? aTimeout  : pref.getIntPref("defaultNotificationTimeout");
 		let id       = aId       ? aId       : "secureLoginNotification";
 		let image    = aImage    ? aImage    : pref.getCharPref("defaultNotificationImage");
@@ -357,7 +357,7 @@ var secureLoginOverlay = {
 	showNotification: function (aLabel, aId, aImage, aPriority, aButtons) {
 		let service  = this.service;
 		let id       = aId       ? aId       : "secureLoginNotification";
-		let image    = aImage    ? aImage    : service.secureLoginPrefs.getCharPref("defaultNotificationImage");
+		let image    = aImage    ? aImage    : service.prefs.getCharPref("defaultNotificationImage");
 		let priority = aPriority ? aPriority : "PRIORITY_INFO_HIGH";
 		let buttons  = aButtons  ? aButtons  : null;
 		// First remove notifications with the same id:
@@ -397,7 +397,7 @@ var secureLoginOverlay = {
 		}
 
 		// Search for valid logins and outline login fields if not done automatically:
-		if (!this.service.secureLoginPrefs.getBoolPref('searchLoginsOnload')) {
+		if (!this.service.prefs.getBoolPref('searchLoginsOnload')) {
 			this.service.searchLoginsInitialize(null, false);
 		}
 
@@ -493,7 +493,7 @@ var secureLoginOverlay = {
 
 	finalize: function () {
 		// Remove the preferences Observer:
-		this.service.secureLoginPrefs.removeObserver('', this);
+		this.service.prefs.removeObserver('', this);
 		// remove observer:
 		Services.obs.removeObserver(this, this.service.obsTopic);
 	},

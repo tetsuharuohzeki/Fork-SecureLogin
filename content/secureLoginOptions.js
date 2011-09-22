@@ -42,13 +42,13 @@ var secureLoginOptions = {
 
 		// Display the filenames stored in the preferences:
 		try {
-			let file = this.service.secureLoginPrefs.getComplexValue('loginFoundSoundFileName', Components.interfaces.nsILocalFile);
+			let file = this.service.prefs.getComplexValue('loginFoundSoundFileName', Components.interfaces.nsILocalFile);
 			document.getElementById('loginFoundSoundFileName').value = file.path;
 		} catch (e) {
 			// No file found, which is the default, so we do not log an error
 		}
 		try {
-			let file = this.service.secureLoginPrefs.getComplexValue('loginSoundFileName', Components.interfaces.nsILocalFile);
+			let file = this.service.prefs.getComplexValue('loginSoundFileName', Components.interfaces.nsILocalFile);
 			document.getElementById('loginSoundFileName').value = file.path;
 		} catch (e) {
 			// No file found, which is the default, so we do not log an error
@@ -84,7 +84,7 @@ var secureLoginOptions = {
 			if (rv == Components.interfaces.nsIFilePicker.returnOK) {
 				let file = fp.file;
 				// Save the selected file in the preferences:
-				this.service.secureLoginPrefs.setComplexValue(aPrefName, Components.interfaces.nsILocalFile, file);
+				this.service.prefs.setComplexValue(aPrefName, Components.interfaces.nsILocalFile, file);
 				// Save the selected file in the associated textbox:
 				aDoc.getElementById(aPrefName).value = file.path;
 			}
@@ -154,7 +154,7 @@ var secureLoginOptions = {
 			stringData = '';
 		}
 		// Save the shortcut as Unicode String in the preferences:
-		this.service.secureLoginPrefs.setComplexValue(
+		this.service.prefs.setComplexValue(
 			'shortcut',
 			Components.interfaces.nsISupportsString,
 			this.service.getUnicodeString(stringData)
