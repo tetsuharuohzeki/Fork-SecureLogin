@@ -196,7 +196,7 @@ var secureLogin = {
 	},
 
 	updateShowDoorhanger: function () {
-		let pref = this.secureLoginPrefs;
+		let pref = this.prefs;
 		this.showDoorHanger = pref.getBoolPref("showDoorHanger");
 		this.showDoorHangerDismissed = pref.getBoolPref("showDoorHanger.dismissed");
 	},

@@ -234,7 +234,7 @@ var secureLoginOverlay = {
 	},
 
 	updateShowDoorhanger: function () {
-		let pref = this.service.secureLoginPrefs;
+		let pref = this.service.prefs;
 		this.showDoorHanger = pref.getBoolPref("showDoorHanger");
 		this.showDoorHangerDismissed = pref.getBoolPref("showDoorHanger.dismissed");
 	},
