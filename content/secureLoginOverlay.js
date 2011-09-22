@@ -154,13 +154,17 @@ var secureLoginOverlay = {
 		else if (aTopic === this.service.obsTopic) {
 			switch (aData) {
 				case "enableLoginButton":
-					this.enableLoginButton();
-					this.enableLoginUrlbarIcon();
-					this.showDoorHangerLogin();
+					if (aSubject.wrappedJSObject === window) {
+						this.enableLoginButton();
+						this.enableLoginUrlbarIcon();
+						this.showDoorHangerLogin();
+					}
 					break;
 				case "disableLoginButton":
-					this.disableLoginButton();
-					this.disableLoginUrlbarIcon();
+					if (aSubject.wrappedJSObject === window) {
+						this.disableLoginButton();
+						this.disableLoginUrlbarIcon();
+					}
 					break;
 				case "showAndRemoveNotification":
 					let subject = aSubject.wrappedJSObject;
