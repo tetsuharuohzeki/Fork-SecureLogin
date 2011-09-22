@@ -182,14 +182,14 @@ var secureLogin = {
 		else {
 			//create outline-style string:
 			let outlineStyle = ("outline: " +
-			                    prefs.getIntPref("highlightOutlineWidth") + //outline-width(px)
-			                    "px " +
+			                    prefs.getCharPref("highlightOutlineWidth") + //outline-width
+			                    " " +
 			                    prefs.getCharPref("highlightOutlineStyle") + //outline-style
 			                    " " +
 			                    prefs.getCharPref("highlightColor") + //outline-color
 			                    "; -moz-outline-radius: " +
-			                    prefs.getIntPref("highlightOutlineRadius") + //-moz-outline-radius(px)
-			                    "px;");
+			                    prefs.getCharPref("highlightOutlineRadius") + //-moz-outline-radius
+			                    ";");
 			this.hightlightStyle = outlineStyle;
 		}
 
