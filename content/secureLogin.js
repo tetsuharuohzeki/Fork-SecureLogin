@@ -62,6 +62,8 @@ var secureLogin = {
 	showFormIndex: null,
 	// Object containing the shortcut information (modifiers, key or keycode):
 	shortcut: null,
+	// cache css text for highlight form:
+	hightlightStyle: null,
 
 	JSPExceptionsList: null,
 
@@ -78,7 +80,11 @@ var secureLogin = {
 				this.searchLoginsOnloadUpdate();
 				break;
 			case 'highlightColor':
-				this.highlightColorUpdate();
+			case "highlightStyle":
+			case "highlightOutlineWidth":
+			case "highlightOutlineStyle":
+			case "highlightOutlineRadius":
+				this.updateHighlightStyle();
 				break;
 			case "exceptionList":
 				this.updateJSPExceptionsList();
@@ -96,6 +102,8 @@ var secureLogin = {
 
 	initializePrefs: function () {
 		this.initializeSignonAutofillFormsStatus();
+
+		this.updateHighlightStyle();
 
 		// Add the progress listener to the browser, set the Secure Login icons:
 		this.searchLoginsOnloadUpdate();
@@ -165,27 +173,41 @@ var secureLogin = {
 		Services.obs.notifyObservers(subject, this.obsTopic, btnStatus);
 	},
 
-	highlightColorUpdate: function () {
-		if (this.secureLogins) {
-			// The outline style:
-			let outlineStyle = ''
-			                    + this.prefs.getIntPref('highlightOutlineWidth')
-			                    + 'px '
-			                    + this.prefs.getCharPref('highlightOutlineStyle')
-			                    + ' '
-			                    + this.prefs.getCharPref('highlightColor');
+	updateHighlightStyle: function () {
+		let highlightStyle = this.prefs.getCharPref("highlightStyle");
+		if (highlightStyle) {
+			this.hightlightStyle = highlightStyle;
+		}
+		else {
+			let getCharPref = this.prefs.getCharPref;
+			//create outline-style string:
+			let outlineStyle = ("outline: " +
+			                    getCharPref("highlightOutlineWidth") + //outline-width
+			                    " " +
+			                    getCharPref("highlightOutlineStyle") + //outline-style
+			                    " " +
+			                    getCharPref("highlightColor") + //outline-color
+			                    "; -moz-outline-radius: " +
+			                    getCharPref("highlightOutlineRadius") + //-moz-outline-radius
+			                    ";");
+			this.hightlightStyle = outlineStyle;
+		}
 
+		if (this.secureLogins) {
 			// Update the outlined form fields:
-			for (let i = 0; i < this.secureLogins.length; i++) {
-				let secureLoginsUserField = this.secureLogins[i].usernameField;
-				let secureLoginsPassField = this.secureLogins[i].passwordField;
+			let secureLogins = this.secureLogins;
+			for (let i = 0, l = secureLogins.length; i < l; ++i) {
+				let userField = secureLogins[i].usernameField;
+				let passField = secureLogins[i].passwordField;
 				// Outline the username field if existing:
-				if (secureLoginsUserField) {
-					secureLoginsUserField.style.outline = outlineStyle;
+				if (userField) {
+					let style = userField.getAttribute("style") + ";" + this.hightlightStyle;
+					userField.setAttribute("style", style);
 				}
 				// Outline the password field if existing:
-				if (secureLoginsPassField) {
-					secureLoginsPassField.style.outline = outlineStyle;
+				if (passField) {
+					let style = passField.getAttribute("style") + ";" + this.hightlightStyle;
+					passField.setAttribute("style", style);
 				}
 			}
 		}
@@ -397,60 +419,14 @@ var secureLogin = {
 	},
 
 	highlightLoginFields: function (aUsernameField, aPasswordField) {
-		// Possible style declaration, overwriting outline settings:
-		let highlightStyle = this.prefs.getCharPref('highlightStyle');
-		let outlineStyle, outlineRadius;
-
-		if (!highlightStyle) {
-			if (!this.prefs.getIntPref('highlightOutlineWidth')) {
-				// No visible style set, return:
-				return;
-			}
-
-			// The outline style:
-			outlineStyle = ''
-			               + this.prefs.getIntPref('highlightOutlineWidth')
-			               + 'px '
-			               + this.prefs.getCharPref('highlightOutlineStyle')
-			               + ' '
-			               + this.prefs.getCharPref('highlightColor');
-
-			// The outline radius:
-			outlineRadius = this.prefs.getIntPref('highlightOutlineRadius');
-		}
-
-		// Outline usernameField:
 		if (aUsernameField) {
-			// Overwrite style if set:
-			if (highlightStyle) {
-				aUsernameField.setAttribute('style', highlightStyle);
-			}
-			else {
-				aUsernameField.style.outline = outlineStyle;
-	    		if (outlineRadius) {
-					aUsernameField.style.setProperty(
-					  '-moz-outline-radius',
-					  outlineRadius+'px',
-					  null
-					);
-				}
-			}
+			let style = aUsernameField.getAttribute("style") + ";" + this.hightlightStyle;
+			aUsernameField.setAttribute("style", style);
 		}
 
-		// Overwrite highlight style if set:
-		if (highlightStyle) {
-			aPasswordField.setAttribute('style', highlightStyle);
-		}
-		else {
-			// outline the password field:
-			aPasswordField.style.outline = outlineStyle;
-			if (outlineRadius) {
-				aPasswordField.style.setProperty(
-				  '-moz-outline-radius',
-				  outlineRadius+'px',
-				  null
-				);
-			}
+		if (aPasswordField) {
+			let style = aPasswordField.getAttribute("style") + ";" + this.hightlightStyle;
+			aPasswordField.setAttribute("style", style);
 		}
 	},
 
