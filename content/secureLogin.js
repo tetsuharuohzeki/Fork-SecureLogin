@@ -157,7 +157,6 @@ var secureLogin = {
 		else if (!this.isProgressListenerRegistered && aIsSearchLoginsOnload) {
 			// Add the progress listener to the browser object (if not added previously):
 			try {
-				let nsIWebProgress = Components.interfaces.nsIWebProgress;
 				gBrowser.addProgressListener(this.progressListener);
 				this.isProgressListenerRegistered = true;
 			}
