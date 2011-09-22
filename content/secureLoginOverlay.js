@@ -490,7 +490,7 @@ var secureLoginOverlay = {
 		if (formattedShortcut) {
 			this.tooltipKeyboardShortcut.setAttribute(
 			  'value',
-			  '('+this.service.getFormattedShortcut()+')'
+			  '('+ formattedShortcut +')'
 			);
 		}
 	},
