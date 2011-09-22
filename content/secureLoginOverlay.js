@@ -347,13 +347,8 @@ var secureLoginOverlay = {
 	},
 
 	showAndRemoveNotification: function (aLabel, aTimeout, aId, aImage, aPriority, aButtons) {
-		let pref     = this.service.prefs;
-		let timeout  = aTimeout  ? aTimeout  : pref.getIntPref("defaultNotificationTimeout");
-		let id       = aId       ? aId       : "secureLoginNotification";
-		let image    = aImage    ? aImage    : pref.getCharPref("defaultNotificationImage");
-		let priority = aPriority ? aPriority : "PRIORITY_INFO_HIGH";
-		let buttons  = aButtons  ? aButtons  : null;
-		this.showNotification(aLabel, id, image, priority, buttons);
+		let timeout  = aTimeout  ? aTimeout  : this.service.prefs.getIntPref("defaultNotificationTimeout");
+		this.showNotification(aLabel, aId, aImage, aPriority, aButtons);
 		// Automatically remove the notification after the timeout:
 		window.setTimeout(function() { secureLoginOverlay.removeNotification() }, timeout);
 	},
