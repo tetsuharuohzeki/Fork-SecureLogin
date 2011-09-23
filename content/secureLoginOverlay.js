@@ -148,7 +148,6 @@ var secureLoginOverlay = {
 				case "enableLoginButton":
 					if (aSubject.wrappedJSObject === window) {
 						this.enableLoginButton();
-						this.showDoorhangerLogin();
 					}
 					break;
 				case "disableLoginButton":
