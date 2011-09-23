@@ -98,7 +98,7 @@ var secureLogin = {
 			case "showDoorHanger.dismissed":
 				this.updateShowDoorhanger();
 				break
-			case "skipDuplicateActionForms"
+			case "skipDuplicateActionForms":
 				this.skipDuplicateActionForms = this.prefs.getBoolPref(aData);
 				break;
 		}

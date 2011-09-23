@@ -71,13 +71,6 @@
 			</tooltip>
 			<menupopup id="secureLoginContextmenu"
 			           position="after_start">
-				<menu id="secureLoginContextAutofillFormsMenu"
-				      label="&autofillformsmenu.label;"
-				      class="menu-iconic autofillFormsIcon"
-				      hidden="true">
-				</menu>
-				<menuseparator id="secureLoginContextAutofillFormsMenuSeparator"
-				               hidden="true"/>
 				<menuitem id="secureLoginOptionsContextItem"
 				          label="&menuoptions.label;"
 				          class="menuitem-iconic secureLoginSettingsIcon"
