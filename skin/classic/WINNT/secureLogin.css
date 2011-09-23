@@ -1,3 +1,4 @@
+/* toolbar button */
 #secureLoginButton {
 	list-style-image: url("login.png");
 }
@@ -7,10 +8,12 @@
   list-style-image: url("login-inverted.png");
 }
 
+/* doorhanger notification */
 .popup-notification-icon[popupid="securelogin-foundlogin"] {
 	list-style-image: url("chrome://mozapps/skin/passwordmgr/key-64.png");
 }
 
+/* securelogin context/tool menu */
 .secureLoginSettingsIcon {
 	list-style-image: url("settings-small.png");
 }
@@ -21,6 +24,7 @@
 	list-style-image: url("user-small.png");
 }
 
+/* securelogin button tooltip */
 #secureLoginTooltipTitle {
 	margin-bottom: 10px;
 }
