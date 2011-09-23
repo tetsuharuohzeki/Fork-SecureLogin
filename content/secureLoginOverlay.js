@@ -7,14 +7,14 @@
  */
 Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
-var secureLoginOverlay = {
+var SecureLoginOverlay = {
 
 	QueryInterface: XPCOMUtils.generateQI([Components.interfaces.nsIObserver,
 	                                       Components.interfaces.nsISupportsWeakReference]),
 
 	get service() {
 		delete this.service;
-		return this.service = secureLogin;
+		return this.service = SecureLogin;
 	},
 
 	get secureLoginButton () {
@@ -305,7 +305,7 @@ var secureLoginOverlay = {
 		let timeout  = aTimeout  ? aTimeout  : this.service.prefs.getIntPref("defaultNotificationTimeout");
 		this.showNotification(aLabel, aId, aImage, aPriority, aButtons);
 		// Automatically remove the notification after the timeout:
-		window.setTimeout(function() { secureLoginOverlay.removeNotification() }, timeout);
+		window.setTimeout(function() { SecureLoginOverlay.removeNotification() }, timeout);
 	},
 
 	showNotification: function (aLabel, aId, aImage, aPriority, aButtons) {
@@ -504,7 +504,7 @@ var secureLoginOverlay = {
 				}
 				menuitem = menuitem.cloneNode(false);
 				menuitem.setAttribute("label", username);
-				menuitem.setAttribute("oncommand", "secureLogin.login(null, " + i + ", true);");
+				menuitem.setAttribute("oncommand", "SecureLogin.login(null, " + i + ", true);");
 				aPopup.appendChild(menuitem);
 			}
 		}
@@ -518,4 +518,4 @@ var secureLoginOverlay = {
 	},
 
 };
-window.addEventListener("load", secureLoginOverlay, false);
+window.addEventListener("load", SecureLoginOverlay, false);

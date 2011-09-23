@@ -5,11 +5,11 @@
  * @license GNU General Public License
  * @link https://blueimp.net/mozilla/
  */
-var secureLoginOptions = {
+var SecureLoginOptions = {
 
 	get service() {
 		delete this.service;
-		return this.service = secureLogin;
+		return this.service = SecureLogin;
 	},
 
 	handleEvent: function (aEvent) {
@@ -183,4 +183,4 @@ var secureLoginOptions = {
 	},
 
 };
-window.addEventListener("load", secureLoginOptions, false);
+window.addEventListener("load", SecureLoginOptions, false);

@@ -6,7 +6,7 @@
             id="secureLoginPrefs"
             title="&options.title;"
             buttons="accept,cancel,help"
-            ondialoghelp="secureLogin.openHelp(event.target.currentPane.helpTopic);">
+            ondialoghelp="SecureLogin.openHelp(event.target.currentPane.helpTopic);">
 	<prefpane id="secureLoginPrefPaneMain"
 	          label="&prefpanemainlabel;"
 	          helpTopic="Settings">
@@ -50,7 +50,7 @@
 					<spacer flex="1"/>
 					<button id="showExceptions"
 					        label="&showexceptions.label;"
-					        oncommand="secureLogin.showDialog('chrome://secureLogin/content/secureLoginExceptions.xul');"/>
+					        oncommand="SecureLogin.showDialog('chrome://secureLogin/content/secureLoginExceptions.xul');"/>
 				</hbox>
 			</groupbox>
 		</vbox>
@@ -83,7 +83,7 @@
 				<hbox>
 					<button id="playLoginFoundSound"
 					        label="&playSound.label;"
-					        oncommand="secureLogin.playSound('loginFoundSoundFileName');"/>
+					        oncommand="SecureLogin.playSound('loginFoundSoundFileName');"/>
 					<spacer flex="1"/>
 				</hbox>
 				<separator class="thin"/>
@@ -101,7 +101,7 @@
 				<hbox>
 					<button id="playLoginSound"
 					        label="&playSound.label;"
-					        oncommand="secureLogin.playSound('loginSoundFileName');"/>
+					        oncommand="SecureLogin.playSound('loginSoundFileName');"/>
 					<spacer flex="1"/>
 				</hbox>
 			</groupbox>
