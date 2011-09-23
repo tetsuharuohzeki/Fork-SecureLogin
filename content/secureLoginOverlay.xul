@@ -128,7 +128,7 @@
 		               class="toolbarbutton-1 chromeclass-toolbar-additional"
 		               label="&toolbarbutton.label;"
 		               tooltip="secureLoginTooltip"
-		               oncommand="if(event.target == this) secureLogin.userSelectionLogin(event);"
+		               oncommand="if(event.target == this) secureLoginOverlay.userSelectionLogin(event);"
 		               onclick="secureLoginOverlay.clickHandler(event);"
 		               context="secureLoginContextmenu"/>
 	</toolbarpalette>

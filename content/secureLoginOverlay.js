@@ -95,6 +95,11 @@ var secureLoginOverlay = {
 		return this.tooltipUrlHeaderCount = document.getElementById("secureLoginTooltipUrlHeader:count");
 	},
 
+	get loginUserSelectionPopup () {
+		delete this.loginUserSelectionPopup;
+		return this.loginUserSelectionPopup = document.getElementById('secureLoginUserSelectionPopup');
+	},
+
 	handleEvent: function (aEvent) {
 		switch (aEvent.type) {
 			case "load":
@@ -439,6 +444,80 @@ var secureLoginOverlay = {
 			  'value',
 			  '('+ formattedShortcut +')'
 			);
+		}
+	},
+
+	userSelectionLogin: function (aEvent) {
+		let service = this.service;
+		if (aEvent.ctrlKey) {
+			service.masterSecurityDeviceLogout();
+			return;
+		}
+
+		// Search for valid logins and outline login fields if not done automatically:
+		if (!service.searchLoginsOnload) {
+			service.searchLoginsInitialize(null, false);
+		}
+
+		// Check for valid logins:
+		let secureLogins = service.secureLogins;
+		if (secureLogins && secureLogins.length > 0) {
+			if (secureLogins.length > 1) {
+				// Determine if no master password is set or the user has already been authenticated:
+				let masterPasswordRequired = true;
+				let token = service.masterSecurityDevice.getInternalKeyToken();
+				if (!token.needsLogin() || token.isLoggedIn()) {
+					masterPasswordRequired = false;
+				}
+				let popup = service.loginUserSelectionPopup;
+				if (popup && (typeof popup.openPopup == "function") && !masterPasswordRequired) {
+					try {
+						this.prepareUserSelectionPopup(popup);
+						// Show the popup menu (only available for Firefox >= 3):
+						popup.openPopup(aEvent.target, null, 0, 0, false, true);
+					}
+					catch (e) {
+						Components.utils.reportError(e);
+						// Decrypting failed
+						return;
+					}
+				}
+				else {
+					// Show a selection box instead of the popup menu:
+					service.login(null, null, true);
+				}
+			}
+			else {
+				// Just login with the single available username:
+				service.login(null, 0, true);
+			}
+		}
+	},
+
+	prepareUserSelectionPopup: function (aPopup) {
+		let service = this.service;
+
+		// Remove the old child nodes (should be already removed by the popuphiding event):
+		while (aPopup.hasChildNodes()) {
+			aPopup.removeChild(aPopup.firstChild);
+		}
+
+		let secureLogins = service.secureLogins;
+		if (secureLogins) {
+			let menuitem = document.createElement("menuitem");
+			menuitem.setAttribute("class", "menuitem-iconic secureLoginUserIcon");
+			// Add a menuitem for each available user login:
+			for (let i = 0, l = secureLogins.length; i < l; i++) {
+				let username = service.getUsernameFromLoginObject(secureLogins[i].loginObject);
+				// Show form index?
+				if (service.showFormIndex) {
+					username += "  (" + secureLogins[i].formIndex + ")";
+				}
+				menuitem = menuitem.cloneNode(false);
+				menuitem.setAttribute("label", username);
+				menuitem.setAttribute("oncommand", "secureLogin.login(null, " + i + ", true);");
+				aPopup.appendChild(menuitem);
+			}
 		}
 	},
 
