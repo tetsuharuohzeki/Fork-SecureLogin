@@ -140,15 +140,15 @@ var secureLoginOverlay = {
 		}
 		else if (aTopic === this.service.obsTopic) {
 			switch (aData) {
-				case "showDoorHangerLogin":
+				case "showDoorhangerLogin":
 					if (aSubject.wrappedJSObject === window) {
-						this.showDoorHangerLogin();
+						this.showDoorhangerLogin();
 					}
 					break;
 				case "enableLoginButton":
 					if (aSubject.wrappedJSObject === window) {
 						this.enableLoginButton();
-						this.showDoorHangerLogin();
+						this.showDoorhangerLogin();
 					}
 					break;
 				case "disableLoginButton":
@@ -183,12 +183,12 @@ var secureLoginOverlay = {
 		this.javascriptProtectionUpdate();
 	},
 
-	showDoorHangerLogin: function () {
+	showDoorhangerLogin: function () {
 		let service = this.service;
 		let GetStringFromName = service.stringBundle.GetStringFromName;
 
 		let description = GetStringFromName("doorhangerDescription");
-		let dismissed   = service.showDoorHangerDismissed;
+		let dismissed   = service.showDoorhangerDismissed;
 
 		let mainAction = {
 			label    : GetStringFromName("doorhangerLoginLabel"),
