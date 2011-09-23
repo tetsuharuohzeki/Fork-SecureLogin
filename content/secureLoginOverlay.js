@@ -181,23 +181,24 @@ var secureLoginOverlay = {
 	showDoorHangerLogin: function () {
 		let service = this.service;
 		let GetStringFromName = this.service.stringBundle.GetStringFromName;
+
 		let description = GetStringFromName("doorhangerDescription");
-		let label       = GetStringFromName("doorhangerLabel");
-		let accessKey   = GetStringFromName("doorhangerAccessKey");
 		let dismissed   = service.showDoorHangerDismissed;
+
+		let mainAction = {
+			label    : GetStringFromName("doorhangerLoginLabel"),
+			accessKey: GetStringFromName("doorhangerLoginAccessKey"),
+			callback : function () {
+				secureLogin.login();
+			},
+		};
 
 		PopupNotifications.show(
 			gBrowser.selectedBrowser,
 			"securelogin-foundlogin",
 			description,
 			"password-notification-icon",
-			{
-				label    : label,
-				accessKey: accessKey,
-				callback : function () {
-					secureLogin.login();
-				},
-			},
+			mainAction,
 			null,
 			{
 				persistence        : 0,
