@@ -159,7 +159,6 @@ var secureLogin = {
 		else {
 			// Always highlight the Secure Login icons, when not searching for valid logins automatically:
 			this.notifyUpdateLoginButton(true);
-			this.notifyShowDoorHangerLogin();
 		}
 	},
 
