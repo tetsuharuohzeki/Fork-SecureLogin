@@ -284,45 +284,6 @@ var secureLoginOverlay = {
 		this.isShowUrlBarIcon = prefValue;
 	},
 
-	contextMenu: function (aEvent) {
-		this.menuPreparation('secureLoginContextAutofillFormsMenu');
-	},
-
-	toolsMenu: function (aEvent) {
-		this.menuPreparation('secureLoginToolsMenuAutofillFormsMenu');
-	},
-
-	buttonMenu: function (aEvent) {
-		this.menuPreparation('secureLoginButtonMenuAutofillFormsMenu');
-	},
-
-	menuPreparation: function (aAutofillFormsMenuID) {
-		let doc = this.service.getDoc();
-		let autofillFormsPopupMenu = this.autofillFormsPopupMenu;
-		let autofillFormsMenu = document.getElementById(aAutofillFormsMenuID);
-		let autofillFormsMenuSeparator = document.getElementById(aAutofillFormsMenuID + 'Separator');
-		if (this.service.prefs.getBoolPref('autofillFormsOnLogin') && autofillFormsPopupMenu) {
-			if (autofillFormsMenu && !autofillFormsMenu.hasChildNodes()) {
-				autofillFormsPopupMenu = autofillFormsPopupMenu.cloneNode(true);
-				autofillFormsPopupMenu.removeAttribute('position');
-				autofillFormsMenu.appendChild(autofillFormsPopupMenu);
-			}
-			if (autofillFormsMenu) {
-				autofillFormsMenu.removeAttribute('hidden');
-			}
-			if (autofillFormsMenuSeparator) {
-				autofillFormsMenuSeparator.removeAttribute('hidden');
-			}
-		} else {
-			if (autofillFormsMenu) {
-				autofillFormsMenu.setAttribute('hidden', 'true');
-			}
-			if (autofillFormsMenuSeparator) {
-				autofillFormsMenuSeparator.setAttribute('hidden', 'true');
-			}
-		}
-	},
-
 	clickHandler: function (aEvent) {
 		switch (aEvent.button) {
 			case 1:

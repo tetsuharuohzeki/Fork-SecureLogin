@@ -25,9 +25,6 @@
 			<preference id="javascriptProtection"
 			            name="extensions.secureLogin@blueimp.net.javascriptProtection"
 			            type="bool"/>
-			<preference id="autofillFormsOnLogin"
-			            name="extensions.secureLogin@blueimp.net.autofillFormsOnLogin"
-			            type="bool"/>
 		</preferences>
 		<vbox>
 			<groupbox>
@@ -54,12 +51,6 @@
 					        label="&showexceptions.label;"
 					        oncommand="secureLogin.showDialog('chrome://secureLogin/content/secureLoginExceptions.xul');"/>
 				</hbox>
-			</groupbox>
-			<separator class="thin"/>
-			<groupbox>
-				<caption label="&autofillformscaption.label;"/>
-				<checkbox label="&autofillformsonlogin.label;"
-				          preference="autofillFormsOnLogin"/>
 			</groupbox>
 		</vbox>
 	</prefpane>

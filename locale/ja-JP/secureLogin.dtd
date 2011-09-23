@@ -28,9 +28,6 @@
 <!ENTITY playLoginSound.label "ログインする時にサウンドを再生">
 <!ENTITY chooseFile.label "選択...">
 <!ENTITY playSound.label "再生">
-<!ENTITY autofillformscaption.label "Autofill Forms の統合">
-<!ENTITY autofillformsonlogin.label "ログイン時に追加のフォームフィールドへ自動的に入力">
-<!ENTITY autofillformsmenu.label "Autofill Forms">
 <!ENTITY exceptions.title "JavaScript プロテクションの例外サイト">
 <!ENTITY exceptions.label "以下のサイトでは JavaScript プロテクションを使用しない">
 <!ENTITY exceptionsitehead.label "サイト">
