@@ -117,10 +117,6 @@ var secureLoginOverlay = {
 		this.finalize();
 	},
 
-	// cache to preferences:
-	showDoorHanger: null,
-	showDoorHangerDismissed: null,
-
 	observe: function (aSubject, aTopic, aData) {
 		// Only observe preferences changes:
 		if (aTopic === 'nsPref:changed') {
@@ -131,10 +127,6 @@ var secureLoginOverlay = {
 					break;
 				case 'showToolsMenu':
 					this.showToolsMenuUpdate();
-					break;
-				case "showDoorHanger":
-				case "showDoorHanger.dismissed":
-					this.updateShowDoorhanger();
 					break;
 				case 'javascriptProtection':
 					this.javascriptProtectionUpdate();
@@ -183,7 +175,6 @@ var secureLoginOverlay = {
 
 		// Initialize toolbar and statusbar icons and tools and context menus:
 		this.showToolsMenuUpdate();
-		this.updateShowDoorhanger();
 		this.javascriptProtectionUpdate();
 	},
 
@@ -231,12 +222,6 @@ var secureLoginOverlay = {
 		if (loginButton) {
 			loginButton.setAttribute("disabled", "true");
 		}
-	},
-
-	updateShowDoorhanger: function () {
-		let pref = this.service.prefs;
-		this.showDoorHanger = pref.getBoolPref("showDoorHanger");
-		this.showDoorHangerDismissed = pref.getBoolPref("showDoorHanger.dismissed");
 	},
 
 	updateShortcut: function () {
