@@ -608,36 +608,38 @@ var secureLogin = {
 
 	_selectLoginAccount: function (aLoginIndex) {
 		let selectedIndex;
+		let secureLogins = this.secureLogins;
 		// Check if the loginIndex contains an index to select:
-		if ((typeof aLoginIndex != "undefined")
-		    && (!isNaN(parseInt(aLoginIndex)))
-		    && (aLoginIndex < this.secureLogins.length)
-		) {
+		if ( (typeof aLoginIndex != "undefined") &&
+		     (!isNaN(parseInt(aLoginIndex)))     &&
+		     (aLoginIndex < secureLogins.length) ) {
 			selectedIndex = aLoginIndex;
 		}
 		else {
-			let list = new Array(this.secureLogins.length);
-			for (let i = 0; i < this.secureLogins.length; i++) {
-				list[i] = this.getUsernameFromLoginObject(this.secureLogins[i].loginObject);
+			let GetStringFromName = this.stringBundle.GetStringFromName;
+
+			let selectionPrompt = GetStringFromName("loginSelectionPrompt");
+			if (this.showFormIndex) {
+				selectionPrompt += "  (" + GetStringFromName("formIndex") + ")";
+			}
+
+			let list = new Array(secureLogins.length);
+			for (let i = 0; i < secureLogins.length; i++) {
+				list[i] = this.getUsernameFromLoginObject(secureLogins[i].loginObject);
 				// Show form index?
 				if (this.showFormIndex) {
-					list[i] += '  (' + this.secureLogins[i].formIndex + ')';
+					list[i] += "  (" + secureLogins[i].formIndex + ")";
 				}
 			}
+
 			let selected = {};
-
-			let selectionPrompt = this.stringBundle.GetStringFromName('loginSelectionPrompt');
-			if (this.showFormIndex) {
-				selectionPrompt += '  (' + this.stringBundle.GetStringFromName('formIndex') + ')';
-			}
-
 			let ok = Services.prompt.select(
-				window,
-				this.stringBundle.GetStringFromName('loginSelectionWindowTitle'),
-				selectionPrompt + ':',
-				list.length,
-				list,
-				selected
+			    window,
+			    GetStringFromName("loginSelectionWindowTitle"),
+			    selectionPrompt + ":",
+			    list.length,
+			    list,
+			    selected
 			);
 
 			if (!ok) {
