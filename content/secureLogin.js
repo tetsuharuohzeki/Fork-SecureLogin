@@ -70,6 +70,7 @@ var secureLogin = {
 
 	// Variable to define if searching login form on load.
 	searchLoginsOnload: null,
+	skipDuplicateActionForms: null,
 
 	observe: function (aSubject, aTopic, aData) {
 		// Only observe preferences changes:
@@ -89,6 +90,9 @@ var secureLogin = {
 			case "exceptionList":
 				this.updateJSPExceptionsList();
 				break;
+			case "skipDuplicateActionForms"
+				this.skipDuplicateActionForms = this.prefs.getBoolPref(aData);
+				break;
 		}
 	},
 
@@ -104,6 +108,9 @@ var secureLogin = {
 		this.initializeSignonAutofillFormsStatus();
 
 		this.updateHighlightStyle();
+
+		// check & cache whether searching login skips duplicate action forms:
+		this.skipDuplicateActionForms = this.prefs.getBoolPref("skipDuplicateActionForms");
 
 		// Add the progress listener to the browser, set the Secure Login icons:
 		this.searchLoginsOnloadUpdate();
@@ -263,7 +270,7 @@ var secureLogin = {
 			let loginsCount = Services.logins.countLogins(host, "", null);
 			if (loginsCount > 0) {
 				let formURIs = new Array();
-				let isSkipDuplicateActionForms = this.prefs.getBoolPref('skipDuplicateActionForms');
+				let isSkipDuplicateActionForms = this.skipDuplicateActionForms;
 
  				// Go through the forms:
  				for (let i = 0; i < forms.length; i++) {
