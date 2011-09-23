@@ -107,7 +107,7 @@ var secureLoginExceprions = {
 		}
 
 		try {
-			let doc = this.service.getDoc();
+			let doc = this.service.getContentDocument();
 			// Set the textbox to the current host:
 			let textbox = this.addExceptionTextbox;
 			textbox.value = doc.location.protocol + '//' + doc.location.host;
