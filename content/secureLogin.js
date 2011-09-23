@@ -70,6 +70,7 @@ var secureLogin = {
 
 	// Variable to define if searching login form on load.
 	searchLoginsOnload: null,
+	skipDuplicateActionForms: null,
 
 	// cache to preferences about doorhanger notification:
 	showDoorHanger: null,
@@ -96,6 +97,9 @@ var secureLogin = {
 			case "showDoorHanger":
 			case "showDoorHanger.dismissed":
 				this.updateShowDoorhanger();
+				break
+			case "skipDuplicateActionForms"
+				this.skipDuplicateActionForms = this.prefs.getBoolPref(aData);
 				break;
 		}
 	},
@@ -115,6 +119,9 @@ var secureLogin = {
 
 		// cache preferences about doorhanger notification:
 		this.updateShowDoorhanger();
+
+		// check & cache whether searching login skips duplicate action forms:
+		this.skipDuplicateActionForms = this.prefs.getBoolPref("skipDuplicateActionForms");
 
 		// Add the progress listener to the browser, set the Secure Login icons:
 		this.searchLoginsOnloadUpdate();
@@ -292,7 +299,7 @@ var secureLogin = {
 			let loginsCount = Services.logins.countLogins(host, "", null);
 			if (loginsCount > 0) {
 				let formURIs = new Array();
-				let isSkipDuplicateActionForms = this.prefs.getBoolPref('skipDuplicateActionForms');
+				let isSkipDuplicateActionForms = this.skipDuplicateActionForms;
 
  				// Go through the forms:
  				for (let i = 0; i < forms.length; i++) {
@@ -470,80 +477,6 @@ var secureLogin = {
 		Services.obs.notifyObservers({ wrappedJSObject: subject, }, this.obsTopic, "showAndRemoveNotification");
 	},
 
-	get loginUserSelectionPopup () {
-		delete this.loginUserSelectionPopup;
-		return this.loginUserSelectionPopup = document.getElementById('secureLoginUserSelectionPopup');
-	},
-
-	userSelectionLogin: function (aEvent) {
-		if (aEvent.ctrlKey) {
-			this.masterSecurityDeviceLogout();
-			return;
-		}
-
-		// Search for valid logins and outline login fields if not done automatically:
-		if (!this.searchLoginsOnload) {
-			this.searchLoginsInitialize(null, false);
-		}
-
-		// Check for valid logins:
-		if (this.secureLogins && this.secureLogins.length > 0) {
-			if (this.secureLogins.length > 1) {
-				// Determine if no master password is set or the user has already been authenticated:
-				let masterPasswordRequired = true;
-				let token = this.masterSecurityDevice.getInternalKeyToken();
-				if (!token.needsLogin() || token.isLoggedIn()) {
-					masterPasswordRequired = false;
-				}
-				let popup = this.loginUserSelectionPopup;
-				if (popup && typeof popup.openPopup == 'function' && !masterPasswordRequired) {
-					try {
-						this.prepareUserSelectionPopup(popup);
-						// Show the popup menu (only available for Firefox >= 3):
-						popup.openPopup(aEvent.target, null, 0, 0, false, true);
-					}
-					catch (e) {
-						Components.utils.reportError(e);
-						// Decrypting failed
-						return;
-					}
-				}
-				else {
-					// Show a selection box instead of the popup menu:
-					this.login(null, null, true);
-				}
-			}
-			else {
-				// Just login with the single available username:
-				this.login(null, 0, true);
-			}
-		}
-	},
-
-	prepareUserSelectionPopup: function (aPopup) {
-		// Remove the old child nodes (should be already removed by the popuphiding event):
-		while (aPopup.hasChildNodes()) {
-			aPopup.removeChild(aPopup.firstChild);
-		}
-		let secureLogins = this.secureLogins;
-		if (secureLogins) {
-			let menuitem = document.createElement('menuitem');
-			menuitem.setAttribute('class','menuitem-iconic secureLoginUserIcon');
-			// Add a menuitem for each available user login:
-			for (let i = 0; i < secureLogins.length; i++) {
-				let username = this.getUsernameFromLoginObject(secureLogins[i].loginObject);
-				// Show form index?
-				if (this.showFormIndex) {
-					username += '  (' + this.secureLogins[i].formIndex + ')';
-				}
-				menuitem = menuitem.cloneNode(false);
-				menuitem.setAttribute('label',username);
-				menuitem.setAttribute('oncommand','secureLogin.login(null, '+i+', true);');
-				aPopup.appendChild(menuitem);
-			}
-		}
-	},
-
 	login: function(aWin, aLoginIndex, aSkipLoginSearch) {
 		if (!aWin || !aWin.document) {
 			aWin = this.getContentWindow();
@@ -637,36 +570,38 @@ var secureLogin = {
 
 	_selectLoginAccount: function (aLoginIndex) {
 		let selectedIndex;
+		let secureLogins = this.secureLogins;
 		// Check if the loginIndex contains an index to select:
-		if ((typeof aLoginIndex != "undefined")
-		    && (!isNaN(parseInt(aLoginIndex)))
-		    && (aLoginIndex < this.secureLogins.length)
-		) {
+		if ( (typeof aLoginIndex != "undefined") &&
+		     (!isNaN(parseInt(aLoginIndex)))     &&
+		     (aLoginIndex < secureLogins.length) ) {
 			selectedIndex = aLoginIndex;
 		}
 		else {
-			let list = new Array(this.secureLogins.length);
-			for (let i = 0; i < this.secureLogins.length; i++) {
-				list[i] = this.getUsernameFromLoginObject(this.secureLogins[i].loginObject);
+			let GetStringFromName = this.stringBundle.GetStringFromName;
+
+			let selectionPrompt = GetStringFromName("loginSelectionPrompt");
+			if (this.showFormIndex) {
+				selectionPrompt += "  (" + GetStringFromName("formIndex") + ")";
+			}
+
+			let list = new Array(secureLogins.length);
+			for (let i = 0; i < secureLogins.length; i++) {
+				list[i] = this.getUsernameFromLoginObject(secureLogins[i].loginObject);
 				// Show form index?
 				if (this.showFormIndex) {
-					list[i] += '  (' + this.secureLogins[i].formIndex + ')';
+					list[i] += "  (" + secureLogins[i].formIndex + ")";
 				}
 			}
+
 			let selected = {};
-
-			let selectionPrompt = this.stringBundle.GetStringFromName('loginSelectionPrompt');
-			if (this.showFormIndex) {
-				selectionPrompt += '  (' + this.stringBundle.GetStringFromName('formIndex') + ')';
-			}
-
 			let ok = Services.prompt.select(
-				window,
-				this.stringBundle.GetStringFromName('loginSelectionWindowTitle'),
-				selectionPrompt + ':',
-				list.length,
-				list,
-				selected
+			    window,
+			    GetStringFromName("loginSelectionWindowTitle"),
+			    selectionPrompt + ":",
+			    list.length,
+			    list,
+			    selected
 			);
 
 			if (!ok) {
