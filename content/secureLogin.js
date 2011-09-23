@@ -278,7 +278,7 @@ var secureLogin = {
 	},
 
 	searchLogins: function (aWin) {
-		let document = this.getDoc(aWin);
+		let document = this.getContentDocument(aWin);
 		let forms = document.forms;
 		let location = document.location;
 
@@ -518,23 +518,7 @@ var secureLogin = {
 				this.login(null, 0, true);
 			}
 		}
-		else {
-			// Autofill Forms integration (requires extension autofillForms@blueimp.net):
-			this.callAutoFillForms();
-		}
 	},
-
-	callAutoFillForms: function () {
-		if (this.prefs.getBoolPref('autofillFormsOnLogin')) {
-			try {
-				autofillForms.fillForms();
-			}
-			catch(e) {
-				Components.utils.reportError(e);
-			}
-		}
-	},
-
 
 	prepareUserSelectionPopup: function (aPopup) {
 		// Remove the old child nodes (should be already removed by the popuphiding event):
@@ -564,9 +548,6 @@ var secureLogin = {
 		if (!aWin || !aWin.document) {
 			aWin = this.getContentWindow();
 		}
-
-		// Autofill Forms integration (requires extension autofillForms@blueimp.net):
-		this.callAutoFillForms();
 
 		// Search for valid logins and outline login fields if not done automatically:
 		let isSearchLoginsOnload = this.searchLoginsOnload;
@@ -599,7 +580,7 @@ var secureLogin = {
 				}
 
 				// The document containing the form:
-				let document = this.getDoc(window);
+				let document = this.getContentDocument(window);
 				let location = document.location;
 
 				// The index for the form containing the login fields:
@@ -1025,7 +1006,7 @@ var secureLogin = {
 		let params = new Object();
 		try {
 			// Filter the passwords list with the current host as filterString:
-			params.filterString = this.getDoc().location.host;
+			params.filterString = this.getContentDocument().location.host;
 		}
 		catch (e) {
 			// Invalid location.host, e.g. about:config
@@ -1092,7 +1073,7 @@ var secureLogin = {
 		return this.stringBundle = Services.strings.createBundle("chrome://secureLogin/locale/secureLogin.properties");
 	},
 
-	getDoc: function(aWin) {
+	getContentDocument: function(aWin) {
 		if (aWin) {
 			return aWin.document;
 		}

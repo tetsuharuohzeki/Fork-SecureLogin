@@ -2,24 +2,16 @@
 <?xml-stylesheet href="chrome://secureLogin/skin/secureLogin.css" type="text/css"?>
 <!DOCTYPE overlay SYSTEM "chrome://secureLogin/locale/secureLogin.dtd">
 <overlay id="secureLogin" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	<script type="application/x-javascript"
+	<script type="application/javascript"
 	        src="chrome://secureLogin/content/secureLogin.js"></script>
-	<script type="application/x-javascript"
+	<script type="application/javascript"
 	        src="chrome://secureLogin/content/secureLoginOverlay.js"></script>
 	<menupopup id="menu_ToolsPopup">
 		<menu id="secureLoginToolsMenu"
 		      label="&toolsmenu.label;"
 		      class="menu-iconic secureLoginIcon"
 		      insertafter="webDeveloperMenu">
-			<menupopup id="secureLoginToolsMenuPopup"
-			           onpopupshowing="secureLoginOverlay.toolsMenu(event);">
-				<menu id="secureLoginToolsMenuAutofillFormsMenu"
-				      label="&autofillformsmenu.label;"
-				      class="menu-iconic autofillFormsIcon"
-				      hidden="true">
-				</menu>
-				<menuseparator id="secureLoginToolsMenuAutofillFormsMenuSeparator"
-				               hidden="true"/>
+			<menupopup id="secureLoginToolsMenuPopup">
 				<menuitem id="secureLoginOptionsToolsMenuItem"
 				          label="&menuoptions.label;"
 				          class="menuitem-iconic secureLoginSettingsIcon"
@@ -77,7 +69,6 @@
 				</box>
 			</tooltip>
 			<menupopup id="secureLoginContextmenu"
-			           onpopupshowing="secureLoginOverlay.contextMenu(event);"
 			           position="after_start">
 				<menu id="secureLoginContextAutofillFormsMenu"
 				      label="&autofillformsmenu.label;"

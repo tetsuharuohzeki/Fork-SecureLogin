@@ -28,9 +28,6 @@
 <!ENTITY playLoginSound.label "Play sound on login">
 <!ENTITY chooseFile.label "Choose...">
 <!ENTITY playSound.label "Play">
-<!ENTITY autofillformscaption.label "Autofill Forms Integration">
-<!ENTITY autofillformsonlogin.label "Fill out additional form fields automatically on login">
-<!ENTITY autofillformsmenu.label "Autofill Forms">
 <!ENTITY exceptions.title "JavaScript protection Exceptions">
 <!ENTITY exceptions.label "Websites, for which the JavaScript protection will not be used">
 <!ENTITY exceptionsitehead.label "Website">
