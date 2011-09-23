@@ -148,8 +148,4 @@
 	        src="chrome://secureLogin/content/secureLogin.js"></script>
 	<script type="application/javascript"
 	        src="chrome://secureLogin/content/secureLoginOptions.js"></script>
-	<stringbundleset id="stringbundleset">
-		<stringbundle id="secureLoginStringBundle"
-		               src="chrome://secureLogin/locale/secureLogin.properties"/>
-	</stringbundleset>
 </prefwindow>
