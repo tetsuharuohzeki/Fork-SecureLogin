@@ -2,9 +2,9 @@
 <?xml-stylesheet href="chrome://secureLogin/skin/secureLogin.css" type="text/css"?>
 <!DOCTYPE overlay SYSTEM "chrome://secureLogin/locale/secureLogin.dtd">
 <overlay id="secureLogin" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	<script type="application/x-javascript"
+	<script type="application/javascript"
 	        src="chrome://secureLogin/content/secureLogin.js"></script>
-	<script type="application/x-javascript"
+	<script type="application/javascript"
 	        src="chrome://secureLogin/content/secureLoginOverlay.js"></script>
 	<menupopup id="menu_ToolsPopup">
 		<menu id="secureLoginToolsMenu"
