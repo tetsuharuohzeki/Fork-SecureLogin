@@ -16,7 +16,7 @@
 <!ENTITY shortcutinfo.label "キーボードショートカットの変更は Firefox の再起動後に反映されます。">
 <!ENTITY viewcaption.label "表示">
 <!ENTITY showtoolsmenu.label "Secure Login を [ツール] メニューに表示する">
-<!ENTITY showDoorhangerLogin.label "ポップアップ通知を表示する">
+<!ENTITY showDoorhangerLogin.label "ポップアップ通知で Secure Login を表示する">
 <!ENTITY generalcaption.label "一般">
 <!ENTITY searchloginsonload.label "ログイン情報を入力するためのボックスを自動的に探し強調表示する">
 <!ENTITY skipduplicateactionforms.label "重複しているログインフォームを無視する">
