@@ -16,26 +16,26 @@
 				<menuitem id="secureLoginOptionsToolsMenuItem"
 				          label="&menuoptions.label;"
 				          class="menuitem-iconic secureLoginSettingsIcon"
-				          oncommand="secureLogin.showDialog('chrome://secureLogin/content/secureLoginOptions.xul');"/>
+				          oncommand="SecureLogin.showDialog('chrome://secureLogin/content/secureLoginOptions.xul');"/>
 				<menuseparator/>
 				<menuitem id="secureLoginJavascriptProtectionToolsMenuItem"
 				          observes="secureLoginJavascriptProtection"/>
 				<menuitem id="secureLoginExceptionsToolsMenuItem"
 				          label="&menuexceptions.label;"
-				          oncommand="secureLogin.showDialog('chrome://secureLogin/content/secureLoginExceptions.xul');"/>
+				          oncommand="SecureLogin.showDialog('chrome://secureLogin/content/secureLoginExceptions.xul');"/>
 				<menuseparator/>
 				<menuitem id="secureLoginPasswordsToolsMenuItem"
 				          label="&menupasswords.label;"
-				          oncommand="secureLogin.showPasswordManager();"/>
+				          oncommand="SecureLogin.showPasswordManager();"/>
 				<menuitem id="secureLoginPasswordsExceptionsToolsMenuItem"
 				          class="minVersion2"
 				          label="&menupassexceptions.label;"
-				          oncommand="secureLogin.showDialog('chrome://passwordmgr/content/passwordManagerExceptions.xul');"/>
+				          oncommand="SecureLogin.showDialog('chrome://passwordmgr/content/passwordManagerExceptions.xul');"/>
 				<menuseparator/>
 				<menuitem id="secureLoginHelpToolsMenuItem"
 				          label="&help.label;"
 				          class="menuitem-iconic secureLoginHelpIcon"
-				          oncommand="secureLogin.openHelp();"/>
+				          oncommand="SecureLogin.openHelp();"/>
 			</menupopup>
 		</menu>
 	</menupopup>
@@ -74,26 +74,26 @@
 				<menuitem id="secureLoginOptionsContextItem"
 				          label="&menuoptions.label;"
 				          class="menuitem-iconic secureLoginSettingsIcon"
-				          oncommand="secureLogin.showDialog('chrome://secureLogin/content/secureLoginOptions.xul');"/>
+				          oncommand="SecureLogin.showDialog('chrome://secureLogin/content/secureLoginOptions.xul');"/>
 				<menuseparator/>
 				<menuitem id="secureLoginJavascriptProtectionContextItem"
 				          observes="secureLoginJavascriptProtection"/>
 				<menuitem id="secureLoginExceptionsContextItem"
 				          label="&menuexceptions.label;"
-				          oncommand="secureLogin.showDialog('chrome://secureLogin/content/secureLoginExceptions.xul');"/>
+				          oncommand="SecureLogin.showDialog('chrome://secureLogin/content/secureLoginExceptions.xul');"/>
 				<menuseparator/>
 				<menuitem id="secureLoginPasswordsContextItem"
 				          label="&menupasswords.label;"
-				          oncommand="secureLogin.showPasswordManager();"/>
+				          oncommand="SecureLogin.showPasswordManager();"/>
 				<menuitem id="secureLoginPasswordsExceptionsContextItem"
 				          class="minVersion2"
 				          label="&menupassexceptions.label;"
-				          oncommand="secureLogin.showDialog('chrome://passwordmgr/content/passwordManagerExceptions.xul');"/>
+				          oncommand="SecureLogin.showDialog('chrome://passwordmgr/content/passwordManagerExceptions.xul');"/>
 				<menuseparator/>
 				<menuitem id="secureLoginHelpContextItem"
 				          label="&help.label;"
 				          class="menuitem-iconic secureLoginHelpIcon"
-				          oncommand="secureLogin.openHelp();"/>
+				          oncommand="SecureLogin.openHelp();"/>
 			</menupopup>
 			<menupopup id="secureLoginUserSelectionPopup"
 			           position="after_start"
@@ -102,7 +102,7 @@
 	</popupset>
 	<commandset id="mainCommandSet">
 		<command id="secureLogin"
-		         oncommand="secureLogin.login();"/>
+		         oncommand="SecureLogin.login();"/>
 	</commandset>
 	<keyset id="mainKeyset">
 		<key id="secureLoginShortCut"
@@ -131,7 +131,7 @@
 		<image id="secureLogin-urlbar-button"
 		       class="urlbar-icon"
 		       insertbefore="page-report-button"
-		       onclick="secureLogin.login();"/>
+		       onclick="SecureLogin.login();"/>
 	</hbox>
 
 </overlay>

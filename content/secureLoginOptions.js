@@ -9,7 +9,7 @@ var secureLoginOptions = {
 
 	get service() {
 		delete this.service;
-		return this.service = secureLogin;
+		return this.service = SecureLogin;
 	},
 
 	handleEvent: function (aEvent) {

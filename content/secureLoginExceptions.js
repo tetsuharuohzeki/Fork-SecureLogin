@@ -9,7 +9,7 @@ var secureLoginExceprions = {
 
 	get service() {
 		delete this.service;
-		return this.service = secureLogin;
+		return this.service = SecureLogin;
 	},
 
 	get addExceptionTextbox () {

@@ -7,7 +7,7 @@
  */
 Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
-var secureLogin = {
+var SecureLogin = {
 
 	obsTopic: "securelogin",
 

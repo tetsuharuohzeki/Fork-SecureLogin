@@ -6,7 +6,7 @@
             id="secureLoginExceptions"
             title="&exceptions.title;"
             buttons="accept,cancel,help"
-            ondialoghelp="secureLogin.openHelp(event.target.currentPane.helpTopic);"
+            ondialoghelp="SecureLogin.openHelp(event.target.currentPane.helpTopic);"
             persist="screenX screenY">
 	<prefpane id="secureLoginExceptionsPane"
 	          label="&exceptions.title;"

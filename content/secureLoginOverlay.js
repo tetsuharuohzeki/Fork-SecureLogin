@@ -14,7 +14,7 @@ var secureLoginOverlay = {
 
 	get service() {
 		delete this.service;
-		return this.service = secureLogin;
+		return this.service = SecureLogin;
 	},
 
 	get secureLoginButton () {
@@ -515,7 +515,7 @@ var secureLoginOverlay = {
 				}
 				menuitem = menuitem.cloneNode(false);
 				menuitem.setAttribute("label", username);
-				menuitem.setAttribute("oncommand", "secureLogin.login(null, " + i + ", true);");
+				menuitem.setAttribute("oncommand", "SecureLogin.login(null, " + i + ", true);");
 				aPopup.appendChild(menuitem);
 			}
 		}
