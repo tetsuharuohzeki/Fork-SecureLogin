@@ -193,7 +193,7 @@ var SecureLoginOverlay = {
 			label    : GetStringFromName("doorhangerLoginLabel"),
 			accessKey: GetStringFromName("doorhangerLoginAccessKey"),
 			callback : function () {
-				secureLogin.login();
+				SecureLogin.login();
 			},
 		};
 
