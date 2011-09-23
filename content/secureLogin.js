@@ -384,26 +384,21 @@ var secureLogin = {
 
 	addToFoundLoginsList: function (aFoundLogin) {
 		// Lazy initialization of the logins and helper lists:
-		if (!(this.secureLogins instanceof Array)) {
-			// New valid logins list:
-			this.secureLogins = new Array();
-		}
+		let secureLogins = (this.secureLogins instanceof Array) ?
+		                   this.secureLogins : [];
 
-		let loginIndex = this.secureLogins.length;
+		let loginIndex = secureLogins.length;
 
 		// Test if there is only one valid login form:
-		let isInArray = this.secureLogins.some(function(aElm){
+		let isInArray = secureLogins.some(function(aElm){
 			return (aElm.formIndex === aFoundLogin.formIndex);
 		});
-		if (!this.showFormIndex
-		    && (loginIndex > 0)
-		    && !isInArray
-		) {
+		if (!this.showFormIndex && (loginIndex > 0) && !isInArray) {
 			this.showFormIndex = true;
 		}
 
 		// Save the login in the valid logins list:
-		this.secureLogins[loginIndex] = {
+		secureLogins[loginIndex] = {
 			loginObject    : aFoundLogin.loginObject,
 			formIndex      : aFoundLogin.formIndex,
 			window         : aFoundLogin.window,
@@ -411,6 +406,8 @@ var secureLogin = {
 			passwordField  : aFoundLogin.passwordField,
 			actionURI      : aFoundLogin.actionURIStr,
 		};
+
+		this.secureLogins = secureLogins;
 	},
 
 	highlightLoginFields: function (aUsernameField, aPasswordField) {
