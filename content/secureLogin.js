@@ -384,7 +384,7 @@ var secureLogin = {
 
 	addToFoundLoginsList: function (aFoundLogin) {
 		// Lazy initialization of the logins and helper lists:
-		if (!this.secureLogins) {
+		if (!(this.secureLogins instanceof Array)) {
 			// New valid logins list:
 			this.secureLogins = new Array();
 		}
