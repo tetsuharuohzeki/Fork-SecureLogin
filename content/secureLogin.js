@@ -90,7 +90,7 @@ var secureLogin = {
 			case "exceptionList":
 				this.updateJSPExceptionsList();
 				break;
-			case "skipDuplicateActionForms"
+			case "skipDuplicateActionForms":
 				this.skipDuplicateActionForms = this.prefs.getBoolPref(aData);
 				break;
 		}
