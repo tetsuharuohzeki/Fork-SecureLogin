@@ -5,7 +5,7 @@
  * @license GNU General Public License
  * @link https://blueimp.net/mozilla/
  */
-var secureLoginExceprions = {
+var SecureLoginExceprions = {
 
 	get service() {
 		delete this.service;
@@ -316,4 +316,4 @@ var secureLoginExceprions = {
 	},
 
 };
-window.addEventListener("load", secureLoginExceprions, false);
+window.addEventListener("load", SecureLoginExceprions, false);
