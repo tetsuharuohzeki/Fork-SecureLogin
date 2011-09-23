@@ -161,13 +161,21 @@ var SecureLoginOverlay = {
 			},
 		};
 
+		let exceptionsAction = {
+			label    : GetStringFromName("doorhangerExceptionsLabel"),
+			accessKey: GetStringFromName("doorhangerExceptionsAccessKey"),
+			callback : function () {
+				SecureLogin.showDialog("chrome://secureLogin/content/secureLoginExceptions.xul");
+			},
+		};
+
 		PopupNotifications.show(
 			gBrowser.selectedBrowser,
 			"securelogin-foundlogin",
 			description,
 			"password-notification-icon",
 			mainAction,
-			null,
+			[exceptionsAction],
 			{
 				persistence        : 0,
 				timeout            : null,
