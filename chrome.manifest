@@ -1,13 +1,15 @@
+# packages
 content     securelogin                     content/
-
-locale      securelogin     en-US           locale/en-US/
-locale      securelogin     ja-JP           locale/ja-JP/
-
 skin        securelogin     classic/1.0     skin/classic/WINNT/ os=WINNT
 skin        securelogin     classic/1.0     skin/classic/Darwin/ os=Darwin
 skin        securelogin     classic/1.0     skin/classic/Linux/ os=Linux
 
+# locales
+locale      securelogin     en-US           locale/en-US/
+locale      securelogin     ja-JP           locale/ja-JP/
 
-overlay     chrome://browser/content/browser.xul                    chrome://securelogin/content/secureLoginOverlay.xul
+# overlay
+overlay     chrome://browser/content/browser.xul          chrome://securelogin/content/secureLoginOverlay.xul
 
-style       chrome://global/content/customizeToolbar.xul            chrome://securelogin/skin/secureLogin.css
+# style
+style       chrome://global/content/customizeToolbar.xul  chrome://securelogin/skin/secureLogin.css
