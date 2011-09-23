@@ -185,7 +185,7 @@ var secureLoginOverlay = {
 
 	showDoorHangerLogin: function () {
 		let service = this.service;
-		let GetStringFromName = this.service.stringBundle.GetStringFromName;
+		let GetStringFromName = service.stringBundle.GetStringFromName;
 
 		let description = GetStringFromName("doorhangerDescription");
 		let dismissed   = service.showDoorHangerDismissed;
