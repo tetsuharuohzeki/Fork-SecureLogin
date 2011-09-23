@@ -73,8 +73,8 @@ var secureLogin = {
 	skipDuplicateActionForms: null,
 
 	// cache to preferences about doorhanger notification:
-	showDoorhanger: null,
-	showDoorhangerDismissed: null,
+	showDoorhangerLogin: null,
+	showDoorhangerLoginDismissed: null,
 
 	observe: function (aSubject, aTopic, aData) {
 		// Only observe preferences changes:
@@ -94,8 +94,8 @@ var secureLogin = {
 			case "exceptionList":
 				this.updateJSPExceptionsList();
 				break;
-			case "showDoorhanger":
-			case "showDoorhanger.dismissed":
+			case "showDoorhangerLogin":
+			case "showDoorhangerLogin.dismissed":
 				this.updateShowDoorhanger();
 				break
 			case "skipDuplicateActionForms":
@@ -190,7 +190,7 @@ var secureLogin = {
 	},
 
 	notifyShowDoorHangerLogin: function () {
-		if (this.showDoorhanger) {
+		if (this.showDoorhangerLogin) {
 			this._notifyUpdateLoginIcon("showDoorhangerLogin");
 		}
 	},
@@ -202,8 +202,8 @@ var secureLogin = {
 
 	updateShowDoorhanger: function () {
 		let pref = this.prefs;
-		this.showDoorhanger = pref.getBoolPref("showDoorhanger");
-		this.showDoorhangerDismissed = pref.getBoolPref("showDoorhanger.dismissed");
+		this.showDoorhangerLogin = pref.getBoolPref("showDoorhangerLogin");
+		this.showDoorhangerLoginDismissed = pref.getBoolPref("showDoorhangerLogin.dismissed");
 	},
 
 	updateHighlightStyle: function () {

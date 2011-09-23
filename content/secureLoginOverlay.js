@@ -187,7 +187,7 @@ var secureLoginOverlay = {
 		let GetStringFromName = service.stringBundle.GetStringFromName;
 
 		let description = GetStringFromName("doorhangerDescription");
-		let dismissed   = service.showDoorhangerDismissed;
+		let dismissed   = service.showDoorhangerLoginDismissed;
 
 		let mainAction = {
 			label    : GetStringFromName("doorhangerLoginLabel"),

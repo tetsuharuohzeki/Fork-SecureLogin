@@ -115,8 +115,8 @@
 			<preference id="showToolsMenu"
 			            name="extensions.secureLogin@blueimp.net.showToolsMenu"
 			            type="bool"/>
-			<preference id="showDoorhanger"
-			            name="extensions.secureLogin@blueimp.net.showDoorhanger"
+			<preference id="showDoorhangerLogin"
+			            name="extensions.secureLogin@blueimp.net.showDoorhangerLogin"
 			            type="bool"/>
 		</preferences>
 		<vbox>
@@ -139,8 +139,8 @@
 				<caption label="&viewcaption.label;"/>
 				<checkbox label="&showtoolsmenu.label;"
 				          preference="showToolsMenu"/>
-				<checkbox label="&showDoorhanger.label;"
-				          preference="showDoorhanger"/>
+				<checkbox label="&showDoorhangerLogin.label;"
+				          preference="showDoorhangerLogin"/>
 			</groupbox>
 			<separator class="thin"/>
 		</vbox>
