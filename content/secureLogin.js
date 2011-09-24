@@ -243,7 +243,6 @@ var SecureLogin = {
 
 	updateLoginsFoundStatus: function () {
 		let secureLogins = this.secureLogins;
-		let subject = { wrappedJSObject: window };
 		if (secureLogins && secureLogins.length > 0) {
 			this.notifyUpdateLoginButton(true);
 			// Play sound notification:
