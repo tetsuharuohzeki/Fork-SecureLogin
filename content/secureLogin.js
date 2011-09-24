@@ -651,6 +651,10 @@ var SecureLogin = {
 					break;
 				case 'submit':
 					// Only add first submit button:
+					// The current implementation of nsILoginInfo does not have
+					// identifying data of submit element in login form.
+					// So it regards a first submit button as a login button 
+					// according to use-case.
 					if (!submitButtonFound) {
 						addToDataString(element.name, element.value);
 						submitButtonFound = true;
@@ -737,6 +741,10 @@ var SecureLogin = {
 			for (let i = 0; i < elements.length; i++) {
 				let element = elements[i];
 				// auto-login by clicking on the submit button:
+				// The current implementation of nsILoginInfo does not have
+				// identifying data of submit element in login form.
+				// So it uses a first submit button which is regards as a login button 
+				// according to use-case.
 				if (element.type == "submit" || element.type == "image") {
 					element.click();
 					submitted = true;
