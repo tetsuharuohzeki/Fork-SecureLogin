@@ -55,7 +55,7 @@ var SecureLogin = {
 	// Variable to define if the progress listener has been registered to the browser:
 	isProgressListenerRegistered: null,
 	// Helper var to remember original autofillForms setting (this has nothing to to with the extension autofillForms@blueimp.net:
-	autofillForms: null,
+	modify_signon_autofillForms: null,
 	// Valid logins list:
 	secureLogins: null,
 	// Defines if form index is to be shown in selection prompt:
@@ -122,10 +122,10 @@ var SecureLogin = {
 			let rootPrefBranch = Services.prefs.getBranch('');
 			if (rootPrefBranch.getBoolPref('signon.autofillForms')) {
 				rootPrefBranch.setBoolPref('signon.autofillForms', false);
-				this.autofillForms = true;
+				this.modify_signon_autofillForms = true;
 			}
 			else {
-				this.autofillForms = false;
+				this.modify_signon_autofillForms = false;
 			}
 		}
 		catch (e) {
@@ -1050,7 +1050,7 @@ var SecureLogin = {
 	finalizeSignonAutofillFormsStatus: function () {
 		// Re-enable the prefilling of login forms if setting has been true:
 		try {
-			if(this.autofillForms) {
+			if(this.modify_signon_autofillForms) {
 				Services.prefs.getBranch('').setBoolPref('signon.autofillForms', true);
 			}
 		}
