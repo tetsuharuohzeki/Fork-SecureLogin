@@ -943,7 +943,7 @@ var SecureLogin = {
 	},
 
 	urlEncode: function (aString, aCharset) {
-		if(aCharset == 'UTF-8') {
+		if(aCharset.toUpperCase() == "UTF-8") {
 			// encodeURIComponent encodes the strings by using escape sequences
 			// representing the UTF-8 encoding of the character:
 			return encodeURIComponent(aString);
