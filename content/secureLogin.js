@@ -243,6 +243,7 @@ var SecureLogin = {
 		if (aWin.frameElement && this.secureLogins) {
 			// If aWin is embedded window into an element,
 			// this part removes the embeded or closed window from logins of all remaining windows:
+			// This block runs when reload the page that is child frame:
 			for (let i = 0, secureLogins = this.secureLogins; i < secureLogins.length; ++i) {
 				let window = secureLogins[i].window;
 				// Remove the window from list
@@ -658,10 +659,10 @@ var SecureLogin = {
 			switch (element.type) {
 				case 'password':
 					// This is the password field - use the saved password as value:
-					addToDataString(
-					  passwordField.name,
-					  this.getPasswordFromLoginObject(loginObject)
-					);
+					if (passwordField && element.name == passwordField.name) {
+						let pass = this.getPasswordFromLoginObject(loginObject);
+						addToDataString(passwordField.name, pass);
+					}
 					break;
 				case 'select-multiple':
 					for (let j = 0; j < element.options.length; j++) {
@@ -678,21 +679,23 @@ var SecureLogin = {
 					break;
 				case 'submit':
 					// Only add first submit button:
+					// The current implementation of nsILoginInfo does not have
+					// identifying data of submit element in login form.
+					// So it regards a first submit button as a login button 
+					// according to use-case.
 					if (!submitButtonFound) {
 						addToDataString(element.name, element.value);
 						submitButtonFound = true;
 					}
 					break;
 				default:
-					if (!usernameField || element.name != usernameField.name) {
-						addToDataString(element.name, element.value);
+					if (usernameField && element.name == usernameField.name) {
+						// This is the userName field - use the saved username as value:
+						let user = this.getUsernameFromLoginObject(loginObject);
+						addToDataString(usernameField.name, user);
 					}
 					else {
-						// This is the userName field - use the saved username as value:
-						addToDataString(
-						  usernameField.name,
-						  this.getUsernameFromLoginObject(loginObject)
-						);
+						addToDataString(element.name, element.value);
 					}
 					break;
 			}
@@ -766,6 +769,10 @@ var SecureLogin = {
 			for (let i = 0; i < elements.length; i++) {
 				let element = elements[i];
 				// auto-login by clicking on the submit button:
+				// The current implementation of nsILoginInfo does not have
+				// identifying data of submit element in login form.
+				// So it uses a first submit button which is regards as a login button 
+				// according to use-case.
 				if (element.type == "submit" || element.type == "image") {
 					element.click();
 					submitted = true;
@@ -971,7 +978,7 @@ var SecureLogin = {
 	},
 
 	urlEncode: function (aString, aCharset) {
-		if(aCharset == 'UTF-8') {
+		if(aCharset.toUpperCase() == "UTF-8") {
 			// encodeURIComponent encodes the strings by using escape sequences
 			// representing the UTF-8 encoding of the character:
 			return encodeURIComponent(aString);
