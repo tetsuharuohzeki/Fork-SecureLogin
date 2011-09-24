@@ -352,7 +352,7 @@ var SecureLoginOverlay = {
 		let service = this.service;
 		// Search for valid logins and outline login fields if not done automatically:
 		if (!service.searchLoginsOnload) {
-			service.searchLoginsInitialize(null, false);
+			service.initializeSearchLogins(null, false);
 		}
 
 		// hidden both boxes in tooltip:
@@ -445,7 +445,7 @@ var SecureLoginOverlay = {
 
 		// Search for valid logins and outline login fields if not done automatically:
 		if (!service.searchLoginsOnload) {
-			service.searchLoginsInitialize(null, false);
+			service.initializeSearchLogins(null, false);
 		}
 
 		// Check for valid logins:
