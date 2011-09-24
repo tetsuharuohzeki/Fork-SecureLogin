@@ -216,6 +216,7 @@ var SecureLogin = {
 		if (aWin.frameElement && this.secureLogins) {
 			// If aWin is embedded window into an element,
 			// this part removes the embeded or closed window from logins of all remaining windows:
+			// This block runs when reload the page that is child frame:
 			for (let i = 0, secureLogins = this.secureLogins; i < secureLogins.length; ++i) {
 				let window = secureLogins[i].window;
 				// Remove the window from list
