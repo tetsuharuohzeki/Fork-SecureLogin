@@ -631,10 +631,10 @@ var SecureLogin = {
 			switch (element.type) {
 				case 'password':
 					// This is the password field - use the saved password as value:
-					addToDataString(
-					  passwordField.name,
-					  this.getPasswordFromLoginObject(loginObject)
-					);
+					if (passwordField && element.name == passwordField.name) {
+						let pass = this.getPasswordFromLoginObject(loginObject);
+						addToDataString(passwordField.name, pass);
+					}
 					break;
 				case 'select-multiple':
 					for (let j = 0; j < element.options.length; j++) {
@@ -657,15 +657,13 @@ var SecureLogin = {
 					}
 					break;
 				default:
-					if (!usernameField || element.name != usernameField.name) {
-						addToDataString(element.name, element.value);
+					if (usernameField && element.name == usernameField.name) {
+						// This is the userName field - use the saved username as value:
+						let user = this.getUsernameFromLoginObject(loginObject);
+						addToDataString(usernameField.name, user);
 					}
 					else {
-						// This is the userName field - use the saved username as value:
-						addToDataString(
-						  usernameField.name,
-						  this.getUsernameFromLoginObject(loginObject)
-						);
+						addToDataString(element.name, element.value);
 					}
 					break;
 			}
