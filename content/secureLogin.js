@@ -699,7 +699,8 @@ var SecureLogin = {
 	},
 
 	_sendLoginDataWithJSP: function (aFormMethod, aUrl, aDataStr, aReferrer) {
-		if (aFormMethod && aFormMethod.toLowerCase() === "get") {
+		let method = aFormMethod.toLowerCase();
+		if (method === "get") {
 			// Add the parameter list to the url, remove existing parameters:
 			let paramIndex = aUrl.indexOf("?");
 			if (paramIndex === -1) {
@@ -711,11 +712,16 @@ var SecureLogin = {
 			// Load the url in the current window (params are url, referrer and post data):
 			loadURI(aUrl, aReferrer, null);
 		}
-		else {
+		else if (method === "post") {
 			// Create post data mime stream (params are aStringData, aKeyword, aEncKeyword, aType):
 			let postData = getPostDataStream(aDataStr, "", "", "application/x-www-form-urlencoded");
 			// Load the url in the current window (params are url, referrer and post data):
 			loadURI(aUrl, aReferrer, postData);
+		}
+		else {
+			let message = "Failed Secure Login. HTTP " + method +
+			              " method is not supported by Secure Login";
+			Components.utils.reportError(message);
 		}
 	},
 
