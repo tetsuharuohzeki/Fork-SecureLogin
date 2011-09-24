@@ -48,7 +48,7 @@ var SecureLogin = {
 	updateStatus: function (aProgress, aRequest, aLocation, aFlag, aStatus) {
 		if (this.searchLoginsOnload) {
 			// Initialize the recursive search for logins on the current window:
-			this.searchLoginsInitialize(aProgress.DOMWindow, true);
+			this.initializeSearchLogins(aProgress.DOMWindow, true);
 		}
 	},
 
@@ -79,7 +79,7 @@ var SecureLogin = {
 		}
 		switch (aData) {
 			case 'searchLoginsOnload':
-				this.searchLoginsOnloadUpdate();
+				this.updateSearchLoginsOnload();
 				break;
 			case 'highlightColor':
 			case "highlightOutlineWidth":
@@ -113,7 +113,7 @@ var SecureLogin = {
 		this.skipDuplicateActionForms = this.prefs.getBoolPref("skipDuplicateActionForms");
 
 		// Add the progress listener to the browser, set the Secure Login icons:
-		this.searchLoginsOnloadUpdate();
+		this.updateSearchLoginsOnload();
 	},
 
 	initializeSignonAutofillFormsStatus: function () {
@@ -133,17 +133,17 @@ var SecureLogin = {
 		}
 	},
 
-	searchLoginsOnloadUpdate: function () {
+	updateSearchLoginsOnload: function () {
 		let isSearchLoginsOnload = this.prefs.getBoolPref("searchLoginsOnload");
 
 		// set internal variable:
 		this.searchLoginsOnload = isSearchLoginsOnload;
 
-		this.progressListenerUpdate(isSearchLoginsOnload);
+		this.updateProgressListener(isSearchLoginsOnload);
 
 		if (isSearchLoginsOnload) {
 			// Search for valid logins and outline login fields:
-			this.searchLoginsInitialize(null, true);
+			this.initializeSearchLogins(null, true);
 		}
 		else {
 			// Always highlight the Secure Login icons, when not searching for valid logins automatically:
@@ -151,7 +151,7 @@ var SecureLogin = {
 		}
 	},
 
-	progressListenerUpdate: function (aIsSearchLoginsOnload) {
+	updateProgressListener: function (aIsSearchLoginsOnload) {
 		if (!aIsSearchLoginsOnload) {
 			// Remove the listener from the browser object (if added previously):
 			try {
@@ -208,7 +208,7 @@ var SecureLogin = {
 		}
 	},
 
-	searchLoginsInitialize: function (aWin, aUpdateStatus) {
+	initializeSearchLogins: function (aWin, aUpdateStatus) {
 		if (!aWin) {
 			aWin = this.getContentWindow();
 		}
@@ -453,7 +453,7 @@ var SecureLogin = {
 		// Search for valid logins and outline login fields if not done automatically:
 		let isSearchLoginsOnload = this.searchLoginsOnload;
 		if (!isSearchLoginsOnload && !aSkipLoginSearch) {
-			this.searchLoginsInitialize(aWin, false);
+			this.initializeSearchLogins(aWin, false);
 		}
 
 		// Check for valid logins:
