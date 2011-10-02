@@ -213,22 +213,8 @@ var SecureLogin = {
 			aWin = this.getContentWindow();
 		}
 
-		if (aWin.frameElement && this.secureLogins) {
-			// If aWin is embedded window into an element,
-			// this part removes the embeded or closed window from logins of all remaining windows:
-			// This block runs when reload the page that is child frame:
-			for (let i = 0, secureLogins = this.secureLogins; i < secureLogins.length; ++i) {
-				let window = secureLogins[i].window;
-				// Remove the window from list
-				// if the window is this frame window or has closed already:
-				if (window === aWin || window.closed) {
-					secureLogins.splice(i, 1);
-				}
-			}
-		} else {
-			// Reset the found logins and helper lists:
-			this.secureLogins = null;
-		}
+		// Reset the found logins and helper lists:
+		this.secureLogins = null;
 
 		// Show form index only if more than one valid login form is found:
 		this.showFormIndex = false;
@@ -332,11 +318,6 @@ var SecureLogin = {
 					}
 				}
 			}
-		}
-
-		// Recursive call for all subframes:
-		for (let f=0; f < aWin.frames.length; f++) {
-			this.searchLogins(aWin.frames[f]);
 		}
 	},
 
