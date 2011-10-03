@@ -227,28 +227,16 @@ var SecureLogin = {
 			aWin = this.getContentWindow();
 		}
 
-		if (aWin.frameElement && this.secureLogins) {
-			// If aWin is internal window in document, for example <iframe> element,
-			// This part removes the embeded or closed window from logins of all remaining windows.
-			// This block runs when load the page that is child frame:
-			for (let i = 0, secureLogins = this.secureLogins; i < secureLogins.length; ++i) {
-				let window = secureLogins[i].window;
-				// Remove the window from list
-				// if the window is this frame window or has closed already:
-				if (window === aWin || window.closed) {
-					secureLogins.splice(i, 1);
-				}
-			}
-		} else {
+		if (!aWin.frameElement) {
 			// Reset the found logins and helper lists:
 			this.secureLogins = null;
+
+			// Show form index only if more than one valid login form is found:
+			this.showFormIndex = false;
+
+			// Search for valid logins on the given window:
+			this.searchLogins(aWin);
 		}
-
-		// Show form index only if more than one valid login form is found:
-		this.showFormIndex = false;
-
-		// Search for valid logins on the given window:
-		this.searchLogins(aWin);
 
 		if (aUpdateStatus) {
 			this.updateLoginsFoundStatus();
