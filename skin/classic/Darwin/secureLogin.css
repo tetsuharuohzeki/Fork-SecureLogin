@@ -2,9 +2,6 @@
 #secureLoginButton {
 	list-style-image: url("login.png");
 }
-#secureLogin-urlbar-button {
-	list-style-image: url("login.png");
-}
 
 /* doorhanger notification */
 .popup-notification-icon[popupid="securelogin-foundlogin"] {
