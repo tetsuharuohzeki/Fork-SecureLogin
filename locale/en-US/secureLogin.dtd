@@ -19,7 +19,7 @@
 <!ENTITY generalcaption.label "General">
 <!ENTITY searchloginsonload.label "Automatically search for login data and highlight form fields">
 <!ENTITY skipduplicateactionforms.label "Skip duplicate login forms">
-<!ENTITY autosubmitform.label "Submit login form automatically">
+<!ENTITY autosubmitform.label "Submit login data automatically even if do not use JS protection">
 <!ENTITY javascriptprotection.label "Activate JavaScript protection on login">
 <!ENTITY showexceptions.label "Exceptions...">
 <!ENTITY soundcaption.label "Sounds">

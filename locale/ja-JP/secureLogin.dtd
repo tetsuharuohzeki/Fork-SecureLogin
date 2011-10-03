@@ -19,7 +19,7 @@
 <!ENTITY generalcaption.label "一般">
 <!ENTITY searchloginsonload.label "ログイン情報を入力するためのボックスを自動的に探し強調表示する">
 <!ENTITY skipduplicateactionforms.label "重複しているログインフォームを無視する">
-<!ENTITY autosubmitform.label "自動的にログイン">
+<!ENTITY autosubmitform.label "JavaScript プロテクションを使わない場合も自動的にログインする">
 <!ENTITY javascriptprotection.label "ログイン時に JavaScript プロテクションを使用">
 <!ENTITY showexceptions.label "例外サイト...">
 <!ENTITY soundcaption.label "サウンド">
