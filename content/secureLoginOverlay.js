@@ -273,7 +273,7 @@ var SecureLoginOverlay = {
 		let urlbarIcon = this.secureLoginUrlbarIcon;
 		if (urlbarIcon) {
 			if (prefValue) {
-				let hasLogin = ( service.secureLogins && (service.secureLogins.length > 0) ) ?
+				let hasLogin = (service.secureLogins.length > 0) ?
 				               true : false;
 				if (hasLogin) {
 					urlbarIcon.removeAttribute("hidden");
@@ -380,7 +380,7 @@ var SecureLoginOverlay = {
 			}
 
 			let secureLogins = service.secureLogins;
-			if (secureLogins && secureLogins.length > 0) {
+			if (secureLogins.length > 0) {
 
 				// Hash list of unique action urls and number of logins:
 				let urlsArray = [];
@@ -461,7 +461,7 @@ var SecureLoginOverlay = {
 
 		// Check for valid logins:
 		let secureLogins = service.secureLogins;
-		if (secureLogins && secureLogins.length > 0) {
+		if (secureLogins.length > 0) {
 			if (secureLogins.length > 1) {
 				// Determine if no master password is set or the user has already been authenticated:
 				let masterPasswordRequired = true;
@@ -503,7 +503,7 @@ var SecureLoginOverlay = {
 		}
 
 		let secureLogins = service.secureLogins;
-		if (secureLogins) {
+		if (secureLogins.length > 0) {
 			let menuitem = document.createElement("menuitem");
 			menuitem.setAttribute("class", "menuitem-iconic secureLoginUserIcon");
 			// Add a menuitem for each available user login:

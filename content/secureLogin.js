@@ -56,8 +56,22 @@ var SecureLogin = {
 	isProgressListenerRegistered: null,
 	// Helper var to remember original autofillForms setting (this has nothing to to with the extension autofillForms@blueimp.net:
 	modify_signon_autofillForms: null,
+
 	// Valid logins list:
-	secureLogins: null,
+	_secureLogins: null,
+	get secureLogins () {
+		if ( !(this._secureLogins instanceof Array) ) {
+			this._secureLogins = [];
+		}
+		return this._secureLogins;
+	},
+	set secureLogins (aValue) {
+		if ( !(aValue instanceof Array) ) {
+			aValue = [];
+		}
+		this._secureLogins = aValue;
+	},
+
 	// Defines if form index is to be shown in selection prompt:
 	showFormIndex: null,
 	// Object containing the shortcut information (modifiers, key or keycode):
@@ -190,9 +204,9 @@ var SecureLogin = {
 		this.highlightOutlineStyle = outlineStyle;
 		this.highlightOutlineRadius = getCharPref("highlightOutlineRadius");
 
-		if (this.secureLogins) {
+		let secureLogins = this.secureLogins;
+		if (secureLogins.length > 0) {
 			// Update the outlined form fields:
-			let secureLogins = this.secureLogins;
 			for (let i = 0, l = secureLogins.length; i < l; ++i) {
 				let userField = secureLogins[i].usernameField;
 				let passField = secureLogins[i].passwordField;
@@ -228,8 +242,7 @@ var SecureLogin = {
 	},
 
 	updateLoginsFoundStatus: function () {
-		let secureLogins = this.secureLogins;
-		if (secureLogins && secureLogins.length > 0) {
+		if (this.secureLogins.length > 0) {
 			this.notifyUpdateLoginButton(true);
 			// Play sound notification:
 			if (this.prefs.getBoolPref('playLoginFoundSound')) {
@@ -364,9 +377,7 @@ var SecureLogin = {
 	},
 
 	addToFoundLoginsList: function (aFoundLogin) {
-		// Lazy initialization of the logins and helper lists:
-		let secureLogins = (this.secureLogins instanceof Array) ?
-		                   this.secureLogins : [];
+		let secureLogins = this.secureLogins;
 
 		let loginIndex = secureLogins.length;
 
@@ -438,11 +449,12 @@ var SecureLogin = {
 		}
 
 		// Check for valid logins:
-		if (this.secureLogins && this.secureLogins.length > 0) {
+		let secureLogins = this.secureLogins;
+		if (secureLogins.length > 0) {
 			try {
 				// The list index of the login:
 				let selectedIndex;
-				if (this.secureLogins.length > 1) {
+				if (secureLogins.length > 1) {
 					// Prompt for a selection, if list contains more than one login:
 					selectedIndex = this._selectLoginAccount(aLoginIndex);
 				}
@@ -451,7 +463,7 @@ var SecureLogin = {
 				}
 
 				// Cache login data:
-				let secureLoginData = this.secureLogins[selectedIndex];
+				let secureLoginData = secureLogins[selectedIndex];
 
 				// Set the win object to the window (frame) containing the login form:
 				let window = secureLoginData.window;
