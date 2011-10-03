@@ -115,9 +115,6 @@
 			<preference id="showToolsMenu"
 			            name="extensions.secureLogin@blueimp.net.showToolsMenu"
 			            type="bool"/>
-			<preference id="showUrlBarIcon"
-			            name="extensions.secureLogin@blueimp.net.showUrlBarIcon"
-			            type="bool"/>
 		</preferences>
 		<vbox>
 			<groupbox>
@@ -139,8 +136,6 @@
 				<caption label="&viewcaption.label;"/>
 				<checkbox label="&showtoolsmenu.label;"
 				          preference="showToolsMenu"/>
-				<checkbox label="&showurlbaricon.label;"
-				          preference="showUrlBarIcon"/>
 			</groupbox>
 			<separator class="thin"/>
 		</vbox>

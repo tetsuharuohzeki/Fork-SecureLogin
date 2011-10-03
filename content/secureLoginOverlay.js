@@ -21,10 +21,6 @@ var SecureLoginOverlay = {
 		return document.getElementById('secureLoginButton');
 	},
 
-	get secureLoginUrlbarIcon () {
-		return document.getElementById("secureLogin-urlbar-button");
-	},
-
 	get mainKeyset () {
 		delete this.mainKeyset;
 		return this.mainKeyset = document.getElementById('mainKeyset');
@@ -126,9 +122,6 @@ var SecureLoginOverlay = {
 		this.finalize();
 	},
 
-	// Defines if show url bar icon:
-	isShowUrlBarIcon: null,
-
 	observe: function (aSubject, aTopic, aData) {
 		// Only observe preferences changes:
 		if (aTopic === 'nsPref:changed') {
@@ -140,9 +133,6 @@ var SecureLoginOverlay = {
 				case 'showToolsMenu':
 					this.showToolsMenuUpdate();
 					break;
-				case "showUrlBarIcon":
-					this.updateShowURLBarIcon();
-					break;
 				case 'javascriptProtection':
 					this.javascriptProtectionUpdate();
 					break;
@@ -153,13 +143,11 @@ var SecureLoginOverlay = {
 				case "enableLoginButton":
 					if (aSubject.wrappedJSObject === window) {
 						this.enableLoginButton();
-						this.enableLoginUrlbarIcon();
 					}
 					break;
 				case "disableLoginButton":
 					if (aSubject.wrappedJSObject === window) {
 						this.disableLoginButton();
-						this.disableLoginUrlbarIcon();
 					}
 					break;
 				case "showAndRemoveNotification":
@@ -186,7 +174,6 @@ var SecureLoginOverlay = {
 
 		// Initialize toolbar and statusbar icons and tools and context menus:
 		this.showToolsMenuUpdate();
-		this.updateShowURLBarIcon();
 		this.javascriptProtectionUpdate();
 	},
 
@@ -201,20 +188,6 @@ var SecureLoginOverlay = {
 		let loginButton = this.secureLoginButton;
 		if (loginButton) {
 			loginButton.setAttribute("disabled", "true");
-		}
-	},
-
-	enableLoginUrlbarIcon: function () {
-		let urlbarIcon = this.secureLoginUrlbarIcon;
-		if (this.isShowUrlBarIcon && urlbarIcon) {
-			urlbarIcon.removeAttribute("hidden");
-		}
-	},
-
-	disableLoginUrlbarIcon: function () {
-		let urlbarIcon = this.secureLoginUrlbarIcon;
-		if (this.isShowUrlBarIcon && urlbarIcon) {
-			urlbarIcon.setAttribute("hidden", "true");
 		}
 	},
 
@@ -265,28 +238,6 @@ var SecureLoginOverlay = {
 				secureLoginToolsMenu.setAttribute("hidden", "true");
 			}
 		}
-	},
-
-	updateShowURLBarIcon: function () {
-		let service = this.service;
-		let prefValue = service.prefs.getBoolPref("showUrlBarIcon");
-		let urlbarIcon = this.secureLoginUrlbarIcon;
-		if (urlbarIcon) {
-			if (prefValue) {
-				let hasLogin = (service.secureLogins.length > 0) ?
-				               true : false;
-				if (hasLogin) {
-					urlbarIcon.removeAttribute("hidden");
-				}
-				else {
-					urlbarIcon.setAttribute("hidden", prefValue);
-				}
-			}
-			else {
-				urlbarIcon.setAttribute("hidden", !prefValue);
-			}
-		}
-		this.isShowUrlBarIcon = prefValue;
 	},
 
 	clickHandler: function (aEvent) {
