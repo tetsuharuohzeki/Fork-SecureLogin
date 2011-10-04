@@ -8,7 +8,6 @@
 <!ENTITY menuexceptions.label "JavaScript プロテクション - 例外サイト...">
 <!ENTITY options.title "Secure Login の設定">
 <!ENTITY prefpanemainlabel "メイン">
-<!ENTITY prefpaneadvancedlabel "詳細">
 <!ENTITY prefpaneguilabel "操作">
 <!ENTITY shortcuttext.label "Secure Login のキーボードショートカット:">
 <!ENTITY shortcutapply.label "適用">

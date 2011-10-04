@@ -8,7 +8,6 @@
 <!ENTITY menuexceptions.label "JavaScript protection - exceptions...">
 <!ENTITY options.title "Secure Login Settings">
 <!ENTITY prefpanemainlabel "Main">
-<!ENTITY prefpaneadvancedlabel "Advanced">
 <!ENTITY prefpaneguilabel "Interface">
 <!ENTITY shortcuttext.label "Keyboard shortcut:">
 <!ENTITY shortcutapply.label "Apply">

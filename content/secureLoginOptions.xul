@@ -53,13 +53,6 @@
 			</groupbox>
 		</vbox>
 	</prefpane>
-	<prefpane id="secureLoginPrefPaneAdvanced"
-	          label="&prefpaneadvancedlabel;">
-		<preferences>
-		</preferences>
-		<vbox>
-		</vbox>
-	</prefpane>
 	<prefpane id="secureLoginPrefPaneGUI"
 	          label="&prefpaneguilabel;"
 	          flex="1"
