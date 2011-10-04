@@ -39,58 +39,9 @@ var SecureLoginOptions = {
 	optionsInitialize: function () {
 		// Display the shortcut combination:
 		document.getElementById('keyboardShortcut').value = this.service.getFormattedShortcut();
-
-		// Display the filenames stored in the preferences:
-		try {
-			let file = this.service.prefs.getComplexValue('loginFoundSoundFileName', Components.interfaces.nsILocalFile);
-			document.getElementById('loginFoundSoundFileName').value = file.path;
-		} catch (e) {
-			// No file found, which is the default, so we do not log an error
-		}
-		try {
-			let file = this.service.prefs.getComplexValue('loginSoundFileName', Components.interfaces.nsILocalFile);
-			document.getElementById('loginSoundFileName').value = file.path;
-		} catch (e) {
-			// No file found, which is the default, so we do not log an error
-		}
 	},
 
 	optionsFinalize: function () {
-	},
-
-	selectAudioFile: function (aDoc, aPrefName) {
-		// doc is the current document from which the method has been called
-		// prefName is the preference name as well as the textbox id
-
-		try {
-			// Create a file picker instance:
-			let fp = Components.classes['@mozilla.org/filepicker;1']
-			         .createInstance(Components.interfaces.nsIFilePicker);
-
-			// Initialize the file picker window:
-			fp.init(
-				window,
-				this.service.stringBundle.GetStringFromName('selectAudioFile'),
-				Components.interfaces.nsIFilePicker.modeOpen
-			);
-
-			// Apply a file filter for wave files:
-			fp.appendFilter('*.wav','*.wav;*.WAV');
-			fp.filterIndex=0;
-
-			// Show the file picker window:
-			let rv = fp.show();
-
-			if (rv == Components.interfaces.nsIFilePicker.returnOK) {
-				let file = fp.file;
-				// Save the selected file in the preferences:
-				this.service.prefs.setComplexValue(aPrefName, Components.interfaces.nsILocalFile, file);
-				// Save the selected file in the associated textbox:
-				aDoc.getElementById(aPrefName).value = file.path;
-			}
-		} catch (e) {
-			Components.utils.reportError(e);
-		}
 	},
 
 	applyShortcut: function (aEvent, aId) {

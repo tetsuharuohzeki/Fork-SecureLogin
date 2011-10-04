@@ -254,28 +254,16 @@ var SecureLogin = {
 			aWin = this.getContentWindow();
 		}
 
-		if (aWin.frameElement && this.secureLogins) {
-			// If aWin is internal window in document, for example <iframe> element,
-			// This part removes the embeded or closed window from logins of all remaining windows.
-			// This block runs when load the page that is child frame:
-			for (let i = 0, secureLogins = this.secureLogins; i < secureLogins.length; ++i) {
-				let window = secureLogins[i].window;
-				// Remove the window from list
-				// if the window is this frame window or has closed already:
-				if (window === aWin || window.closed) {
-					secureLogins.splice(i, 1);
-				}
-			}
-		} else {
+		if (!aWin.frameElement) {
 			// Reset the found logins and helper lists:
 			this.secureLogins = null;
+
+			// Show form index only if more than one valid login form is found:
+			this.showFormIndex = false;
+
+			// Search for valid logins on the given window:
+			this.searchLogins(aWin);
 		}
-
-		// Show form index only if more than one valid login form is found:
-		this.showFormIndex = false;
-
-		// Search for valid logins on the given window:
-		this.searchLogins(aWin);
 
 		if (aUpdateStatus) {
 			this.updateLoginsFoundStatus();
@@ -286,10 +274,6 @@ var SecureLogin = {
 		if (this.secureLogins.length > 0) {
 			this.notifyUpdateLoginButton(true);
 			this.notifyShowDoorHangerLogin();
-			// Play sound notification:
-			if (this.prefs.getBoolPref('playLoginFoundSound')) {
-				this.playSound('loginFoundSoundFileName');
-			}
 		}
 		else {
 			this.notifyUpdateLoginButton(false);
@@ -553,12 +537,6 @@ var SecureLogin = {
 				else {
 					this._loginWithNormal(loginInfos);
 				}
-
-				// Play sound notification:
-				if (this.prefs.getBoolPref('playLoginSound')) {
-					this.playSound('loginSoundFileName');
-				}
-
 			}
 			catch (e) {
 				// Decrypting failed or url is not allowed
@@ -925,23 +903,6 @@ var SecureLogin = {
 		return formattedShortcut;
 	},
 
-	playSound: function(aPrefName) {
-		try {
-			// Get the filename stored in the preferences:
-			let file = this.prefs.getComplexValue(aPrefName, Components.interfaces.nsILocalFile);
-
-			// Get an url for the file:
-			let url = Services.io.newFileURI(file, null, null);
-
-			// Play the sound:
-			this.getSound().play(url);
-		}
-		catch (e) {
-			Components.utils.reportError(e);
-			// No file found
-		}
-	},
-
 	showDialog: function (aUrl, aParams) {
 		let paramObject = aParams ? aParams : this;
 		return window.openDialog(
@@ -1051,11 +1012,6 @@ var SecureLogin = {
 		delete this.securityManager;
 		return this.securityManager = Components.classes['@mozilla.org/scriptsecuritymanager;1']
 		                              .getService(Components.interfaces.nsIScriptSecurityManager);
-	},
-
-	getSound: function () {
-		return Components.classes['@mozilla.org/sound;1']
-		       .createInstance(Components.interfaces.nsISound);
 	},
 
 	inArray: function (aArray, aItem) {

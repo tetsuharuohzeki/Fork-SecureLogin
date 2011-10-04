@@ -5,9 +5,6 @@
 #secureLoginPrefs radio[pane="secureLoginPrefPaneMain"] {
 	-moz-image-region: rect(0px, 32px, 32px, 0px);
 }
-#secureLoginPrefs radio[pane="secureLoginPrefPaneAdvanced"] {
-	-moz-image-region: rect(0px, 224px, 32px, 192px);
-}
 #secureLoginPrefs radio[pane="secureLoginPrefPaneGUI"] {
 	-moz-image-region: rect(0px, 64px, 32px, 32px);
 }

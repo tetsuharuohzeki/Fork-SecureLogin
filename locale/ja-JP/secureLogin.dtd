@@ -8,7 +8,6 @@
 <!ENTITY menuexceptions.label "JavaScript プロテクション - 例外サイト...">
 <!ENTITY options.title "Secure Login の設定">
 <!ENTITY prefpanemainlabel "メイン">
-<!ENTITY prefpaneadvancedlabel "詳細">
 <!ENTITY prefpaneguilabel "操作">
 <!ENTITY shortcuttext.label "Secure Login のキーボードショートカット:">
 <!ENTITY shortcutapply.label "適用">
@@ -20,14 +19,10 @@
 <!ENTITY generalcaption.label "一般">
 <!ENTITY searchloginsonload.label "ログイン情報を入力するためのボックスを自動的に探し強調表示する">
 <!ENTITY skipduplicateactionforms.label "重複しているログインフォームを無視する">
-<!ENTITY autosubmitform.label "自動的にログイン">
-<!ENTITY javascriptprotection.label "ログイン時に JavaScript プロテクションを使用">
-<!ENTITY showexceptions.label "例外サイト...">
-<!ENTITY soundcaption.label "サウンド">
-<!ENTITY playLoginFoundSound.label "ログイン情報が無い時にサウンドを再生">
-<!ENTITY playLoginSound.label "ログインする時にサウンドを再生">
-<!ENTITY chooseFile.label "選択...">
-<!ENTITY playSound.label "再生">
+<!ENTITY autosubmitform.label "JavaScript プロテクションを使わない場合も自動的にログインする">
+<!ENTITY showexceptions.caption "例外サイト">
+<!ENTITY showexceptions.label "JavaScript プロテクションの例外サイトを編集する">
+<!ENTITY showexceptions.button.label "例外サイト...">
 <!ENTITY exceptions.title "JavaScript プロテクションの例外サイト">
 <!ENTITY exceptions.label "以下のサイトでは JavaScript プロテクションを使用しない">
 <!ENTITY exceptionsitehead.label "サイト">

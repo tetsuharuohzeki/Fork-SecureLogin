@@ -46,11 +46,6 @@ var SecureLoginOverlay = {
 		return this.secureLoginToolsMenu =  document.getElementById('secureLoginToolsMenu')
 	},
 
-	get secureLoginJavascriptProtection () {
-		delete this.secureLoginJavascriptProtection;
-		return this.secureLoginJavascriptProtection = document.getElementById('secureLoginJavascriptProtection');
-	},
-
 	get tooltipNoLoginLabel () {
 		delete this.tooltipNoLoginLabel;
 		return this.tooltipNoLoginLabel = document.getElementById("secureLoginTooltips:noLogin");
@@ -133,9 +128,6 @@ var SecureLoginOverlay = {
 				case 'showToolsMenu':
 					this.showToolsMenuUpdate();
 					break;
-				case 'javascriptProtection':
-					this.javascriptProtectionUpdate();
-					break;
 			}
 		}
 		else if (aTopic === this.service.obsTopic) {
@@ -179,7 +171,6 @@ var SecureLoginOverlay = {
 
 		// Initialize toolbar and statusbar icons and tools and context menus:
 		this.showToolsMenuUpdate();
-		this.javascriptProtectionUpdate();
 	},
 
 	showDoorhangerLogin: function () {
@@ -284,21 +275,6 @@ var SecureLoginOverlay = {
 				this.service.masterSecurityDeviceLogout(aEvent);
 				break;
 		}
-	},
-
-	changePref: function (aEvent, aPref) {
-		// Attribute 'checked' is empty or true, setting must be false or true:
-		this.service.prefs.setBoolPref(
-			aPref,
-			!!aEvent.target.getAttribute('checked')
-		);
-	},
-
-	javascriptProtectionUpdate: function () {
-		this.secureLoginJavascriptProtection.setAttribute(
-				'checked',
-				this.service.prefs.getBoolPref('javascriptProtection')
-		);
 	},
 
 	showAndRemoveNotification: function (aLabel, aTimeout, aId, aImage, aPriority, aButtons) {
