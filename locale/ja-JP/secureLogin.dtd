@@ -23,11 +23,6 @@
 <!ENTITY showexceptions.caption "例外サイト">
 <!ENTITY showexceptions.label "JavaScript プロテクションの例外サイトを編集する">
 <!ENTITY showexceptions.button.label "例外サイト...">
-<!ENTITY soundcaption.label "サウンド">
-<!ENTITY playLoginFoundSound.label "ログイン情報が無い時にサウンドを再生">
-<!ENTITY playLoginSound.label "ログインする時にサウンドを再生">
-<!ENTITY chooseFile.label "選択...">
-<!ENTITY playSound.label "再生">
 <!ENTITY exceptions.title "JavaScript プロテクションの例外サイト">
 <!ENTITY exceptions.label "以下のサイトでは JavaScript プロテクションを使用しない">
 <!ENTITY exceptionsitehead.label "サイト">

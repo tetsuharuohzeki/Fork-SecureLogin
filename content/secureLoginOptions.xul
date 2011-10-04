@@ -54,55 +54,10 @@
 		</vbox>
 	</prefpane>
 	<prefpane id="secureLoginPrefPaneAdvanced"
-	          label="&prefpaneadvancedlabel;"
-	          helpTopic="Sounds">
+	          label="&prefpaneadvancedlabel;">
 		<preferences>
-			<preference id="playLoginFoundSound"
-			            name="extensions.secureLogin@blueimp.net.playLoginFoundSound"
-			            type="bool"/>
-			<preference id="playLoginSound"
-			            name="extensions.secureLogin@blueimp.net.playLoginSound"
-			            type="bool"/>
 		</preferences>
 		<vbox>
-			<groupbox>
-				<caption label="&soundcaption.label;"/>
-				<checkbox label="&playLoginFoundSound.label;"
-				          preference="playLoginFoundSound"/>
-				<hbox>
-					<textbox id="loginFoundSoundFileName"
-					         readonly="true"
-					         flex="1"/>
-					<button id="chooseLoginFoundSound"
-					        label="&chooseFile.label;"
-					        icon="open"
-					        oncommand="secureLoginOptions.selectAudioFile(document, 'loginFoundSoundFileName');"/>
-				</hbox>
-				<hbox>
-					<button id="playLoginFoundSound"
-					        label="&playSound.label;"
-					        oncommand="SecureLogin.playSound('loginFoundSoundFileName');"/>
-					<spacer flex="1"/>
-				</hbox>
-				<separator class="thin"/>
-				<checkbox label="&playLoginSound.label;"
-				          preference="playLoginSound"/>
-				<hbox>
-					<textbox id="loginSoundFileName"
-					         readonly="true"
-					         flex="1" />
-					<button id="chooseLoginSound"
-					        label="&chooseFile.label;"
-					        icon="open"
-					        oncommand="secureLoginOptions.selectAudioFile(document, 'loginSoundFileName');"/>
-				</hbox>
-				<hbox>
-					<button id="playLoginSound"
-					        label="&playSound.label;"
-					        oncommand="SecureLogin.playSound('loginSoundFileName');"/>
-					<spacer flex="1"/>
-				</hbox>
-			</groupbox>
 		</vbox>
 	</prefpane>
 	<prefpane id="secureLoginPrefPaneGUI"

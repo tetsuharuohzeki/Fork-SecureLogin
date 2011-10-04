@@ -23,11 +23,6 @@
 <!ENTITY showexceptions.caption "Exceptions">
 <!ENTITY showexceptions.label "Edit exceptions list of JavaScript protection">
 <!ENTITY showexceptions.button.label "Exceptions...">
-<!ENTITY soundcaption.label "Sounds">
-<!ENTITY playLoginFoundSound.label "Play sound when login data found">
-<!ENTITY playLoginSound.label "Play sound on login">
-<!ENTITY chooseFile.label "Choose...">
-<!ENTITY playSound.label "Play">
 <!ENTITY exceptions.title "JavaScript protection Exceptions">
 <!ENTITY exceptions.label "Websites, for which the JavaScript protection will not be used">
 <!ENTITY exceptionsitehead.label "Website">

@@ -246,10 +246,6 @@ var SecureLogin = {
 	updateLoginsFoundStatus: function () {
 		if (this.secureLogins.length > 0) {
 			this.notifyUpdateLoginButton(true);
-			// Play sound notification:
-			if (this.prefs.getBoolPref('playLoginFoundSound')) {
-				this.playSound('loginFoundSoundFileName');
-			}
 		}
 		else {
 			this.notifyUpdateLoginButton(false);
@@ -513,12 +509,6 @@ var SecureLogin = {
 				else {
 					this._loginWithNormal(loginInfos);
 				}
-
-				// Play sound notification:
-				if (this.prefs.getBoolPref('playLoginSound')) {
-					this.playSound('loginSoundFileName');
-				}
-
 			}
 			catch (e) {
 				// Decrypting failed or url is not allowed
@@ -885,23 +875,6 @@ var SecureLogin = {
 		return formattedShortcut;
 	},
 
-	playSound: function(aPrefName) {
-		try {
-			// Get the filename stored in the preferences:
-			let file = this.prefs.getComplexValue(aPrefName, Components.interfaces.nsILocalFile);
-
-			// Get an url for the file:
-			let url = Services.io.newFileURI(file, null, null);
-
-			// Play the sound:
-			this.getSound().play(url);
-		}
-		catch (e) {
-			Components.utils.reportError(e);
-			// No file found
-		}
-	},
-
 	showDialog: function (aUrl, aParams) {
 		let paramObject = aParams ? aParams : this;
 		return window.openDialog(
@@ -1011,11 +984,6 @@ var SecureLogin = {
 		delete this.securityManager;
 		return this.securityManager = Components.classes['@mozilla.org/scriptsecuritymanager;1']
 		                              .getService(Components.interfaces.nsIScriptSecurityManager);
-	},
-
-	getSound: function () {
-		return Components.classes['@mozilla.org/sound;1']
-		       .createInstance(Components.interfaces.nsISound);
 	},
 
 	inArray: function (aArray, aItem) {
