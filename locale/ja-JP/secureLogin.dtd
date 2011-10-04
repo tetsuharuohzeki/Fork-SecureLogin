@@ -20,8 +20,9 @@
 <!ENTITY searchloginsonload.label "ログイン情報を入力するためのボックスを自動的に探し強調表示する">
 <!ENTITY skipduplicateactionforms.label "重複しているログインフォームを無視する">
 <!ENTITY autosubmitform.label "JavaScript プロテクションを使わない場合も自動的にログインする">
-<!ENTITY javascriptprotection.label "ログイン時に JavaScript プロテクションを使用">
-<!ENTITY showexceptions.label "例外サイト...">
+<!ENTITY showexceptions.caption "例外サイト">
+<!ENTITY showexceptions.label "JavaScript プロテクションの例外サイトを編集する">
+<!ENTITY showexceptions.button.label "例外サイト...">
 <!ENTITY soundcaption.label "サウンド">
 <!ENTITY playLoginFoundSound.label "ログイン情報が無い時にサウンドを再生">
 <!ENTITY playLoginSound.label "ログインする時にサウンドを再生">

@@ -23,9 +23,6 @@
 			<preference id="autoSubmitForm"
 			            name="extensions.secureLogin@blueimp.net.autoSubmitForm"
 			            type="bool"/>
-			<preference id="javascriptProtection"
-			            name="extensions.secureLogin@blueimp.net.javascriptProtection"
-			            type="bool"/>
 		</preferences>
 		<vbox>
 			<groupbox>
@@ -43,15 +40,16 @@
 				<checkbox id="autoSubmitFormCheckBox"
 				          label="&autosubmitform.label;"
 				          preference="autoSubmitForm"/>
-				<separator class="thin"/>
-				<hbox>
-					<checkbox label="&javascriptprotection.label;"
-					          preference="javascriptProtection"/>
-					<spacer flex="1"/>
-					<button id="showExceptions"
-					        label="&showexceptions.label;"
-					        oncommand="SecureLogin.showDialog('chrome://secureLogin/content/secureLoginExceptions.xul');"/>
-				</hbox>
+			</groupbox>
+			<groupbox>
+					<caption label="&showexceptions.caption;"/>
+					<hbox>
+						<label value="&showexceptions.label;"/>
+						<spacer flex="1"/>
+						<button id="showExceptions"
+						        label="&showexceptions.button.label;"
+						        oncommand="SecureLogin.showDialog('chrome://secureLogin/content/secureLoginExceptions.xul');"/>
+					</hbox>
 			</groupbox>
 		</vbox>
 	</prefpane>

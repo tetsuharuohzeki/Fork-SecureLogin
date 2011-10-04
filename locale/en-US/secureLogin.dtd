@@ -20,8 +20,9 @@
 <!ENTITY searchloginsonload.label "Automatically search for login data and highlight form fields">
 <!ENTITY skipduplicateactionforms.label "Skip duplicate login forms">
 <!ENTITY autosubmitform.label "Submit login data automatically even if do not use JS protection">
-<!ENTITY javascriptprotection.label "Activate JavaScript protection on login">
-<!ENTITY showexceptions.label "Exceptions...">
+<!ENTITY showexceptions.caption "Exceptions">
+<!ENTITY showexceptions.label "Edit exceptions list of JavaScript protection">
+<!ENTITY showexceptions.button.label "Exceptions...">
 <!ENTITY soundcaption.label "Sounds">
 <!ENTITY playLoginFoundSound.label "Play sound when login data found">
 <!ENTITY playLoginSound.label "Play sound on login">
