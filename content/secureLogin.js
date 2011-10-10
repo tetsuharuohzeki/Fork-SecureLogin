@@ -956,9 +956,9 @@ var SecureLogin = {
 		return this.stringBundle = Services.strings.createBundle("chrome://secureLogin/locale/secureLogin.properties");
 	},
 
-	getContentDocument: function(aWin) {
-		if (aWin) {
-			return aWin.document;
+	getContentDocument: function(aContentWindow) {
+		if (aContentWindow) {
+			return aContentWindow.document;
 		}
 		else {
 			return this.getBrowser().contentDocument;
