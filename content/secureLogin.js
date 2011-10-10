@@ -957,12 +957,7 @@ var SecureLogin = {
 	},
 
 	getContentDocument: function(aContentWindow) {
-		if (aContentWindow) {
-			return aContentWindow.document;
-		}
-		else {
-			return this.getBrowser().contentDocument;
-		}
+		return aContentWindow ? aContentWindow.document : this.getBrowser().contentDocument;
 	},
 
 	getContentWindow: function () {
