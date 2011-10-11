@@ -342,14 +342,14 @@ var SecureLogin = {
 		let passwordField = null;
 
 		// helper var to define if the login form is a password only form:
-		let inputOtherTypeFound = false;
+		let isOnlyPassField = true;
 
 		// The form elements list:
 		let elements = aForm.elements;
 
 		let userInput = elements[aLoginUsernameFieldName];
 		if (userInput) {
-			inputOtherTypeFound = true;
+			isOnlyPassField = false;
 			usernameField = userInput;
 		}
 
@@ -361,7 +361,7 @@ var SecureLogin = {
 		if (passwordField) {
 			// If this is a password only form,
 			// no input which type is not password may be found and userFieldName must be empty:
-			if (!usernameField && (inputOtherTypeFound || aLoginUsernameFieldName)) {
+			if (!usernameField && (!isOnlyPassField || aLoginUsernameFieldName)) {
 				return null;
 			}
 
