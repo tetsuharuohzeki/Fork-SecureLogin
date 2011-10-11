@@ -336,6 +336,7 @@ var SecureLogin = {
 	},
 
 	getLoginFields: function (aForm, aLoginUsernameFieldName, aLoginPasswordFieldName) {
+		let loginFields = null;
 
 		// The form fields for user+pass:
 		let usernameField = null;
@@ -359,22 +360,16 @@ var SecureLogin = {
 		}
 
 		if (passwordField) {
-			// If this is a password only form,
-			// no input which type is not password may be found and userFieldName must be empty:
-			if (!usernameField && (!isOnlyPassField || aLoginUsernameFieldName)) {
-				return null;
+			// If there is username field, or
+			// there is no input which type is not "password" and also userFieldName is empty:
+			if (usernameField || (isOnlyPassField && !aLoginUsernameFieldName)) {
+				loginFields = {
+					usernameField: usernameField,
+					passwordField: passwordField,
+				};
 			}
-
-			let loginFields = {
-				usernameField: usernameField,
-				passwordField: passwordField,
-			};
-
-			return loginFields;
 		}
-		else {
-			return null;
-		}
+		return loginFields;
 	},
 
 	addToFoundLoginsList: function (aFoundLogin) {
