@@ -270,7 +270,7 @@ var SecureLogin = {
 				let isSkipDuplicateActionForms = this.skipDuplicateActionForms;
 
  				// Go through the forms:
- 				for (let i = 0; i < forms.length; i++) {
+ 				for (let i = 0, l = forms.length; i < l; ++i) {
 					// Check to finish searching logins in this document:
 					if (loginsCount <= 0) {
 						break;
@@ -298,7 +298,7 @@ var SecureLogin = {
 
 					let loginInfos = Services.logins.findLogins({}, host, targetHost, null);
 					// Go through the logins:
-					for (let j = 0; j < loginInfos.length; j++) {
+					for (let j = 0, k = loginInfos.length; j < k; ++j) {
 						// Get valid login fields:
 						let loginInfo = loginInfos[j];
 						let loginFields = this.getLoginFields(form, loginInfo.usernameField, loginInfo.passwordField);
