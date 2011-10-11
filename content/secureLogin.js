@@ -304,6 +304,9 @@ var SecureLogin = {
 						let loginFields = this.getLoginFields(form, loginInfo.usernameField, loginInfo.passwordField);
 
 						if (loginFields) {
+							let user = loginFields.usernameField;
+							let pass = loginFields.passwordField;
+
 							if (isSkipDuplicateActionForms) {
 								// Add the formURI to the list:
 								formURIs.push(formURI);
@@ -313,15 +316,15 @@ var SecureLogin = {
 								loginObject  : loginInfo,
 								formIndex    : i,
 								window       : aWin,
-								usernameField: loginFields.usernameField,
-								passwordField: loginFields.passwordField,
-								actionURIStr : formURI.spec,
+								usernameField: user,
+								passwordField: pass,
+								actionURI    : formURI.spec,
 							};
 							// Add null as login object to the logins list to avoid a Master Password prompt:
 							this.addToFoundLoginsList(foundLogin);
 
 							// highlight login fields:
-							this.highlightLoginFields(loginFields.usernameField, loginFields.passwordField);
+							this.highlightLoginFields(user, pass);
 
 							// decrement loginsCount
 							loginsCount--;
@@ -377,27 +380,16 @@ var SecureLogin = {
 	addToFoundLoginsList: function (aFoundLogin) {
 		let secureLogins = this.secureLogins;
 
-		let loginIndex = secureLogins.length;
-
 		// Test if there is only one valid login form:
 		let isInArray = secureLogins.some(function(aElm){
 			return (aElm.formIndex === aFoundLogin.formIndex);
 		});
-		if (!this.showFormIndex && (loginIndex > 0) && !isInArray) {
+		if (!this.showFormIndex && (secureLogins.length > 0) && !isInArray) {
 			this.showFormIndex = true;
 		}
 
 		// Save the login in the valid logins list:
-		secureLogins[loginIndex] = {
-			loginObject    : aFoundLogin.loginObject,
-			formIndex      : aFoundLogin.formIndex,
-			window         : aFoundLogin.window,
-			usernameField  : aFoundLogin.usernameField,
-			passwordField  : aFoundLogin.passwordField,
-			actionURI      : aFoundLogin.actionURIStr,
-		};
-
-		this.secureLogins = secureLogins;
+		secureLogins.push(aFoundLogin);
 	},
 
 	highlightLoginFields: function (aUsernameField, aPasswordField) {
