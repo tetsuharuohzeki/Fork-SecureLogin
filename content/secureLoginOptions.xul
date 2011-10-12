@@ -72,10 +72,10 @@
 					<textbox  id="keyboardShortcut"
 					          readonly="true"
 					          flex="1"
-					          onkeypress="secureLoginOptions.applyShortcut(event, 'keyboardShortcut');"/>
+					          onkeypress="SecureLoginOptions.applyShortcut(event, 'keyboardShortcut');"/>
 					<button id="deactivateShortcutButton"
 					        label="&shortcutdisable.label;"
-					        oncommand="secureLoginOptions.disableShortcut(event, 'keyboardShortcut');"/>
+					        oncommand="SecureLoginOptions.disableShortcut(event, 'keyboardShortcut');"/>
 				</hbox>
 				<separator class="thin"/>
 				<description id="shortcutInfo">&shortcutinfo.label;</description>
