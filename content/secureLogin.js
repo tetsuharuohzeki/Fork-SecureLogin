@@ -462,9 +462,6 @@ var SecureLogin = {
 				// The login form:
 				let form = document.forms[formIndex];
 
-				// The form elements list:
-				let elements = form.elements;
-
 				// The charset of the given document:
 				let charset = document.characterSet;
 
@@ -476,7 +473,6 @@ var SecureLogin = {
 
 				let loginInfos = {
 					location       : location,
-					elements       : elements,
 					form           : form,
 					actionURI      : actionURI,
 					charset        : charset,
@@ -557,8 +553,8 @@ var SecureLogin = {
 
 	_loginWithJSProtection: function (aInfoObj) {
 		let location        = aInfoObj.location;
-		let elements        = aInfoObj.elements;
 		let form            = aInfoObj.form;
+		let elements        = form.elements;
 		let url             = aInfoObj.actionURI;
 		let charset         = aInfoObj.charset;
 		let secureLoginData = aInfoObj.secureLoginData;
@@ -688,8 +684,8 @@ var SecureLogin = {
 	},
 
 	_loginWithNormal: function (aInfoObj) {
-		let elements        = aInfoObj.elements;
 		let form            = aInfoObj.form;
+		let elements        = form.elements;
 		let secureLoginData = aInfoObj.secureLoginData;
 		let usernameField   = secureLoginData.usernameField;
 		let passwordField   = secureLoginData.passwordField;
