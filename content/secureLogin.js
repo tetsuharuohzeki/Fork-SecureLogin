@@ -318,12 +318,9 @@ var SecureLogin = {
 		let isFoundLogin = false;
 
 		// Get valid login fields:
-		let loginFields = this.getLoginFields(aForm, aLoginInfo.usernameField, aLoginInfo.passwordField);
+		let [user, pass] = this.getLoginFields(aForm, aLoginInfo.usernameField, aLoginInfo.passwordField);
 
-		if (loginFields) {
-			let user = loginFields.usernameField;
-			let pass = loginFields.passwordField;
-
+		if (pass) {
 			let foundLogin = {
 				loginInfo    : aLoginInfo,
 				formIndex    : aFormIndex,
@@ -344,8 +341,6 @@ var SecureLogin = {
 	},
 
 	getLoginFields: function (aForm, aLoginUsernameFieldName, aLoginPasswordFieldName) {
-		let loginFields = null;
-
 		// The form fields for user+pass:
 		let usernameField = null;
 		let passwordField = null;
@@ -367,17 +362,14 @@ var SecureLogin = {
 			passwordField = passInput;
 		}
 
-		if (passwordField) {
-			// If there is username field, or
-			// there is no input which type is not "password" and also userFieldName is empty:
-			if (usernameField || (isOnlyPassField && !aLoginUsernameFieldName)) {
-				loginFields = {
-					usernameField: usernameField,
-					passwordField: passwordField,
-				};
-			}
+		// If there is no passwordField, or
+		// there is not userField
+		// but any input which type is not password may be found or userFieldName is not empty:
+		if (!passwordField || (!usernameField && (!isOnlyPassField || aLoginUsernameFieldName))) {
+			usernameField = null;
+			passwordField = null;
 		}
-		return loginFields;
+		return [usernameField, passwordField];
 	},
 
 	addToFoundLoginsList: function (aFoundLogin) {
