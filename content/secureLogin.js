@@ -569,17 +569,14 @@ var SecureLogin = {
 		// String to save the form data:
 		let dataString = '';
 
-		// Reference to the main secureLogin object:
-		let parentObject = this;
+		let urlEncode = this.urlEncode;
 
 		// Local helper function to add name and value pairs urlEncoded to the dataString:
 		function addToDataString(aName, aValue) {
 			if (dataString.length !== 0) {
 				dataString += '&';
 			}
-			dataString += (parentObject.urlEncode(aName, charset) + 
-			               "=" + 
-			               parentObject.urlEncode(aValue, charset));
+			dataString += ( urlEncode(aName, charset) + "=" + urlEncode(aValue, charset) );
 		}
 
 		let submitButtonFound = false;
