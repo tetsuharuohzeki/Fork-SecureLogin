@@ -585,13 +585,6 @@ var SecureLogin = {
 						addToDataString(passwordField.name, pass);
 					}
 					break;
-				case 'select-multiple':
-					for (let j = 0; j < element.options.length; j++) {
-						if (element.options[j].selected) {
-							addToDataString(element.name, element.options[j].value);
-						}
-					}
-					break;
 				case 'checkbox':
 				case 'radio':
 					if (element.checked) {
