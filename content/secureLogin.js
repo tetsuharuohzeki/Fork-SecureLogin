@@ -476,15 +476,14 @@ var SecureLogin = {
 					form           : form,
 					actionURI      : actionURI,
 					charset        : charset,
-					secureLoginData: secureLoginData,
 				};
 
 				// Send login data without using the form:
 				if (useJavaScriptProtection) {
-					this._loginWithJSProtection(loginInfos);
+					this._loginWithJSProtection(secureLoginData, loginInfos);
 				}
 				else {
-					this._loginWithNormal(loginInfos);
+					this._loginWithNormal(secureLoginData, loginInfos);
 				}
 			}
 			catch (e) {
@@ -551,16 +550,15 @@ var SecureLogin = {
 		return (useJavaScriptProtection && !isInException) ? true : false;
 	},
 
-	_loginWithJSProtection: function (aInfoObj) {
+	_loginWithJSProtection: function (aSecureLoginData, aInfoObj) {
 		let location        = aInfoObj.location;
 		let form            = aInfoObj.form;
 		let elements        = form.elements;
 		let url             = aInfoObj.actionURI;
 		let charset         = aInfoObj.charset;
-		let secureLoginData = aInfoObj.secureLoginData;
-		let usernameField   = secureLoginData.usernameField;
-		let passwordField   = secureLoginData.passwordField;
-		let loginObject     = secureLoginData.loginObject;
+		let usernameField   = aSecureLoginData.usernameField;
+		let passwordField   = aSecureLoginData.passwordField;
+		let loginObject     = aSecureLoginData.loginObject;
 
 		// String to save the form data:
 		let dataString = '';
@@ -683,13 +681,12 @@ var SecureLogin = {
 		}
 	},
 
-	_loginWithNormal: function (aInfoObj) {
+	_loginWithNormal: function (aSecureLoginData, aInfoObj) {
 		let form            = aInfoObj.form;
 		let elements        = form.elements;
-		let secureLoginData = aInfoObj.secureLoginData;
-		let usernameField   = secureLoginData.usernameField;
-		let passwordField   = secureLoginData.passwordField;
-		let loginObject     = secureLoginData.loginObject;
+		let usernameField   = aSecureLoginData.usernameField;
+		let passwordField   = aSecureLoginData.passwordField;
+		let loginObject     = aSecureLoginData.loginObject;
 
 		// Fill the login fields:
 		if (usernameField) {
