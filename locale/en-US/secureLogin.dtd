@@ -1,7 +1,5 @@
 <!ENTITY toolbarbutton.label "Secure Login">
 <!ENTITY toolsmenu.label "Secure Login">
-<!ENTITY logincontextmenuitem.label "Secure Login">
-<!ENTITY logincontextmenuitem.accesskey "l">
 <!ENTITY menuoptions.label "Settings...">
 <!ENTITY menupasswords.label "Saved passwords...">
 <!ENTITY menupassexceptions.label "Save passwords - exceptions...">

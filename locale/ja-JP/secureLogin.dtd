@@ -1,7 +1,5 @@
 <!ENTITY toolbarbutton.label "Secure Login">
 <!ENTITY toolsmenu.label "Secure Login">
-<!ENTITY logincontextmenuitem.label "Secure Login">
-<!ENTITY logincontextmenuitem.accesskey "l">
 <!ENTITY menuoptions.label "設定...">
 <!ENTITY menupasswords.label "保存されたパスワード...">
 <!ENTITY menupassexceptions.label "パスワードの保存 - 例外サイト...">
