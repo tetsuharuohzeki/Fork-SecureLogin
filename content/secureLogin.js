@@ -438,14 +438,8 @@ var SecureLogin = {
 		if (secureLogins.length > 0) {
 			try {
 				// The list index of the login:
-				let selectedIndex;
-				if (secureLogins.length > 1) {
-					// Prompt for a selection, if list contains more than one login:
-					selectedIndex = this._selectLoginAccount(aLoginIndex);
-				}
-				else {
-					selectedIndex = 0;
-				}
+				let selectedIndex = (secureLogins.length > 1) ?
+				                    this._selectLoginAccount(aLoginIndex) : 0;
 
 				// Cache login data:
 				let secureLoginData = secureLogins[selectedIndex];
