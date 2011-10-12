@@ -412,24 +412,6 @@ var SecureLogin = {
 		style.MozOutlineRadius = this.highlightOutlineRadius;
 	},
 
-	get masterSecurityDevice () {
-		delete this.masterSecurityDevice;
-		return this.masterSecurityDevice = Components.classes['@mozilla.org/security/pk11tokendb;1']
-		                                   .getService(Components.interfaces.nsIPK11TokenDB);
-	},
-
-	masterSecurityDeviceLogout: function (aEvent) {
-		let masterSecurityDevice = this.masterSecurityDevice;
-		if (masterSecurityDevice.getInternalKeyToken().isLoggedIn()) {
-			masterSecurityDevice.findTokenByName('').logoutAndDropAuthenticatedResources();
-		}
-		let label = this.stringBundle.GetStringFromName("masterSecurityDeviceLogout");
-		let subject = {
-			label: label,
-		};
-		Services.obs.notifyObservers({ wrappedJSObject: subject, }, this.obsTopic, "showAndRemoveNotification");
-	},
-
 	login: function(aWin, aLoginIndex, aSkipLoginSearch) {
 		if (!aWin || !aWin.document) {
 			aWin = this.getContentWindow();

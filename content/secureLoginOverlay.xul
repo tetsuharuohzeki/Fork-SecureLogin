@@ -112,7 +112,6 @@
 		               label="&toolbarbutton.label;"
 		               tooltip="secureLoginTooltip"
 		               oncommand="if(event.target == this) SecureLoginOverlay.userSelectionLogin(event);"
-		               onclick="SecureLoginOverlay.clickHandler(event);"
 		               context="secureLoginContextmenu"/>
 	</toolbarpalette>
 

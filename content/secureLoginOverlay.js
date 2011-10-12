@@ -142,10 +142,6 @@ var SecureLoginOverlay = {
 						this.disableLoginButton();
 					}
 					break;
-				case "showAndRemoveNotification":
-					let subject = aSubject.wrappedJSObject;
-					this.showAndRemoveNotification(subject.label);
-					break;
 			}
 		}
 	},
@@ -227,52 +223,6 @@ var SecureLoginOverlay = {
 			}
 			else {
 				secureLoginToolsMenu.setAttribute("hidden", "true");
-			}
-		}
-	},
-
-	clickHandler: function (aEvent) {
-		switch (aEvent.button) {
-			case 1:
-				this.service.masterSecurityDeviceLogout(aEvent);
-				break;
-		}
-	},
-
-	showAndRemoveNotification: function (aLabel, aTimeout, aId, aImage, aPriority, aButtons) {
-		let timeout  = aTimeout  ? aTimeout  : this.service.prefs.getIntPref("defaultNotificationTimeout");
-		this.showNotification(aLabel, aId, aImage, aPriority, aButtons);
-		// Automatically remove the notification after the timeout:
-		window.setTimeout(function() { SecureLoginOverlay.removeNotification() }, timeout);
-	},
-
-	showNotification: function (aLabel, aId, aImage, aPriority, aButtons) {
-		let service  = this.service;
-		let id       = aId       ? aId       : "secureLoginNotification";
-		let image    = aImage    ? aImage    : service.prefs.getCharPref("defaultNotificationImage");
-		let priority = aPriority ? aPriority : "PRIORITY_INFO_HIGH";
-		let buttons  = aButtons  ? aButtons  : null;
-		// First remove notifications with the same id:
-		this.removeNotification(id);
-		let notificationBox = service.getBrowser().getNotificationBox();
-		if (notificationBox) {
-			notificationBox.appendNotification(
-			  aLabel,
-			  id,
-			  image,
-			  priority,
-			  buttons
-			);
-		}
-	},
-
-	removeNotification: function (aId) {
-		let id = aId ? aId : "secureLoginNotification";
-		let notificationBox = this.service.getBrowser().getNotificationBox();
-		if (notificationBox) {
-			let notification = notificationBox.getNotificationWithValue(id);
-			if (notification) {
-				notificationBox.removeNotification(notification);
 			}
 		}
 	},
