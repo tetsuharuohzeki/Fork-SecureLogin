@@ -325,7 +325,7 @@ var SecureLogin = {
 			let pass = loginFields.passwordField;
 
 			let foundLogin = {
-				loginObject  : aLoginInfo,
+				loginInfo    : aLoginInfo,
 				formIndex    : aFormIndex,
 				window       : aWindow,
 				usernameField: user,
@@ -506,7 +506,7 @@ var SecureLogin = {
 
 			let list = new Array(secureLogins.length);
 			for (let i = 0; i < secureLogins.length; i++) {
-				list[i] = this.getUsernameFromLoginObject(secureLogins[i].loginObject);
+				list[i] = this.getUsernameFromLoginObject(secureLogins[i].loginInfo);
 				// Show form index?
 				if (this.showFormIndex) {
 					list[i] += "  (" + secureLogins[i].formIndex + ")";
@@ -548,7 +548,7 @@ var SecureLogin = {
 		let charset         = aInfoObj.charset;
 		let usernameField   = aSecureLoginData.usernameField;
 		let passwordField   = aSecureLoginData.passwordField;
-		let loginObject     = aSecureLoginData.loginObject;
+		let loginInfo       = aSecureLoginData.loginInfo;
 
 		// String to save the form data:
 		let dataString = '';
@@ -581,7 +581,7 @@ var SecureLogin = {
 				case 'password':
 					// This is the password field - use the saved password as value:
 					if (passwordField && element.name == passwordField.name) {
-						let pass = this.getPasswordFromLoginObject(loginObject);
+						let pass = this.getPasswordFromLoginObject(loginInfo);
 						addToDataString(passwordField.name, pass);
 					}
 					break;
@@ -605,7 +605,7 @@ var SecureLogin = {
 				default:
 					if (usernameField && element.name == usernameField.name) {
 						// This is the userName field - use the saved username as value:
-						let user = this.getUsernameFromLoginObject(loginObject);
+						let user = this.getUsernameFromLoginObject(loginInfo);
 						addToDataString(usernameField.name, user);
 					}
 					else {
@@ -672,13 +672,13 @@ var SecureLogin = {
 		let elements        = form.elements;
 		let usernameField   = aSecureLoginData.usernameField;
 		let passwordField   = aSecureLoginData.passwordField;
-		let loginObject     = aSecureLoginData.loginObject;
+		let loginInfo       = aSecureLoginData.loginInfo;
 
 		// Fill the login fields:
 		if (usernameField) {
-			usernameField.value = this.getUsernameFromLoginObject(loginObject);
+			usernameField.value = this.getUsernameFromLoginObject(loginInfo);
 		}
-		passwordField.value = this.getPasswordFromLoginObject(loginObject);
+		passwordField.value = this.getPasswordFromLoginObject(loginInfo);
 
 		if (this.prefs.getBoolPref('autoSubmitForm')) {
 			// Prevent multiple submits (e.g. if submit is delayed)

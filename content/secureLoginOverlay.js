@@ -385,7 +385,7 @@ var SecureLoginOverlay = {
 			menuitem.setAttribute("class", "menuitem-iconic secureLoginUserIcon");
 			// Add a menuitem for each available user login:
 			for (let i = 0, l = secureLogins.length; i < l; i++) {
-				let username = service.getUsernameFromLoginObject(secureLogins[i].loginObject);
+				let username = service.getUsernameFromLoginObject(secureLogins[i].loginInfo);
 				// Show form index?
 				if (service.showFormIndex) {
 					username += "  (" + secureLogins[i].formIndex + ")";
