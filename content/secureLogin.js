@@ -297,42 +297,50 @@ var SecureLogin = {
 					}
 
 					let loginInfos = Services.logins.findLogins({}, host, targetHost, null);
+					let isFoundLogin = false;
 					// Go through the logins:
 					for (let j = 0, k = loginInfos.length; j < k; ++j) {
-						// Get valid login fields:
-						let loginInfo = loginInfos[j];
-						let loginFields = this.getLoginFields(form, loginInfo.usernameField, loginInfo.passwordField);
-
-						if (loginFields) {
-							let user = loginFields.usernameField;
-							let pass = loginFields.passwordField;
-
-							if (isSkipDuplicateActionForms) {
-								// Add the formURI to the list:
-								formURIs.push(formURI);
-							}
-
-							let foundLogin = {
-								loginObject  : loginInfo,
-								formIndex    : i,
-								window       : aWin,
-								usernameField: user,
-								passwordField: pass,
-								actionURI    : formURI.spec,
-							};
-							// Add null as login object to the logins list to avoid a Master Password prompt:
-							this.addToFoundLoginsList(foundLogin);
-
-							// highlight login fields:
-							this.highlightLoginFields(user, pass);
-
-							// decrement loginsCount
+						isFoundLogin = this._findLoginField(loginInfos[j], form, i, aWin, formURI);
+						if (isFoundLogin) {
 							loginsCount--;
 						}
+					}
+					if (isFoundLogin && isSkipDuplicateActionForms) {
+						// Add the formURI to the list:
+						formURIs.push(formURI);
 					}
 				}
 			}
 		}
+	},
+
+	_findLoginField: function (aLoginInfo, aForm, aFormIndex, aWindow, aFormURI) {
+		let isFoundLogin = false;
+
+		// Get valid login fields:
+		let loginFields = this.getLoginFields(aForm, aLoginInfo.usernameField, aLoginInfo.passwordField);
+
+		if (loginFields) {
+			let user = loginFields.usernameField;
+			let pass = loginFields.passwordField;
+
+			let foundLogin = {
+				loginObject  : aLoginInfo,
+				formIndex    : aFormIndex,
+				window       : aWindow,
+				usernameField: user,
+				passwordField: pass,
+				actionURI    : aFormURI.spec,
+			};
+			this.addToFoundLoginsList(foundLogin);
+
+			// highlight login fields:
+			this.highlightLoginFields(user, pass);
+
+			isFoundLogin = true;
+		}
+
+		return isFoundLogin;
 	},
 
 	getLoginFields: function (aForm, aLoginUsernameFieldName, aLoginPasswordFieldName) {
