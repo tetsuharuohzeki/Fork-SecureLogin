@@ -298,7 +298,7 @@ var SecureLogin = {
 				let isSkipDuplicateActionForms = this.skipDuplicateActionForms;
 
  				// Go through the forms:
- 				for (let i = 0; i < forms.length; i++) {
+ 				for (let i = 0, l = forms.length; i < l; ++i) {
 					// Check to finish searching logins in this document:
 					if (loginsCount <= 0) {
 						break;
@@ -326,12 +326,15 @@ var SecureLogin = {
 
 					let loginInfos = Services.logins.findLogins({}, host, targetHost, null);
 					// Go through the logins:
-					for (let j = 0; j < loginInfos.length; j++) {
+					for (let j = 0, k = loginInfos.length; j < k; ++j) {
 						// Get valid login fields:
 						let loginInfo = loginInfos[j];
 						let loginFields = this.getLoginFields(form, loginInfo.usernameField, loginInfo.passwordField);
 
 						if (loginFields) {
+							let user = loginFields.usernameField;
+							let pass = loginFields.passwordField;
+
 							if (isSkipDuplicateActionForms) {
 								// Add the formURI to the list:
 								formURIs.push(formURI);
@@ -341,15 +344,15 @@ var SecureLogin = {
 								loginObject  : loginInfo,
 								formIndex    : i,
 								window       : aWin,
-								usernameField: loginFields.usernameField,
-								passwordField: loginFields.passwordField,
-								actionURIStr : formURI.spec,
+								usernameField: user,
+								passwordField: pass,
+								actionURI    : formURI.spec,
 							};
 							// Add null as login object to the logins list to avoid a Master Password prompt:
 							this.addToFoundLoginsList(foundLogin);
 
 							// highlight login fields:
-							this.highlightLoginFields(loginFields.usernameField, loginFields.passwordField);
+							this.highlightLoginFields(user, pass);
 
 							// decrement loginsCount
 							loginsCount--;
@@ -361,20 +364,21 @@ var SecureLogin = {
 	},
 
 	getLoginFields: function (aForm, aLoginUsernameFieldName, aLoginPasswordFieldName) {
+		let loginFields = null;
 
 		// The form fields for user+pass:
 		let usernameField = null;
 		let passwordField = null;
 
 		// helper var to define if the login form is a password only form:
-		let inputOtherTypeFound = false;
+		let isOnlyPassField = true;
 
 		// The form elements list:
 		let elements = aForm.elements;
 
 		let userInput = elements[aLoginUsernameFieldName];
 		if (userInput) {
-			inputOtherTypeFound = true;
+			isOnlyPassField = false;
 			usernameField = userInput;
 		}
 
@@ -384,48 +388,31 @@ var SecureLogin = {
 		}
 
 		if (passwordField) {
-			// If this is a password only form,
-			// no input which type is not password may be found and userFieldName must be empty:
-			if (!usernameField && (inputOtherTypeFound || aLoginUsernameFieldName)) {
-				return null;
+			// If there is username field, or
+			// there is no input which type is not "password" and also userFieldName is empty:
+			if (usernameField || (isOnlyPassField && !aLoginUsernameFieldName)) {
+				loginFields = {
+					usernameField: usernameField,
+					passwordField: passwordField,
+				};
 			}
-
-			let loginFields = {
-				usernameField: usernameField,
-				passwordField: passwordField,
-			};
-
-			return loginFields;
 		}
-		else {
-			return null;
-		}
+		return loginFields;
 	},
 
 	addToFoundLoginsList: function (aFoundLogin) {
 		let secureLogins = this.secureLogins;
 
-		let loginIndex = secureLogins.length;
-
 		// Test if there is only one valid login form:
 		let isInArray = secureLogins.some(function(aElm){
 			return (aElm.formIndex === aFoundLogin.formIndex);
 		});
-		if (!this.showFormIndex && (loginIndex > 0) && !isInArray) {
+		if (!this.showFormIndex && (secureLogins.length > 0) && !isInArray) {
 			this.showFormIndex = true;
 		}
 
 		// Save the login in the valid logins list:
-		secureLogins[loginIndex] = {
-			loginObject    : aFoundLogin.loginObject,
-			formIndex      : aFoundLogin.formIndex,
-			window         : aFoundLogin.window,
-			usernameField  : aFoundLogin.usernameField,
-			passwordField  : aFoundLogin.passwordField,
-			actionURI      : aFoundLogin.actionURIStr,
-		};
-
-		this.secureLogins = secureLogins;
+		secureLogins.push(aFoundLogin);
 	},
 
 	highlightLoginFields: function (aUsernameField, aPasswordField) {
@@ -479,14 +466,8 @@ var SecureLogin = {
 		if (secureLogins.length > 0) {
 			try {
 				// The list index of the login:
-				let selectedIndex;
-				if (secureLogins.length > 1) {
-					// Prompt for a selection, if list contains more than one login:
-					selectedIndex = this._selectLoginAccount(aLoginIndex);
-				}
-				else {
-					selectedIndex = 0;
-				}
+				let selectedIndex = (secureLogins.length > 1) ?
+				                    this._selectLoginAccount(aLoginIndex) : 0;
 
 				// Cache login data:
 				let secureLoginData = secureLogins[selectedIndex];
@@ -509,9 +490,6 @@ var SecureLogin = {
 				// The login form:
 				let form = document.forms[formIndex];
 
-				// The form elements list:
-				let elements = form.elements;
-
 				// The charset of the given document:
 				let charset = document.characterSet;
 
@@ -523,19 +501,17 @@ var SecureLogin = {
 
 				let loginInfos = {
 					location       : location,
-					elements       : elements,
 					form           : form,
 					actionURI      : actionURI,
 					charset        : charset,
-					secureLoginData: secureLoginData,
 				};
 
 				// Send login data without using the form:
 				if (useJavaScriptProtection) {
-					this._loginWithJSProtection(loginInfos);
+					this._loginWithJSProtection(secureLoginData, loginInfos);
 				}
 				else {
-					this._loginWithNormal(loginInfos);
+					this._loginWithNormal(secureLoginData, loginInfos);
 				}
 			}
 			catch (e) {
@@ -602,31 +578,27 @@ var SecureLogin = {
 		return (useJavaScriptProtection && !isInException) ? true : false;
 	},
 
-	_loginWithJSProtection: function (aInfoObj) {
+	_loginWithJSProtection: function (aSecureLoginData, aInfoObj) {
 		let location        = aInfoObj.location;
-		let elements        = aInfoObj.elements;
 		let form            = aInfoObj.form;
+		let elements        = form.elements;
 		let url             = aInfoObj.actionURI;
 		let charset         = aInfoObj.charset;
-		let secureLoginData = aInfoObj.secureLoginData;
-		let usernameField   = secureLoginData.usernameField;
-		let passwordField   = secureLoginData.passwordField;
-		let loginObject     = secureLoginData.loginObject;
+		let usernameField   = aSecureLoginData.usernameField;
+		let passwordField   = aSecureLoginData.passwordField;
+		let loginObject     = aSecureLoginData.loginObject;
 
 		// String to save the form data:
 		let dataString = '';
 
-		// Reference to the main secureLogin object:
-		let parentObject = this;
+		let urlEncode = this.urlEncode;
 
 		// Local helper function to add name and value pairs urlEncoded to the dataString:
 		function addToDataString(aName, aValue) {
 			if (dataString.length !== 0) {
 				dataString += '&';
 			}
-			dataString += (parentObject.urlEncode(aName, charset) + 
-			               "=" + 
-			               parentObject.urlEncode(aValue, charset));
+			dataString += ( urlEncode(aName, charset) + "=" + urlEncode(aValue, charset) );
 		}
 
 		let submitButtonFound = false;
@@ -737,13 +709,12 @@ var SecureLogin = {
 		}
 	},
 
-	_loginWithNormal: function (aInfoObj) {
-		let elements        = aInfoObj.elements;
+	_loginWithNormal: function (aSecureLoginData, aInfoObj) {
 		let form            = aInfoObj.form;
-		let secureLoginData = aInfoObj.secureLoginData;
-		let usernameField   = secureLoginData.usernameField;
-		let passwordField   = secureLoginData.passwordField;
-		let loginObject     = secureLoginData.loginObject;
+		let elements        = form.elements;
+		let usernameField   = aSecureLoginData.usernameField;
+		let passwordField   = aSecureLoginData.passwordField;
+		let loginObject     = aSecureLoginData.loginObject;
 
 		// Fill the login fields:
 		if (usernameField) {
@@ -984,13 +955,8 @@ var SecureLogin = {
 		return this.stringBundle = Services.strings.createBundle("chrome://secureLogin/locale/secureLogin.properties");
 	},
 
-	getContentDocument: function(aWin) {
-		if (aWin) {
-			return aWin.document;
-		}
-		else {
-			return this.getBrowser().contentDocument;
-		}
+	getContentDocument: function(aContentWindow) {
+		return aContentWindow ? aContentWindow.document : this.getBrowser().contentDocument;
 	},
 
 	getContentWindow: function () {
