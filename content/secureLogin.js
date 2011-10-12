@@ -544,7 +544,7 @@ var SecureLogin = {
 		let location        = aInfoObj.location;
 		let form            = aInfoObj.form;
 		let elements        = form.elements;
-		let url             = aInfoObj.actionURI;
+		let actionURI       = aInfoObj.actionURI;
 		let charset         = aInfoObj.charset;
 		let usernameField   = aSecureLoginData.usernameField;
 		let passwordField   = aSecureLoginData.passwordField;
@@ -632,12 +632,12 @@ var SecureLogin = {
 			}
 		}
 
-		// Check if the url is an allowed one (throws an exception if not):
-		this.urlSecurityCheck(url, location.href);
+		// Check if the actionURI is an allowed one (throws an exception if not):
+		this.urlSecurityCheck(actionURI, location.href);
 
 		let referrerURI = this.makeURI(location.href, charset, null);
 		// Send the data by GET or POST:
-		this._sendLoginDataWithJSP(form.method, url, dataString, referrerURI);
+		this._sendLoginDataWithJSP(form.method, actionURI, dataString, referrerURI);
 	},
 
 	_sendLoginDataWithJSP: function (aFormMethod, aUrl, aDataStr, aReferrer) {
