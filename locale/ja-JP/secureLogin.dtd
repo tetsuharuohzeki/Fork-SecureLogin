@@ -1,5 +1,4 @@
 <!ENTITY toolbarbutton.label "Secure Login">
-<!ENTITY toolsmenu.label "Secure Login">
 <!ENTITY menuoptions.label "設定...">
 <!ENTITY menupasswords.label "保存されたパスワード...">
 <!ENTITY menupassexceptions.label "パスワードの保存 - 例外サイト...">
@@ -12,7 +11,6 @@
 <!ENTITY shortcutdisable.label "使用しない">
 <!ENTITY shortcutinfo.label "キーボードショートカットの変更は Firefox の再起動後に反映されます。">
 <!ENTITY viewcaption.label "表示">
-<!ENTITY showtoolsmenu.label "Secure Login を [ツール] メニューに表示する">
 <!ENTITY generalcaption.label "一般">
 <!ENTITY searchloginsonload.label "ログイン情報を入力するためのボックスを自動的に探し強調表示する">
 <!ENTITY skipduplicateactionforms.label "重複しているログインフォームを無視する">

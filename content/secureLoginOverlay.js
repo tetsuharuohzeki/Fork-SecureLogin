@@ -41,11 +41,6 @@ var SecureLoginOverlay = {
 		return this.secureLoginShortCut = document.getElementById('secureLoginShortCut');
 	},
 
-	get secureLoginToolsMenu () {
-		delete this.secureLoginToolsMenu;
-		return this.secureLoginToolsMenu =  document.getElementById('secureLoginToolsMenu')
-	},
-
 	get tooltipNoLoginLabel () {
 		delete this.tooltipNoLoginLabel;
 		return this.tooltipNoLoginLabel = document.getElementById("secureLoginTooltips:noLogin");
@@ -125,9 +120,6 @@ var SecureLoginOverlay = {
 					this.updateShortcut();
 					this.initializeTooltip();
 					break;
-				case 'showToolsMenu':
-					this.showToolsMenuUpdate();
-					break;
 			}
 		}
 		else if (aTopic === this.service.obsTopic) {
@@ -159,9 +151,6 @@ var SecureLoginOverlay = {
 		// Set the keyboard shortcut:
 		this.updateShortcut();
 		this.initializeTooltip();
-
-		// Initialize toolbar and statusbar icons and tools and context menus:
-		this.showToolsMenuUpdate();
 	},
 
 	enableLoginButton: function () {
@@ -210,20 +199,6 @@ var SecureLoginOverlay = {
 
 			// Add the key to the mainKeyset:
 			this.mainKeyset.appendChild(keyNode);
-		}
-	},
-
-	showToolsMenuUpdate: function () {
-		// Change the tools menu visibility:
-		let secureLoginToolsMenu = this.secureLoginToolsMenu;
-		if (secureLoginToolsMenu) {
-			let prefValue = this.service.prefs.getBoolPref("showToolsMenu");
-			if (prefValue) {
-				secureLoginToolsMenu.removeAttribute("hidden");
-			}
-			else {
-				secureLoginToolsMenu.setAttribute("hidden", "true");
-			}
 		}
 	},
 
