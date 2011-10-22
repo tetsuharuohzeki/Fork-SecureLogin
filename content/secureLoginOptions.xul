@@ -58,9 +58,6 @@
 	          flex="1"
 	          helpTopic="Interface">
 		<preferences>
-			<preference id="showToolsMenu"
-			            name="extensions.secureLogin@blueimp.net.showToolsMenu"
-			            type="bool"/>
 		</preferences>
 		<vbox>
 			<groupbox>
@@ -76,12 +73,6 @@
 				</hbox>
 				<separator class="thin"/>
 				<description id="shortcutInfo">&shortcutinfo.label;</description>
-			</groupbox>
-			<separator class="thin"/>
-			<groupbox>
-				<caption label="&viewcaption.label;"/>
-				<checkbox label="&showtoolsmenu.label;"
-				          preference="showToolsMenu"/>
 			</groupbox>
 			<separator class="thin"/>
 		</vbox>
