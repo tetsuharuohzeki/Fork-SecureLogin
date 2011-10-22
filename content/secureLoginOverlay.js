@@ -31,19 +31,9 @@ var SecureLoginOverlay = {
 		return this.secureLoginTooltip = document.getElementById('secureLoginTooltip');
 	},
 
-	get autofillFormsPopupMenu () {
-		delete this.autofillFormsPopupMenu;
-		return this.autofillFormsPopupMenu = document.getElementById('autofillFormsPopupMenu');
-	},
-
 	get secureLoginShortCut () {
 		delete this.secureLoginShortCut;
 		return this.secureLoginShortCut = document.getElementById('secureLoginShortCut');
-	},
-
-	get secureLoginToolsMenu () {
-		delete this.secureLoginToolsMenu;
-		return this.secureLoginToolsMenu =  document.getElementById('secureLoginToolsMenu')
 	},
 
 	get tooltipNoLoginLabel () {
@@ -125,9 +115,6 @@ var SecureLoginOverlay = {
 					this.updateShortcut();
 					this.initializeTooltip();
 					break;
-				case 'showToolsMenu':
-					this.showToolsMenuUpdate();
-					break;
 			}
 		}
 		else if (aTopic === this.service.obsTopic) {
@@ -147,10 +134,6 @@ var SecureLoginOverlay = {
 						this.disableLoginButton();
 					}
 					break;
-				case "showAndRemoveNotification":
-					let subject = aSubject.wrappedJSObject;
-					this.showAndRemoveNotification(subject.label);
-					break;
 			}
 		}
 	},
@@ -168,9 +151,6 @@ var SecureLoginOverlay = {
 		// Set the keyboard shortcut:
 		this.updateShortcut();
 		this.initializeTooltip();
-
-		// Initialize toolbar and statusbar icons and tools and context menus:
-		this.showToolsMenuUpdate();
 	},
 
 	showDoorhangerLogin: function () {
@@ -252,66 +232,6 @@ var SecureLoginOverlay = {
 
 			// Add the key to the mainKeyset:
 			this.mainKeyset.appendChild(keyNode);
-		}
-	},
-
-	showToolsMenuUpdate: function () {
-		// Change the tools menu visibility:
-		let secureLoginToolsMenu = this.secureLoginToolsMenu;
-		if (secureLoginToolsMenu) {
-			let prefValue = this.service.prefs.getBoolPref("showToolsMenu");
-			if (prefValue) {
-				secureLoginToolsMenu.removeAttribute("hidden");
-			}
-			else {
-				secureLoginToolsMenu.setAttribute("hidden", "true");
-			}
-		}
-	},
-
-	clickHandler: function (aEvent) {
-		switch (aEvent.button) {
-			case 1:
-				this.service.masterSecurityDeviceLogout(aEvent);
-				break;
-		}
-	},
-
-	showAndRemoveNotification: function (aLabel, aTimeout, aId, aImage, aPriority, aButtons) {
-		let timeout  = aTimeout  ? aTimeout  : this.service.prefs.getIntPref("defaultNotificationTimeout");
-		this.showNotification(aLabel, aId, aImage, aPriority, aButtons);
-		// Automatically remove the notification after the timeout:
-		window.setTimeout(function() { SecureLoginOverlay.removeNotification() }, timeout);
-	},
-
-	showNotification: function (aLabel, aId, aImage, aPriority, aButtons) {
-		let service  = this.service;
-		let id       = aId       ? aId       : "secureLoginNotification";
-		let image    = aImage    ? aImage    : service.prefs.getCharPref("defaultNotificationImage");
-		let priority = aPriority ? aPriority : "PRIORITY_INFO_HIGH";
-		let buttons  = aButtons  ? aButtons  : null;
-		// First remove notifications with the same id:
-		this.removeNotification(id);
-		let notificationBox = service.getBrowser().getNotificationBox();
-		if (notificationBox) {
-			notificationBox.appendNotification(
-			  aLabel,
-			  id,
-			  image,
-			  priority,
-			  buttons
-			);
-		}
-	},
-
-	removeNotification: function (aId) {
-		let id = aId ? aId : "secureLoginNotification";
-		let notificationBox = this.service.getBrowser().getNotificationBox();
-		if (notificationBox) {
-			let notification = notificationBox.getNotificationWithValue(id);
-			if (notification) {
-				notificationBox.removeNotification(notification);
-			}
 		}
 	},
 
@@ -473,7 +393,7 @@ var SecureLoginOverlay = {
 			menuitem.setAttribute("class", "menuitem-iconic secureLoginUserIcon");
 			// Add a menuitem for each available user login:
 			for (let i = 0, l = secureLogins.length; i < l; i++) {
-				let username = service.getUsernameFromLoginObject(secureLogins[i].loginObject);
+				let username = service.getUsernameFromLoginObject(secureLogins[i].loginInfo);
 				// Show form index?
 				if (service.showFormIndex) {
 					username += "  (" + secureLogins[i].formIndex + ")";

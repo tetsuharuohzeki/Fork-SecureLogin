@@ -7,36 +7,6 @@
 	        src="chrome://secureLogin/content/secureLogin.js"></script>
 	<script type="application/javascript"
 	        src="chrome://secureLogin/content/secureLoginOverlay.js"></script>
-	<menupopup id="menu_ToolsPopup">
-		<menu id="secureLoginToolsMenu"
-		      label="&toolsmenu.label;"
-		      class="menu-iconic secureLoginIcon"
-		      insertafter="webDeveloperMenu">
-			<menupopup id="secureLoginToolsMenuPopup">
-				<menuitem id="secureLoginOptionsToolsMenuItem"
-				          label="&menuoptions.label;"
-				          class="menuitem-iconic secureLoginSettingsIcon"
-				          oncommand="SecureLogin.showDialog('chrome://secureLogin/content/secureLoginOptions.xul');"/>
-				<menuseparator/>
-				<menuitem id="secureLoginExceptionsToolsMenuItem"
-				          label="&menuexceptions.label;"
-				          oncommand="SecureLogin.showDialog('chrome://secureLogin/content/secureLoginExceptions.xul');"/>
-				<menuseparator/>
-				<menuitem id="secureLoginPasswordsToolsMenuItem"
-				          label="&menupasswords.label;"
-				          oncommand="SecureLogin.showPasswordManager();"/>
-				<menuitem id="secureLoginPasswordsExceptionsToolsMenuItem"
-				          class="minVersion2"
-				          label="&menupassexceptions.label;"
-				          oncommand="SecureLogin.showDialog('chrome://passwordmgr/content/passwordManagerExceptions.xul');"/>
-				<menuseparator/>
-				<menuitem id="secureLoginHelpToolsMenuItem"
-				          label="&help.label;"
-				          class="menuitem-iconic secureLoginHelpIcon"
-				          oncommand="SecureLogin.openHelp();"/>
-			</menupopup>
-		</menu>
-	</menupopup>
 	<popupset id="mainPopupSet">
 		<popupset id="secureLoginPopUpSet">
 			<tooltip id="secureLoginTooltip"
@@ -112,7 +82,6 @@
 		               label="&toolbarbutton.label;"
 		               tooltip="secureLoginTooltip"
 		               oncommand="if(event.target == this) SecureLoginOverlay.userSelectionLogin(event);"
-		               onclick="SecureLoginOverlay.clickHandler(event);"
 		               context="secureLoginContextmenu"/>
 	</toolbarpalette>
 

@@ -1,7 +1,4 @@
 <!ENTITY toolbarbutton.label "Secure Login">
-<!ENTITY toolsmenu.label "Secure Login">
-<!ENTITY logincontextmenuitem.label "Secure Login">
-<!ENTITY logincontextmenuitem.accesskey "l">
 <!ENTITY menuoptions.label "Settings...">
 <!ENTITY menupasswords.label "Saved passwords...">
 <!ENTITY menupassexceptions.label "Save passwords - exceptions...">
@@ -14,7 +11,6 @@
 <!ENTITY shortcutdisable.label "Disable">
 <!ENTITY shortcutinfo.label "Keyboard shortcut changes only take effect in a new Firefox window.">
 <!ENTITY viewcaption.label "View">
-<!ENTITY showtoolsmenu.label "Show entry in Tools menu">
 <!ENTITY showDoorhangerLogin.label "Show Secure Login as popup notification.">
 <!ENTITY generalcaption.label "General">
 <!ENTITY searchloginsonload.label "Automatically search for login data and highlight form fields">

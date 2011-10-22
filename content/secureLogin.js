@@ -353,7 +353,7 @@ var SecureLogin = {
 			let pass = loginFields.passwordField;
 
 			let foundLogin = {
-				loginObject  : aLoginInfo,
+				loginInfo    : aLoginInfo,
 				formIndex    : aFormIndex,
 				window       : aWindow,
 				usernameField: user,
@@ -438,24 +438,6 @@ var SecureLogin = {
 		style.outline          = this.highlightOutlineStyle;
 		style.outlineRadius    = this.highlightOutlineRadius;
 		style.MozOutlineRadius = this.highlightOutlineRadius;
-	},
-
-	get masterSecurityDevice () {
-		delete this.masterSecurityDevice;
-		return this.masterSecurityDevice = Components.classes['@mozilla.org/security/pk11tokendb;1']
-		                                   .getService(Components.interfaces.nsIPK11TokenDB);
-	},
-
-	masterSecurityDeviceLogout: function (aEvent) {
-		let masterSecurityDevice = this.masterSecurityDevice;
-		if (masterSecurityDevice.getInternalKeyToken().isLoggedIn()) {
-			masterSecurityDevice.findTokenByName('').logoutAndDropAuthenticatedResources();
-		}
-		let label = this.stringBundle.GetStringFromName("masterSecurityDeviceLogout");
-		let subject = {
-			label: label,
-		};
-		Services.obs.notifyObservers({ wrappedJSObject: subject, }, this.obsTopic, "showAndRemoveNotification");
 	},
 
 	login: function(aWin, aLoginIndex, aSkipLoginSearch) {
@@ -552,7 +534,7 @@ var SecureLogin = {
 
 			let list = new Array(secureLogins.length);
 			for (let i = 0; i < secureLogins.length; i++) {
-				list[i] = this.getUsernameFromLoginObject(secureLogins[i].loginObject);
+				list[i] = this.getUsernameFromLoginObject(secureLogins[i].loginInfo);
 				// Show form index?
 				if (this.showFormIndex) {
 					list[i] += "  (" + secureLogins[i].formIndex + ")";
@@ -590,11 +572,11 @@ var SecureLogin = {
 		let location        = aInfoObj.location;
 		let form            = aInfoObj.form;
 		let elements        = form.elements;
-		let url             = aInfoObj.actionURI;
+		let actionURI       = aInfoObj.actionURI;
 		let charset         = aInfoObj.charset;
 		let usernameField   = aSecureLoginData.usernameField;
 		let passwordField   = aSecureLoginData.passwordField;
-		let loginObject     = aSecureLoginData.loginObject;
+		let loginInfo       = aSecureLoginData.loginInfo;
 
 		// String to save the form data:
 		let dataString = '';
@@ -627,15 +609,8 @@ var SecureLogin = {
 				case 'password':
 					// This is the password field - use the saved password as value:
 					if (passwordField && element.name == passwordField.name) {
-						let pass = this.getPasswordFromLoginObject(loginObject);
+						let pass = this.getPasswordFromLoginObject(loginInfo);
 						addToDataString(passwordField.name, pass);
-					}
-					break;
-				case 'select-multiple':
-					for (let j = 0; j < element.options.length; j++) {
-						if (element.options[j].selected) {
-							addToDataString(element.name, element.options[j].value);
-						}
 					}
 					break;
 				case 'checkbox':
@@ -658,7 +633,7 @@ var SecureLogin = {
 				default:
 					if (usernameField && element.name == usernameField.name) {
 						// This is the userName field - use the saved username as value:
-						let user = this.getUsernameFromLoginObject(loginObject);
+						let user = this.getUsernameFromLoginObject(loginInfo);
 						addToDataString(usernameField.name, user);
 					}
 					else {
@@ -685,12 +660,12 @@ var SecureLogin = {
 			}
 		}
 
-		// Check if the url is an allowed one (throws an exception if not):
-		this.urlSecurityCheck(url, location.href);
+		// Check if the actionURI is an allowed one (throws an exception if not):
+		this.urlSecurityCheck(actionURI, location.href);
 
 		let referrerURI = this.makeURI(location.href, charset, null);
 		// Send the data by GET or POST:
-		this._sendLoginDataWithJSP(form.method, url, dataString, referrerURI);
+		this._sendLoginDataWithJSP(form.method, actionURI, dataString, referrerURI);
 	},
 
 	_sendLoginDataWithJSP: function (aFormMethod, aUrl, aDataStr, aReferrer) {
@@ -725,13 +700,13 @@ var SecureLogin = {
 		let elements        = form.elements;
 		let usernameField   = aSecureLoginData.usernameField;
 		let passwordField   = aSecureLoginData.passwordField;
-		let loginObject     = aSecureLoginData.loginObject;
+		let loginInfo       = aSecureLoginData.loginInfo;
 
 		// Fill the login fields:
 		if (usernameField) {
-			usernameField.value = this.getUsernameFromLoginObject(loginObject);
+			usernameField.value = this.getUsernameFromLoginObject(loginInfo);
 		}
-		passwordField.value = this.getPasswordFromLoginObject(loginObject);
+		passwordField.value = this.getPasswordFromLoginObject(loginInfo);
 
 		if (this.prefs.getBoolPref('autoSubmitForm')) {
 			// Prevent multiple submits (e.g. if submit is delayed)

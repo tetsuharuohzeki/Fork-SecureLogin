@@ -58,9 +58,6 @@
 	          flex="1"
 	          helpTopic="Interface">
 		<preferences>
-			<preference id="showToolsMenu"
-			            name="extensions.secureLogin@blueimp.net.showToolsMenu"
-			            type="bool"/>
 			<preference id="showDoorhangerLogin"
 			            name="extensions.secureLogin@blueimp.net.showDoorhangerLogin"
 			            type="bool"/>
@@ -83,8 +80,6 @@
 			<separator class="thin"/>
 			<groupbox>
 				<caption label="&viewcaption.label;"/>
-				<checkbox label="&showtoolsmenu.label;"
-				          preference="showToolsMenu"/>
 				<checkbox label="&showDoorhangerLogin.label;"
 				          preference="showDoorhangerLogin"/>
 			</groupbox>
