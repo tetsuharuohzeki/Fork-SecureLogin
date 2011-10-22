@@ -75,10 +75,6 @@
 				<description id="shortcutInfo">&shortcutinfo.label;</description>
 			</groupbox>
 			<separator class="thin"/>
-			<groupbox>
-				<caption label="&viewcaption.label;"/>
-			</groupbox>
-			<separator class="thin"/>
 		</vbox>
 	</prefpane>
 	<script type="application/javascript"

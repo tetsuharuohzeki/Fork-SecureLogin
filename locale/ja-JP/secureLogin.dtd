@@ -10,7 +10,6 @@
 <!ENTITY shortcutapply.label "適用">
 <!ENTITY shortcutdisable.label "使用しない">
 <!ENTITY shortcutinfo.label "キーボードショートカットの変更は Firefox の再起動後に反映されます。">
-<!ENTITY viewcaption.label "表示">
 <!ENTITY generalcaption.label "一般">
 <!ENTITY searchloginsonload.label "ログイン情報を入力するためのボックスを自動的に探し強調表示する">
 <!ENTITY skipduplicateactionforms.label "重複しているログインフォームを無視する">

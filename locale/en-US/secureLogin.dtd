@@ -10,7 +10,6 @@
 <!ENTITY shortcutapply.label "Apply">
 <!ENTITY shortcutdisable.label "Disable">
 <!ENTITY shortcutinfo.label "Keyboard shortcut changes only take effect in a new Firefox window.">
-<!ENTITY viewcaption.label "View">
 <!ENTITY generalcaption.label "General">
 <!ENTITY searchloginsonload.label "Automatically search for login data and highlight form fields">
 <!ENTITY skipduplicateactionforms.label "Skip duplicate login forms">
