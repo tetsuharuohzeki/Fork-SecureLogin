@@ -31,11 +31,6 @@ var SecureLoginOverlay = {
 		return this.secureLoginTooltip = document.getElementById('secureLoginTooltip');
 	},
 
-	get autofillFormsPopupMenu () {
-		delete this.autofillFormsPopupMenu;
-		return this.autofillFormsPopupMenu = document.getElementById('autofillFormsPopupMenu');
-	},
-
 	get secureLoginShortCut () {
 		delete this.secureLoginShortCut;
 		return this.secureLoginShortCut = document.getElementById('secureLoginShortCut');
