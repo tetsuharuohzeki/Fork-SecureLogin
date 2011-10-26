@@ -1,10 +1,3 @@
-/*
- * @package secureLogin
- * @author Sebastian Tschan
- * @copyright (c) Sebastian Tschan
- * @license GNU General Public License
- * @link https://blueimp.net/mozilla/
- */
 Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 var SecureLogin = {
@@ -14,7 +7,7 @@ var SecureLogin = {
 	// Secure Logins preferences branch:
 	get prefs () {
 		delete this.prefs;
-		return this.prefs = Services.prefs.getBranch('extensions.secureLogin@blueimp.net.')
+		return this.prefs = Services.prefs.getBranch('extensions.secureLogin.')
 		                    .QueryInterface(Components.interfaces.nsIPrefBranch2);
 	},
 
@@ -939,11 +932,13 @@ var SecureLogin = {
 	},
 
 	openHelp: function (aTopic) {
+/*
 		if (!aTopic) {
 			aTopic = '';
 		}
 		let url = this.prefs.getCharPref('helpURL').replace(/\[TOPIC\]$/, aTopic);
 		this.openNewTab(url, true);
+*/
 	},
 
 	openNewTab: function (aUrl, aFocus) {
