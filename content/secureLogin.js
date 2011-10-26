@@ -1,10 +1,3 @@
-/*
- * @package secureLogin
- * @author Sebastian Tschan
- * @copyright (c) Sebastian Tschan
- * @license GNU General Public License
- * @link https://blueimp.net/mozilla/
- */
 Components.utils.import("resource://gre/modules/Services.jsm");
 Components.utils.import("resource://gre/modules/XPCOMUtils.jsm");
 var SecureLogin = {
