@@ -14,7 +14,7 @@ var SecureLogin = {
 	// Secure Logins preferences branch:
 	get prefs () {
 		delete this.prefs;
-		return this.prefs = Services.prefs.getBranch('extensions.secureLogin@blueimp.net.')
+		return this.prefs = Services.prefs.getBranch('extensions.secureLogin.')
 		                    .QueryInterface(Components.interfaces.nsIPrefBranch2);
 	},
 
