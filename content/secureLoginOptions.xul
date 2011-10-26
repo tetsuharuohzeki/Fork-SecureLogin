@@ -12,16 +12,16 @@
 	          helpTopic="Settings">
 		<preferences>
 			<preference id="searchLoginsOnload"
-			            name="extensions.secureLogin@blueimp.net.searchLoginsOnload"
+			            name="extensions.secureLogin.searchLoginsOnload"
 			            type="bool"/>
 			<preference id="skipDuplicateActionForms"
-			            name="extensions.secureLogin@blueimp.net.skipDuplicateActionForms"
+			            name="extensions.secureLogin.skipDuplicateActionForms"
 			            type="bool"/>
 			<preference id="highlightColor"
-			            name="extensions.secureLogin@blueimp.net.highlightColor"
+			            name="extensions.secureLogin.highlightColor"
 			            type="string"/>
 			<preference id="autoSubmitForm"
-			            name="extensions.secureLogin@blueimp.net.autoSubmitForm"
+			            name="extensions.secureLogin.autoSubmitForm"
 			            type="bool"/>
 		</preferences>
 		<vbox>

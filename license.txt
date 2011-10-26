@@ -1,0 +1,5 @@
+This add-on is released under the GNU General Public License (GPL).
+
+--------------------
+Original Version: "Secure Login" <http://securelogin.mozdev.org/>.
+Original creator is Sebastian Tschan.
