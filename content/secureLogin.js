@@ -939,11 +939,13 @@ var SecureLogin = {
 	},
 
 	openHelp: function (aTopic) {
+/*
 		if (!aTopic) {
 			aTopic = '';
 		}
 		let url = this.prefs.getCharPref('helpURL').replace(/\[TOPIC\]$/, aTopic);
 		this.openNewTab(url, true);
+*/
 	},
 
 	openNewTab: function (aUrl, aFocus) {
