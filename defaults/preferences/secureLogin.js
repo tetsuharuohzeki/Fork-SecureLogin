@@ -8,5 +8,4 @@ pref('extensions.secureLogin.highlightOutlineRadius',"5px");
 pref('extensions.secureLogin.autoSubmitForm',false);
 pref('extensions.secureLogin.javascriptProtection',true);
 pref('extensions.secureLogin.exceptionList','');
-pref('extensions.secureLogin.helpURL', "");
 //pref("signon.autofillForms", false);

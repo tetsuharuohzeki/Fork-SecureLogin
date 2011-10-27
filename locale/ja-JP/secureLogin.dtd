@@ -23,7 +23,6 @@
 <!ENTITY addexception.label "追加">
 <!ENTITY removeselected.label "削除">
 <!ENTITY removeall.label "すべて削除">
-<!ENTITY help.label "Secure Login のヘルプ...">
 <!ENTITY tooltip.login "ログイン">
 <!ENTITY tooltip.loginUrl "URL">
 <!ENTITY tooltip.loginUrlCount "保存されているログイン数">

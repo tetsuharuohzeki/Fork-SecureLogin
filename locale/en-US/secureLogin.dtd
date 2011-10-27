@@ -23,7 +23,6 @@
 <!ENTITY addexception.label "Add">
 <!ENTITY removeselected.label "Remove">
 <!ENTITY removeall.label "Remove all">
-<!ENTITY help.label "Help...">
 <!ENTITY tooltip.login "Login">
 <!ENTITY tooltip.loginUrl "URL">
 <!ENTITY tooltip.loginUrlCount "Login count">
