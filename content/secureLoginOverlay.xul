@@ -55,11 +55,6 @@
 				          class="minVersion2"
 				          label="&menupassexceptions.label;"
 				          oncommand="SecureLogin.showDialog('chrome://passwordmgr/content/passwordManagerExceptions.xul');"/>
-				<menuseparator/>
-				<menuitem id="secureLoginHelpContextItem"
-				          label="&help.label;"
-				          class="menuitem-iconic secureLoginHelpIcon"
-				          oncommand="SecureLogin.openHelp();"/>
 			</menupopup>
 			<menupopup id="secureLoginUserSelectionPopup"
 			           position="after_start"

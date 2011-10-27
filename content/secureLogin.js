@@ -959,24 +959,6 @@ var SecureLogin = {
 		return isInArray;
 	},
 
-	openHelp: function (aTopic) {
-/*
-		if (!aTopic) {
-			aTopic = '';
-		}
-		let url = this.prefs.getCharPref('helpURL').replace(/\[TOPIC\]$/, aTopic);
-		this.openNewTab(url, true);
-*/
-	},
-
-	openNewTab: function (aUrl, aFocus) {
-		let helpTab = this.getBrowser().addTab(aUrl);
-		if (aFocus) {
-			this.getBrowser().selectedTab = helpTab;
-			Services.wm.getMostRecentWindow('navigator:browser').focus();
-		}
-	},
-
 	finalizeSignonAutofillFormsStatus: function () {
 		// Re-enable the prefilling of login forms if setting has been true:
 		try {

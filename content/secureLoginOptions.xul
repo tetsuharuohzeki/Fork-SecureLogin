@@ -5,11 +5,9 @@
 <prefwindow xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
             id="secureLoginPrefs"
             title="&options.title;"
-            buttons="accept,cancel,help"
-            ondialoghelp="SecureLogin.openHelp(event.target.currentPane.helpTopic);">
+            buttons="accept,cancel,help">
 	<prefpane id="secureLoginPrefPaneMain"
-	          label="&prefpanemainlabel;"
-	          helpTopic="Settings">
+	          label="&prefpanemainlabel;">
 		<preferences>
 			<preference id="searchLoginsOnload"
 			            name="extensions.secureLogin.searchLoginsOnload"
@@ -55,8 +53,7 @@
 	</prefpane>
 	<prefpane id="secureLoginPrefPaneGUI"
 	          label="&prefpaneguilabel;"
-	          flex="1"
-	          helpTopic="Interface">
+	          flex="1">
 		<preferences>
 			<preference id="showDoorhangerLogin"
 			            name="extensions.secureLogin@blueimp.net.showDoorhangerLogin"

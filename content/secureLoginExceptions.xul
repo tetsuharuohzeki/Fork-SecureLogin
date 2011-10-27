@@ -6,12 +6,10 @@
             id="secureLoginExceptions"
             title="&exceptions.title;"
             buttons="accept,cancel,help"
-            ondialoghelp="SecureLogin.openHelp(event.target.currentPane.helpTopic);"
             persist="screenX screenY">
 	<prefpane id="secureLoginExceptionsPane"
 	          label="&exceptions.title;"
-	          flex="1"
-	          helpTopic="Javascript Protection">
+	          flex="1">
 		<vbox id="exceptions"
 		      flex="1">
 			<description>&exceptions.label;</description>
