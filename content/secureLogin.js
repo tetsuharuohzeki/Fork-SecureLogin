@@ -255,53 +255,39 @@ var SecureLogin = {
 			// document (current) host:
 			let host = location.protocol + '//' + location.host;
 
-			// Getting the number of existing logins with countLogins()
-			// instead of findLogins() to avoid a Master Password prompt:
-			let loginsCount = Services.logins.countLogins(host, "", null);
-			if (loginsCount > 0) {
-				let formURIs = new Array();
-				let isSkipDuplicateActionForms = this.skipDuplicateActionForms;
+			let matchData = Components.classes["@mozilla.org/hash-property-bag;1"]
+			                .createInstance(Components.interfaces.nsIWritablePropertyBag);
+			matchData.setProperty("hostname", host);
 
- 				// Go through the forms:
- 				for (let i = 0, l = forms.length; i < l; ++i) {
-					// Check to finish searching logins in this document:
-					if (loginsCount <= 0) {
-						break;
-					}
+			let loginsArray = Services.logins.searchLogins({}, matchData);
+			if (loginsArray.length > 0) {
+				for (let i = 0; i < loginsArray.length; i++) {
+					this._searchLogins(aWin, document, forms, loginsArray[i]);
+				}
+			}
+		}
+	},
 
- 					let form = forms[i];
+	_searchLogins: function (aWin, aDoc, aForms, aLoginInfo) {
+		let isSkipDuplicateActionForms = this.skipDuplicateActionForms;
+		let baseURI = aDoc.baseURI;
+		for (let i = 0, l = aForms.length; i < l; i++) {
+			let form = aForms[i];
 
-					// Forms with no "action" attribute default to submitting to their origin URL:
-					let formAction = form.action ? form.action : document.baseURI;
+			let formAction = form.action ? form.action : baseURI;
+			// resolved form submit url (nsIURI)
+			let formTarget = this.makeURI(formAction, null, baseURI);
 
-					// Create a nsIURI object from the formAction:
-					let formURI = this.makeURI(formAction, document.characterSet, document.baseURI);
-					let targetHost = formURI.prePath;
+			// whether nsILoginInfo.formSubmitURL and formTarget are the same url, or not.
+			let isSameAction = (aLoginInfo.formSubmitURL == formTarget.prePath);
 
-					if (isSkipDuplicateActionForms) {
-						// Skip this form if the same formURI has already been added:
-						let isDuplicate = formURIs.some(function(aNsIURI){
-							return aNsIURI.equals(formURI);
-						});
-
-						if (isDuplicate) {
-							continue;
-						}
-					}
-
-					let loginInfos = Services.logins.findLogins({}, host, targetHost, null);
-					let isFoundLogin = false;
-					// Go through the logins:
-					for (let j = 0, k = loginInfos.length; j < k; ++j) {
-						isFoundLogin = this._findLoginField(loginInfos[j], form, i, aWin, formURI);
-						if (isFoundLogin) {
-							loginsCount--;
-						}
-					}
-					if (isFoundLogin && isSkipDuplicateActionForms) {
-						// Add the formURI to the list:
-						formURIs.push(formURI);
-					}
+			if (!isSameAction) {
+				continue;
+			}
+			else {
+				let isFoundLogin = this._findLoginField(aLoginInfo, form, i, aWin, formTarget);
+				if (isFoundLogin && isSkipDuplicateActionForms) {
+					break;
 				}
 			}
 		}
