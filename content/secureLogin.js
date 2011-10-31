@@ -330,13 +330,13 @@ var SecureLogin = {
 		// The form elements list:
 		let elements = aForm.elements;
 
-		let userInput = elements[aLoginUsernameFieldName];
+		let userInput = elements.namedItem(aLoginUsernameFieldName);
 		if (userInput) {
 			isOnlyPassField = false;
 			usernameField = userInput;
 		}
 
-		let passInput = elements[aLoginPasswordFieldName];
+		let passInput = elements.namedItem(aLoginPasswordFieldName);
 		if (passInput && passInput.type == "password") {
 			passwordField = passInput;
 		}
