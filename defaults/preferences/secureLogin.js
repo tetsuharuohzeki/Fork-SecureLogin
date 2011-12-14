@@ -1,6 +1,6 @@
 pref('extensions.secureLogin@blueimp.net.shortcut', 'chrome://secureLogin/locale/secureLogin.properties');
-pref('extensions.secureLogin.showDoorhangerLogin', true);
-pref('extensions.secureLogin.showDoorhangerLogin.dismissed', true);
+pref('extensions.secureLogin@blueimp.net.showDoorhangerLogin', true);
+pref('extensions.secureLogin@blueimp.net.showDoorhangerLogin.dismissed', true);
 pref('extensions.secureLogin@blueimp.net.searchLoginsOnload',true);
 pref('extensions.secureLogin@blueimp.net.skipDuplicateActionForms',true);
 pref('extensions.secureLogin@blueimp.net.highlightColor','#FF9900');
