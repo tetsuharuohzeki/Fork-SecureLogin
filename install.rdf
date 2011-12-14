@@ -7,7 +7,7 @@
 		<em:developer>saneyuki_s</em:developer>
 		<em:description>A login extension similar to Opera's Wand login</em:description>
 		<em:optionsURL>chrome://securelogin/content/secureLoginOptions.xul</em:optionsURL>
-		<em:homepageURL>https://github.com/saneyuki/Fork-SecureLogin</em:homepageURL>
+		<em:homepageURL>http://securelogin.mozdev.org/drupal/</em:homepageURL>
 		<em:version>0.9.8</em:version>
 		<em:targetApplication>
 			<Description>
